@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { signUp } from '@/lib/actions/index'
+import { signUp } from '@/lib/actions'
 
 export default function SignUp() {
   const [email, setEmail] = useState('')
