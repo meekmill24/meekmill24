@@ -25,8 +25,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       profile: profile || {
         id: user.id,
+        username: user.user_metadata?.username || user.email?.split('@')[0],
         display_name: user.user_metadata?.display_name || 'User',
         email: user.email,
+        phone_number: user.user_metadata?.phone_number || '',
         level_id: null,
         wallet_balance: 0,
         total_earned: 0,
@@ -54,11 +56,15 @@ export async function PUT(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { display_name } = body
+    const { display_name, username, phone_number } = body
 
     const { data: profile, error } = await supabase
       .from('profiles')
-      .update({ display_name })
+      .update({ 
+        display_name, 
+        username, 
+        phone_number 
+      })
       .eq('id', user.id)
       .select()
       .single()

@@ -4,8 +4,10 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 export interface UserProfile {
   id: string
+  username: string
   display_name: string
   email: string
+  phone_number: string
   level_id: string | null
   wallet_balance: number
   total_earned: number
