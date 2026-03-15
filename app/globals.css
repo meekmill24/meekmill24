@@ -1,0 +1,130 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: oklch(0.99 0.01 240);
+  --foreground: oklch(0.15 0.05 240);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.15 0.05 240);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.15 0.05 240);
+  --primary: #007CBA; /* Lochmara Blue */
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.96 0.02 240);
+  --secondary-foreground: oklch(0.2 0.05 240);
+  --muted: oklch(0.94 0.01 240);
+  --muted-foreground: oklch(0.45 0.05 240);
+  --accent: #007CBA;
+  --accent-foreground: oklch(1 0 0);
+  --destructive: oklch(0.6 0.2 25);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.9 0.02 240);
+  --input: oklch(0.95 0.01 240);
+  --ring: #007CBA;
+  --radius: 1rem;
+}
+
+.dark {
+  --background: oklch(0.05 0.02 240);
+  --foreground: oklch(0.95 0.01 240);
+  --card: oklch(0.08 0.02 240);
+  --card-foreground: oklch(0.95 0.01 240);
+  --popover: oklch(0.08 0.02 240);
+  --popover-foreground: oklch(0.95 0.01 240);
+  --primary: #33A1FF;
+  --primary-foreground: oklch(0.05 0.02 240);
+  --secondary: oklch(0.15 0.02 240);
+  --secondary-foreground: oklch(0.95 0.01 240);
+  --muted: oklch(0.15 0.02 240);
+  --muted-foreground: oklch(0.65 0.02 240);
+  --accent: #33A1FF;
+  --accent-foreground: oklch(0.05 0.02 240);
+  --destructive: oklch(0.5 0.2 25);
+  --destructive-foreground: oklch(0.95 0.01 240);
+  --border: oklch(0.2 0.02 240);
+  --input: oklch(0.2 0.02 240);
+  --ring: #33A1FF;
+}
+
+@theme inline {
+  --font-sans: 'Inter', 'Geist', 'Geist Fallback', system-ui, sans-serif;
+  --color-primary: var(--primary);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground transition-colors duration-300;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/40 backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_0_rgba(14,14,31,0.1)];
+  }
+  
+  .glass-dark {
+    @apply bg-black/40 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)];
+  }
+
+  .premium-gradient {
+    @apply bg-gradient-to-br from-[#007CBA] via-[#005a87] to-[#003d5c];
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:translate-y-[-4px] hover:shadow-xl;
+  }
+}
+
+/* Animations */
+@keyframes float {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.delay-1 { animation-delay: 1s; }
+.delay-2 { animation-delay: 2s; }
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-muted;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-muted-foreground/20 rounded-full hover:bg-muted-foreground/40 transition-colors;
+}
