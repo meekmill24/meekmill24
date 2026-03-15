@@ -31,6 +31,7 @@ export async function GET(request: NextRequest) {
         wallet_balance: 0,
         total_earned: 0,
         completed_tasks_count: 0,
+        referral_code: user.id.slice(0, 4).toUpperCase()
       },
     })
   } catch (error) {

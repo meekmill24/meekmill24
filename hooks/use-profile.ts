@@ -10,6 +10,7 @@ export interface UserProfile {
   wallet_balance: number
   total_earned: number
   completed_tasks_count: number
+  referral_code?: string
   credit_rating?: number
   is_secure?: boolean
   created_at?: string

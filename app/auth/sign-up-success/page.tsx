@@ -1,7 +1,8 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { CheckCircle2, Music, ArrowRight } from 'lucide-react'
+import NextImage from 'next/image'
+import { CheckCircle2, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
 
 export default function SignUpSuccess() {
@@ -13,10 +14,10 @@ export default function SignUpSuccess() {
 
       <div className='relative z-10 flex flex-col items-center justify-center px-6 text-center max-w-md'>
         <div className="mb-8 flex flex-col items-center gap-2">
-            <div className="w-12 h-12 premium-gradient rounded-xl flex items-center justify-center shadow-lg">
-              <Music className="w-6 h-6 text-white" />
+            <div className="w-12 h-12 premium-gradient rounded-xl flex items-center justify-center shadow-lg overflow-hidden">
+               <NextImage src="/logo.png" alt="Logo" width={48} height={48} className="object-cover" />
             </div>
-            <h2 className="text-xl font-bold text-[#003d5c]">Simple Music</h2>
+            <h2 className="text-xl font-bold text-[#003d5c]">Captiv8 Music</h2>
         </div>
 
         <div className='mb-8 flex h-24 w-24 items-center justify-center rounded-3xl glass border-green-200 shadow-xl shadow-green-500/10'>

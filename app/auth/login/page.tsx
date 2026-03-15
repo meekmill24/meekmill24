@@ -14,7 +14,8 @@ import { Label } from '@/components/ui/label'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { Music, ArrowRight, ShieldCheck, Mail, Lock } from 'lucide-react'
+import NextImage from 'next/image'
+import { Music, ArrowRight, ShieldCheck, Mail, Lock, Sparkles } from 'lucide-react'
 
 export default function Page() {
   const [email, setEmail] = useState('')
@@ -70,11 +71,11 @@ export default function Page() {
         <div className="flex flex-col gap-8">
           {/* Logo Section */}
           <div className="flex flex-col items-center gap-2">
-            <div className="w-16 h-16 premium-gradient rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/20 mb-2">
-              <Music className="w-8 h-8 text-white" />
+            <div className="w-16 h-16 premium-gradient rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/20 mb-2 overflow-hidden">
+               <NextImage src="/logo.png" alt="Logo" width={64} height={64} className="object-cover" />
             </div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-[#003d5c]">Simple Music</h1>
-            <p className="text-muted-foreground text-sm font-medium">Elevating your audio experience</p>
+            <h1 className="text-3xl font-extrabold tracking-tight text-[#003d5c]">Captiv8 Music</h1>
+            <p className="text-muted-foreground text-sm font-medium">Elevating your strategic impact</p>
           </div>
 
           <Card className="glass border-white/40 shadow-2xl rounded-3xl overflow-hidden">

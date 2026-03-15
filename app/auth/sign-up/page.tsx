@@ -14,7 +14,8 @@ import { Label } from '@/components/ui/label'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { Music, ArrowRight, Sparkles, User, Mail, Lock, UserCheck, ShieldCheck } from 'lucide-react'
+import NextImage from 'next/image'
+import { Music, ArrowRight, Sparkles, User, Mail, Lock, UserCheck, ShieldCheck, Share2 } from 'lucide-react'
 
 export default function Page() {
   const [email, setEmail] = useState('')
@@ -79,11 +80,11 @@ export default function Page() {
         <div className="flex flex-col gap-8">
           {/* Logo Section */}
           <div className="flex flex-col items-center gap-2">
-            <div className="w-16 h-16 premium-gradient rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/20 mb-2">
-              <Music className="w-8 h-8 text-white" />
+            <div className="w-16 h-16 premium-gradient rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/20 mb-2 overflow-hidden">
+               <NextImage src="/logo.png" alt="Logo" width={64} height={64} className="object-cover" />
             </div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-[#003d5c]">Simple Music</h1>
-            <p className="text-muted-foreground text-sm font-medium">Join the next wave of earners</p>
+            <h1 className="text-3xl font-extrabold tracking-tight text-[#003d5c]">Captiv8 Music</h1>
+            <p className="text-muted-foreground text-sm font-medium">Elevating your strategic impact</p>
           </div>
 
           <Card className="glass border-white/40 shadow-2xl rounded-3xl overflow-hidden">
@@ -137,6 +138,20 @@ export default function Page() {
                         required
                         value={repeatPassword}
                         onChange={(e) => setRepeatPassword(e.target.value)}
+                        className="pl-10 h-11 bg-white/50 border-white/50 focus:border-[#007CBA] transition-all rounded-xl"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="referral" className="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">Referral Code (Optional)</Label>
+                    <div className="relative">
+                       <Share2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                       <Input
+                        id="referral"
+                        type="text"
+                        placeholder="4-digit code"
+                        maxLength={4}
                         className="pl-10 h-11 bg-white/50 border-white/50 focus:border-[#007CBA] transition-all rounded-xl"
                       />
                     </div>
