@@ -14,8 +14,11 @@ export default function HomePage() {
   const { profile, isLoading: profileLoading } = useProfile()
   const { transactions, isLoading: transLoading } = useTransactions()
   const { tasks, isLoading: tasksLoading } = useTasks()
-  
-  const recentTransactions = transactions.slice(0, 3)
+  const [recentTransactions, setRecentTransactions] = useState(transactions.slice(0, 3))
+
+  useEffect(() => {
+    setRecentTransactions(transactions.slice(0, 3))
+  }, [transactions])
 
   if (profileLoading) {
     return (
@@ -55,7 +58,7 @@ export default function HomePage() {
         <div className='grid grid-cols-1 gap-3'>
           <BalanceCard
             label='Wallet balance'
-            amount={profile?.wallet_balance || 0}
+            amount={profile?.total_earned || 0}
             icon={DollarSign}
             variant='primary'
           />
@@ -67,7 +70,7 @@ export default function HomePage() {
           />
           <BalanceCard
             label='Tasks Completed'
-            amount={profile?.completed_tasks_count || 0}
+            amount={profile?.tasks_completed || 0}
             icon={AlertCircle}
           />
         </div>
@@ -90,7 +93,7 @@ export default function HomePage() {
           <div className='flex items-center justify-between mb-3'>
             <h2 className='font-bold text-lg'>Simple Music Task</h2>
             <span className='text-xs font-semibold text-primary'>
-              {profile?.completed_tasks_count || 0} / 40
+              {profile?.tasks_completed || 0} / 40
             </span>
           </div>
 

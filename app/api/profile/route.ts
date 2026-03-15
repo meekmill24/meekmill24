@@ -28,9 +28,8 @@ export async function GET(request: NextRequest) {
         display_name: user.user_metadata?.display_name || 'User',
         email: user.email,
         level_id: null,
-        wallet_balance: 0,
         total_earned: 0,
-        completed_tasks_count: 0,
+        tasks_completed: 0,
       },
     })
   } catch (error) {

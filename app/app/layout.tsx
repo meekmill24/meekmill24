@@ -47,13 +47,9 @@ export default function AppLayout({
   }
 
   return (
-    <div className='min-h-screen bg-[#fafafa] dark:bg-black flex justify-center'>
-      <div className='w-full max-w-md lg:max-w-4xl relative pb-24 bg-white dark:bg-zinc-950 shadow-sm border-x border-border/50'>
-        {children}
-        <div className="flex justify-center">
-           <BottomNav />
-        </div>
-      </div>
+    <div className='relative pb-24'>
+      {children}
+      <BottomNav />
     </div>
   )
 }

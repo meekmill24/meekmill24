@@ -16,8 +16,8 @@ export function BottomNav({ active = 'home' }: BottomNavProps) {
   ]
 
   return (
-    <nav className='fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md lg:max-w-4xl bg-white/80 dark:bg-black/80 backdrop-blur-lg border-t border-border px-4 py-3 z-40 transform-gpu'>
-      <div className='flex items-center justify-between gap-2'>
+    <nav className='fixed bottom-0 left-0 right-0 bg-background border-t border-border px-4 py-3 z-40'>
+      <div className='flex items-center justify-between max-w-full gap-2'>
         {navItems.map((item) => {
           const Icon = item.icon
           if (item.isCenter) {
