@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useCurrency } from '@/context/CurrencyContext';
-import { useProfile } from '@/hooks/use-profile';
+import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import Image from 'next/image';
@@ -25,7 +25,7 @@ import Image from 'next/image';
 export default function WithdrawPage() {
     const router = useRouter();
     const { format } = useCurrency();
-    const { profile, mutate } = useProfile();
+    const { profile, mutate } = useAuth();
     const [amount, setAmount] = useState('');
     const [walletAddress, setWalletAddress] = useState('');
 
