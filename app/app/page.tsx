@@ -85,7 +85,7 @@ export default function HomePage() {
       {/* Background Image (behind cards) */}
       <div className='fixed inset-0 z-0 opacity-20 pointer-events-none'>
         <Image 
-            src="/hero-bg.png" 
+            src="/strategic_hub_bg.png" 
             alt="Background" 
             fill 
             className="object-cover blur-3xl scale-110"
@@ -128,7 +128,7 @@ export default function HomePage() {
                 {/* Background Image Banner */}
                 <div className='absolute inset-0 z-0 opacity-40 group-hover:scale-105 transition-transform duration-1000'>
                     <Image 
-                        src="/hero-bg.png" 
+                        src="/strategic_hub_bg.png" 
                         alt="Background" 
                         fill 
                         className="object-cover"
