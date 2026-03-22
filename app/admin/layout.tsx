@@ -81,10 +81,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Mobile Menu Toggle */}
       <button 
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="lg:hidden fixed top-4 right-4 z-50 p-2 bg-purple-600 rounded-lg shadow-lg"
+        className="lg:hidden fixed top-[76px] left-6 z-50 p-3 bg-purple-600/90 backdrop-blur-md rounded-2xl shadow-2xl border border-white/20 transition-all duration-300 hover:scale-110 active:scale-95 text-white"
       >
-        {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
+        {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
       </button>
+
+      {/* Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-30 animate-in fade-in duration-300"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
 
       {/* Sidebar */}
       <aside className={`
