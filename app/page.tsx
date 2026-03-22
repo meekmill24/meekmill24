@@ -19,7 +19,11 @@ import {
   Trophy,
   Menu,
   X,
-  Play
+  Play,
+  Star,
+  Quote,
+  Layers,
+  Activity
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -31,6 +35,25 @@ export default function LandingPage() {
     { label: 'GLOBAL NODES', value: '1.2M+', icon: Globe, color: 'text-cyan-400', bg: 'bg-cyan-500/10' },
     { label: 'LIQUIDITY FLOW', value: '$840M+', icon: TrendingUp, color: 'text-purple-400', bg: 'bg-purple-500/10' },
     { label: 'VERIFIED AGENTS', value: '124K+', icon: Users, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+  ];
+
+  const operationalSteps = [
+    { id: '01', title: 'NODE REGISTRY', desc: 'Secure your unique institutional agent ID and activate your terminal.', icon: Lock },
+    { id: '02', title: 'ASSET DEPLOY', desc: 'Settle liquidity into your personal vault to invoke yield-optimization protocols.', icon: Zap },
+    { id: '03', title: 'YIELD HARVEST', desc: 'Execute daily node tasks to audit assets and harvest institutional gains.', icon: TrendingUp }
+  ];
+
+  const tiers = [
+    { name: 'JUNIOR NODE', price: '100', yield: '0.5%', tasks: '40', color: 'cyan' },
+    { name: 'ASSOCIATE NODE', price: '500', yield: '1.2%', tasks: '45', color: 'purple' },
+    { name: 'EXECUTIVE NODE', price: '2,500', yield: '1.8%', tasks: '50', color: 'emerald' },
+    { name: 'INSTITUTIONAL HUB', price: '10,000', yield: '2.5%', tasks: '60', color: 'rose' }
+  ];
+
+  const testimonials = [
+    { name: 'Aleksey Volkov', role: 'Elite Agent Hub 4', text: 'The protocol stability in V2.4 is unmatched. Yield synchronization is instantaneous.', avatar: '/avatar-1.png' },
+    { name: 'Sarah Chen', role: 'Liquidity Auditor', text: 'Absolute high-fidelity terminal aesthetics coupled with professional settlement logic.', avatar: '/avatar-2.png' },
+    { name: 'Marcus Thorne', role: 'Strategic Node Lead', text: 'Optimizing $50k+ daily via the Institutional Hub. Captiv8 is the definitive matrix.', avatar: '/avatar-3.png' }
   ];
 
   const features = [
@@ -114,12 +137,6 @@ export default function LandingPage() {
       <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-cyan-600/10 blur-[160px] rounded-full animate-pulse" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-600/10 blur-[160px] rounded-full animate-pulse delay-1000" />
-        
-        {/* Animated Globe/Mesh Placeholder Background */}
-        <div className="absolute top-1/2 right-[-20%] w-[80%] h-[80%] opacity-20 group">
-             <div className="absolute inset-0 bg-gradient-to-tr from-cyan-500/20 to-transparent rounded-full animate-[spin_60s_linear_infinite]" />
-             <div className="absolute inset-4 border border-cyan-500/10 rounded-full animate-[spin_40s_linear_infinite_reverse]" />
-        </div>
       </div>
 
       <div className="relative z-10">
@@ -135,9 +152,10 @@ export default function LandingPage() {
           </div>
           
           <div className="hidden lg:flex items-center gap-10 text-[11px] font-black uppercase tracking-[0.4em] text-slate-400">
-            <Link href="#features" className="hover:text-cyan-400 transition-colors">NODE PROTOCOL</Link>
-            <Link href="#stats" className="hover:text-cyan-400 transition-colors">NETWORK MESH</Link>
-            <Link href="#security" className="hover:text-cyan-400 transition-colors">LEDGER SECURITY</Link>
+            <Link href="#how-it-works" className="hover:text-cyan-400 transition-colors">PROTOCOL</Link>
+            <Link href="#tiers" className="hover:text-cyan-400 transition-colors">TIERS</Link>
+            <Link href="#testimonials" className="hover:text-cyan-400 transition-colors">AGENTS</Link>
+            <Link href="#features" className="hover:text-cyan-400 transition-colors">SECURITY</Link>
           </div>
 
           <div className="flex items-center gap-4">
@@ -158,17 +176,17 @@ export default function LandingPage() {
         {/* Mobile Nav Overlay */}
         <div className={`fixed inset-0 z-[60] bg-slate-950/95 backdrop-blur-3xl lg:hidden transition-all duration-700 ${isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
           <div className="flex flex-col items-center justify-center h-full gap-12">
-            {['NODE PROTOCOL', 'NETWORK MESH', 'LEDGER SECURITY'].map((item, i) => (
-                <Link key={i} href={`#${item.split(' ')[0].toLowerCase()}`} onClick={() => setIsMenuOpen(false)} className="text-4xl font-black italic tracking-tighter uppercase text-white/40 hover:text-cyan-400 transition-colors">{item}</Link>
+            {['PROTOCOL', 'TIERS', 'AGENTS', 'SECURITY'].map((item, i) => (
+                <Link key={i} href={`#${item.toLowerCase().replace(/ /g, '-')}`} onClick={() => setIsMenuOpen(false)} className="text-4xl font-black italic tracking-tighter uppercase text-white/40 hover:text-cyan-400 transition-colors">{item}</Link>
             ))}
             <Link href="/auth/login" onClick={() => setIsMenuOpen(false)}>
-              <button className="px-16 py-6 bg-cyan-500 text-slate-950 rounded-[32px] font-black text-sm uppercase tracking-[0.4em] shadow-3xl">ACCESS HUB</button>
+              <button className="px-16 py-6 bg-cyan-500 text-slate-950 rounded-[32px] font-black text-sm uppercase tracking-[0.4em]">ACCESS HUB</button>
             </Link>
           </div>
         </div>
 
         {/* Hero Hub - Institutional Split */}
-        <section className="relative pt-12 lg:pt-24 pb-40 px-8 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-20">
+        <section className="relative pt-12 lg:pt-24 pb-32 px-8 max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-20">
           {/* Left Node: Content */}
           <div className="flex-1 text-center lg:text-left">
             <div className="hero-text inline-flex items-center gap-3 px-5 py-2.5 bg-cyan-500/10 border border-cyan-500/20 rounded-full text-[10px] font-black uppercase tracking-[0.4em] text-cyan-400 mb-10">
@@ -194,9 +212,6 @@ export default function LandingPage() {
                   INITIATE SESSION <Play size={18} fill="currentColor" />
                 </button>
               </Link>
-              <button className="w-full sm:w-auto text-[11px] font-black uppercase tracking-[0.5em] text-cyan-400 hover:text-white transition-all underline underline-offset-8 decoration-cyan-500/40">
-                AUDIT NETWORK PROTOCOL
-              </button>
             </div>
           </div>
 
@@ -206,12 +221,8 @@ export default function LandingPage() {
                 {stats.map((stat, i) => (
                     <motion.div 
                         key={i}
-                        whileHover={{ x: 20, scale: 1.02 }}
                         className="bg-slate-900/60 backdrop-blur-3xl border border-white/10 p-10 rounded-[48px] shadow-3xl flex items-center gap-10 group cursor-pointer relative overflow-hidden"
                     >
-                        <div className="absolute top-0 right-0 p-10 opacity-[0.03] group-hover:opacity-10 transition-opacity">
-                             <stat.icon size={120} />
-                        </div>
                         <div className={cn("w-20 h-20 rounded-[28px] flex items-center justify-center shadow-2xl transition-all group-hover:rotate-6", stat.bg, stat.color)}>
                             <stat.icon size={36} strokeWidth={2.5} />
                         </div>
@@ -221,44 +232,110 @@ export default function LandingPage() {
                         </div>
                     </motion.div>
                 ))}
-                
-                {/* Decorative Elements */}
-                <div className="absolute -top-10 -right-10 w-64 h-64 bg-cyan-500/10 blur-[100px] -z-10" />
-                <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-indigo-500/10 blur-[100px] -z-10" />
              </div>
           </div>
         </section>
 
-        {/* Detailed Stats Segment */}
-        <section id="stats" className="px-8 pb-40 max-w-7xl mx-auto border-t border-white/5 pt-32">
-            <div className="flex flex-col md:flex-row items-baseline justify-between gap-6 mb-20">
-                 <h2 className="text-5xl font-black italic tracking-tighter uppercase">NETWORK DENSITY</h2>
-                 <p className="text-slate-500 text-xs font-black uppercase tracking-[0.5em]">Global Operational Matrix Status: OPTIMIZED</p>
+        {/* How it Works - Operational Path */}
+        <section id="how-it-works" className="px-8 py-32 max-w-7xl mx-auto">
+            <div className="text-center mb-24">
+                 <h2 className="text-5xl font-black italic tracking-tighter uppercase mb-4">PROTOCOL DEPLOYMENT</h2>
+                 <p className="text-slate-500 text-xs font-black uppercase tracking-[0.6em]">Three Stages of Institutional Acquisition</p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-                {[
-                    { label: 'Active Node Settlements', value: '412K', desc: 'Real-time optimization cycles identified' },
-                    { label: 'Agent Verification', value: '99.9%', desc: 'Multi-sig consensus protocol stability' },
-                    { label: 'Institutional Yield', value: '1.45%', desc: 'Average daily portfolio optimization' },
-                ].map((item, i) => (
-                    <div key={i} className="reveal-stat p-10 rounded-[40px] bg-white/[0.02] border border-white/5 group hover:bg-white/[0.04] transition-all">
-                        <h4 className="text-5xl font-black italic tracking-tighter text-white mb-4 group-hover:text-cyan-400 transition-colors">{item.value}</h4>
-                        <p className="text-[11px] font-black uppercase tracking-[0.3em] text-white/60 mb-2">{item.label}</p>
-                        <p className="text-[10px] font-medium italic text-slate-500">{item.desc}</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+                {/* Connecting Line */}
+                <div className="hidden md:block absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent -translate-y-1/2 z-0" />
+                
+                {operationalSteps.map((step, i) => (
+                    <div key={i} className="relative z-10 bg-slate-950/40 backdrop-blur-2xl border border-white/5 p-12 rounded-[56px] text-center hover:border-cyan-500/20 transition-all group">
+                        <span className="text-[100px] font-black italic text-white/5 absolute -top-8 left-1/2 -translate-x-1/2 group-hover:text-cyan-500/10 transition-colors">{step.id}</span>
+                        <div className="w-20 h-20 rounded-[28px] bg-cyan-500/10 flex items-center justify-center text-cyan-400 mx-auto mb-10 shadow-3xl group-hover:scale-110 transition-transform">
+                             <step.icon size={36} />
+                        </div>
+                        <h4 className="text-2xl font-black italic tracking-tighter uppercase mb-6">{step.title}</h4>
+                        <p className="text-sm font-medium text-slate-500 italic leading-relaxed">{step.desc}</p>
                     </div>
                 ))}
             </div>
         </section>
 
-        {/* Feature Grid */}
+        {/* Node Tiers - VIP SECTION */}
+        <section id="tiers" className="px-8 py-32 bg-slate-950/40 border-y border-white/5">
+            <div className="max-w-7xl mx-auto">
+                <div className="flex flex-col lg:flex-row items-baseline justify-between gap-8 mb-24">
+                    <div>
+                        <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter uppercase leading-none mb-4">VERIFIED NODES</h2>
+                        <p className="text-cyan-400 text-xs font-black uppercase tracking-[0.5em]">INSTITUTIONAL GRADE YIELD TIERS</p>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    {tiers.map((tier, i) => (
+                        <div key={i} className="bg-slate-900/60 backdrop-blur-3xl border border-white/10 p-10 rounded-[48px] shadow-3xl flex flex-col group hover:scale-[1.02] transition-all">
+                            <h5 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-2">{tier.name}</h5>
+                            <h3 className="text-5xl font-black italic tracking-tighter mb-10">${tier.price}</h3>
+                            
+                            <div className="space-y-6 mb-12">
+                                <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">YIELD RATE</span>
+                                    <span className="text-xl font-bold italic text-cyan-400">{tier.yield}</span>
+                                </div>
+                                <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">DAILY UNITS</span>
+                                    <span className="text-xl font-bold italic text-white">{tier.tasks}</span>
+                                </div>
+                            </div>
+
+                            <Link href="/auth/login" className="mt-auto">
+                                <button className="w-full py-5 rounded-[24px] bg-white/5 border border-white/10 font-black text-[10px] tracking-widest uppercase hover:bg-white hover:text-slate-950 transition-all">
+                                    INVOKE TIER
+                                </button>
+                            </Link>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </section>
+
+        {/* Testimonials - Agent Feedback */}
+        <section id="testimonials" className="px-8 py-32 max-w-7xl mx-auto">
+            <div className="text-center mb-24">
+                 <h2 className="text-5xl font-black italic tracking-tighter uppercase mb-4">AGENT REGISTRY</h2>
+                 <p className="text-slate-500 text-xs font-black uppercase tracking-[0.6em]">Verified Global Feedback Loops</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {testimonials.map((t, i) => (
+                    <div key={i} className="bg-slate-900/40 border border-white/5 p-12 rounded-[56px] relative group">
+                        <Quote className="absolute top-8 right-8 text-cyan-500/10 group-hover:text-cyan-400/20 transition-colors" size={60} />
+                        <div className="flex items-center gap-4 mb-8">
+                            <div className="w-14 h-14 rounded-2xl bg-cyan-500/20 border border-cyan-500/20 flex items-center justify-center p-1 overflow-hidden">
+                                <Activity className="text-cyan-400" />
+                            </div>
+                            <div>
+                                <h5 className="font-black italic uppercase tracking-tighter text-white">{t.name}</h5>
+                                <p className="text-[9px] font-black uppercase tracking-widest text-cyan-500/60">{t.role}</p>
+                            </div>
+                        </div>
+                        <p className="text-slate-400 text-lg italic leading-relaxed">"{t.text}"</p>
+                        
+                        <div className="mt-10 flex items-center gap-1">
+                            {[1,2,3,4,5].map(s => <Star key={s} size={10} fill="currentColor" className="text-cyan-400" />)}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </section>
+
+        {/* Feature Grid - Security */}
         <section id="features" className="px-8 pb-40 max-w-7xl mx-auto">
           <div className="bg-slate-900/40 backdrop-blur-3xl rounded-[64px] border border-white/5 p-12 md:p-24">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
                 <div>
                     <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter uppercase leading-none mb-10">
-                        ELITE NODE <br />
-                        <span className="text-cyan-500">SPECIFICATIONS</span>
+                        LEDGER <br />
+                        <span className="text-cyan-500">CONSENSUS</span>
                     </h2>
                     <p className="text-slate-400 text-lg italic mb-12 leading-relaxed">
                         Every Captiv8 Agent Node is equipped with specialized institutional protocols designed for maximum yield efficiency and global settlement speed.
@@ -279,43 +356,12 @@ export default function LandingPage() {
                 </div>
                 
                 <div className="relative">
-                    <div className="absolute inset-0 bg-gradient-to-tr from-cyan-600 to-indigo-600 blur-[120px] opacity-20" />
                     <div className="relative rounded-[56px] border border-white/10 overflow-hidden shadow-3xl bg-slate-950 aspect-square flex items-center justify-center p-12">
                          <div className="w-full h-full border-2 border-dashed border-cyan-500/20 rounded-full animate-[spin_20s_linear_infinite] flex items-center justify-center p-20">
-                             <div className="w-full h-full border border-cyan-500/40 rounded-full animate-[ping_3s_cubic-bezier(0,0,0.2,1)_infinite] bg-cyan-500/5 shadow-[0_0_100px_rgba(6,182,212,0.2)]" />
+                             <ShieldCheck className="text-cyan-500" size={120} strokeWidth={1} />
                          </div>
-                         <ShieldCheck className="absolute text-cyan-500" size={120} strokeWidth={1} />
                     </div>
                 </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Security / CTA Hub */}
-        <section id="security" className="px-8 pb-40">
-          <div className="max-w-5xl mx-auto bg-gradient-to-tr from-slate-900 to-slate-950 rounded-[64px] border border-white/5 p-12 md:p-24 text-center relative overflow-hidden shadow-3xl group">
-            <div className="absolute top-[-20%] right-[-20%] w-[60%] h-[60%] bg-cyan-600/10 blur-[120px] rounded-full group-hover:bg-cyan-600/20 transition-all duration-1000" />
-            
-            <div className="relative z-10">
-              <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter uppercase leading-[0.9] mb-8">
-                READY TO <br />
-                <span className="text-cyan-500">OPTIMIZE?</span>
-              </h2>
-              <p className="max-w-2xl mx-auto text-slate-400 text-xl font-medium mb-12 italic leading-relaxed">
-                Join 124,000+ specialized agents optimizing the global digital economy. Your institutional grade yield node is ready for initiation.
-              </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
-                <Link href="/auth/login" className="w-full sm:w-auto">
-                    <button className="w-full sm:w-auto px-16 py-6 bg-cyan-500 text-slate-950 rounded-[32px] font-black text-sm uppercase tracking-[0.4em] shadow-[0_20px_60px_rgba(6,182,212,0.4)] hover:bg-cyan-400 active:scale-95 transition-all">
-                        INITIATE NODE
-                    </button>
-                </Link>
-                <Link href="/auth/login" className="w-full sm:w-auto">
-                    <button className="w-full sm:w-auto px-16 py-6 bg-white/5 border border-white/10 text-white rounded-[32px] font-black text-sm uppercase tracking-[0.4em] hover:bg-white/10 transition-all">
-                        AUDIT TERMINAL
-                    </button>
-                </Link>
-              </div>
             </div>
           </div>
         </section>
@@ -330,12 +376,6 @@ export default function LandingPage() {
                 <span className="text-2xl font-black italic tracking-tighter uppercase">Captiv8 Protocol</span>
             </div>
             
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-12 text-center mb-16 opacity-40">
-                {['GOVERNANCE', 'WHITE PAPER', 'AGENT LEDGER', 'SUPPORT HUB'].map((link, i) => (
-                    <span key={i} className="text-[10px] font-black uppercase tracking-[0.5em] hover:text-white cursor-pointer transition-colors">{link}</span>
-                ))}
-            </div>
-
             <p className="text-slate-600 text-[11px] font-black uppercase tracking-[0.5em] italic">
                © 2026 GLOBAL INSTITUTIONAL DISTRIBUTION MATRIX. ALL RIGHTS RESERVED.
             </p>
