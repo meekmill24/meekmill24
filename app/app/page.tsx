@@ -43,6 +43,7 @@ export default function HomePage() {
   const { format } = useCurrency()
   const [isSpinning, setIsSpinning] = useState(false)
   const [levels, setLevels] = useState<any[]>([])
+  const [showAllLevels, setShowAllLevels] = useState(false)
 
   useEffect(() => {
     async function loadLevels() {
@@ -300,15 +301,23 @@ export default function HomePage() {
             </div>
         </div>
 
-        {/* VIP Tiers - COMPACT NODES AS REQUESTED */}
+        {/* VIP Tiers - COMPACT NODES WITH EXPAND (RESTORED) */}
         <div id="tiers" className='px-6 mb-20'>
-            <div className='flex items-center gap-4 mb-6'>
-                <div className="w-1.5 h-6 bg-purple-600 rounded-full" />
-                <h4 className='text-xl font-black tracking-tight uppercase italic'>Verified Nodes</h4>
+            <div className='flex items-center justify-between gap-4 mb-6'>
+                <div className="flex items-center gap-4">
+                    <div className="w-1.5 h-6 bg-purple-600 rounded-full" />
+                    <h4 className='text-xl font-black tracking-tight uppercase italic'>Verified Nodes</h4>
+                </div>
+                <button 
+                    onClick={() => setShowAllLevels(!showAllLevels)}
+                    className="text-[9px] font-black uppercase tracking-[0.2em] text-cyan-400 hover:text-white transition-all flex items-center gap-2"
+                >
+                    {showAllLevels ? 'COMPRESS' : 'VIEW ALL'} <ChevronDown className={cn("w-4 h-4 transition-transform", showAllLevels && "rotate-180")} />
+                </button>
             </div>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8'>
-            {levels.slice(0, 2).map((level, idx) => (
-                <div key={idx} className='w-full rounded-[32px] md:rounded-[48px] p-6 md:p-10 bg-zinc-900/60 backdrop-blur-3xl border border-white/10 relative group overflow-hidden shadow-3xl hover:border-cyan-500/30 transition-all'>
+            {(showAllLevels ? levels : levels.slice(0, 2)).map((level, idx) => (
+                <div key={idx} className='w-full rounded-[32px] md:rounded-[48px] p-6 md:p-10 bg-zinc-900/60 backdrop-blur-3xl border border-white/10 relative group overflow-hidden shadow-3xl hover:border-cyan-500/30 transition-all animate-in fade-in slide-in-from-bottom-4 duration-500' style={{ animationDelay: `${idx * 50}ms` }}>
                     <div className='absolute -right-12 -top-12 w-48 h-48 bg-cyan-500/5 rounded-full blur-[80px]' />
                     <h5 className='text-[8px] md:text-[10px] font-black text-cyan-400 uppercase tracking-widest mb-1 opacity-60'>{level.name}</h5>
                     <p className='text-3xl md:text-5xl font-black italic tracking-tighter mb-4 md:mb-8'>$ {level.id === 1 ? '100' : level.id === 2 ? '500' : Number(level.price).toLocaleString()}</p>
