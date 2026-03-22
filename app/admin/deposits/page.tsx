@@ -60,25 +60,25 @@ export default function AdminDepositsPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="text-left text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] border-b border-slate-800">
-                <th className="px-8 py-6">Timestamp / ID</th>
-                <th className="px-8 py-6">Beneficiary</th>
-                <th className="px-8 py-6 font-bold text-white">Amount</th>
-                <th className="px-8 py-6">Evidence</th>
-                <th className="px-8 py-6">Current Status</th>
-                <th className="px-8 py-6 text-right">Verification</th>
+                <th className="px-4 md:px-8 py-6">Timestamp / ID</th>
+                <th className="px-4 md:px-8 py-6">Beneficiary</th>
+                <th className="px-4 md:px-8 py-6 font-bold text-white">Amount</th>
+                <th className="px-4 md:px-8 py-6">Evidence</th>
+                <th className="px-4 md:px-8 py-6">Current Status</th>
+                <th className="px-4 md:px-8 py-6 text-right">Verification</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/50">
               {deposits.map((dep) => (
                 <tr key={dep.id} className="hover:bg-slate-800/20 transition-colors group">
-                  <td className="px-8 py-6 text-slate-500 font-mono text-xs">
+                  <td className="px-4 md:px-8 py-6 text-slate-500 font-mono text-xs">
                     <div className="flex items-center gap-2">
                        <Clock size={12} className="text-slate-700" />
                        {new Date(dep.created_at).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
                     </div>
                     <div className="mt-1 text-[10px] opacity-30">TXN-{dep.id.toString().padStart(6, '0')}</div>
                   </td>
-                  <td className="px-8 py-6">
+                  <td className="px-4 md:px-8 py-6">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400">
                         <UserIcon size={14} />
@@ -89,10 +89,10 @@ export default function AdminDepositsPage() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-8 py-6 font-black text-white text-lg italic tracking-tight">
+                  <td className="px-4 md:px-8 py-6 font-black text-white text-lg italic tracking-tight">
                     ${dep.amount.toLocaleString()}
                   </td>
-                  <td className="px-8 py-6">
+                  <td className="px-4 md:px-8 py-6">
                     {dep.proof_url ? (
                       <a 
                         href={dep.proof_url} 
@@ -107,7 +107,7 @@ export default function AdminDepositsPage() {
                       <span className="text-slate-700 text-[10px] italic font-medium">No proof uploaded</span>
                     )}
                   </td>
-                  <td className="px-8 py-6">
+                  <td className="px-4 md:px-8 py-6">
                     <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${
                       dep.status === 'approved' ? 'bg-green-500/10 text-green-500 border-green-500/20' : 
                       dep.status === 'pending' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20 animate-pulse' : 
@@ -116,7 +116,7 @@ export default function AdminDepositsPage() {
                       {dep.status}
                     </span>
                   </td>
-                  <td className="px-8 py-6 text-right">
+                  <td className="px-4 md:px-8 py-6 text-right">
                     {dep.status === 'pending' ? (
                       <div className="flex items-center justify-end gap-3">
                         <button 

@@ -65,24 +65,24 @@ export default function AdminWithdrawalsPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="text-left text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] border-b border-slate-800">
-                <th className="px-8 py-6">Timestamp / ID</th>
-                <th className="px-8 py-6">Beneficiary & Destination Node</th>
-                <th className="px-8 py-6 font-bold text-white">Quantum</th>
-                <th className="px-8 py-6">Status</th>
-                <th className="px-8 py-6 text-right">Approval Cycle</th>
+                <th className="px-4 md:px-8 py-6">Timestamp / ID</th>
+                <th className="px-4 md:px-8 py-6">Beneficiary & Destination Node</th>
+                <th className="px-4 md:px-8 py-6 font-bold text-white">Quantum</th>
+                <th className="px-4 md:px-8 py-6">Status</th>
+                <th className="px-4 md:px-8 py-6 text-right">Approval Cycle</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/50">
               {withdrawals.map((withd) => (
                 <tr key={withd.id} className="hover:bg-slate-800/20 transition-colors group">
-                  <td className="px-8 py-6 text-slate-500 font-mono text-xs">
+                  <td className="px-4 md:px-8 py-6 text-slate-500 font-mono text-xs">
                     <div className="flex items-center gap-2">
                        <Clock size={12} className="text-slate-700" />
                        {new Date(withd.created_at).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
                     </div>
                     <div className="mt-1 text-[10px] opacity-30">OUT-{withd.id.toString().padStart(6, '0')}</div>
                   </td>
-                  <td className="px-8 py-6">
+                  <td className="px-4 md:px-8 py-6">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-400">
                         <UserIcon size={14} />
@@ -100,10 +100,10 @@ export default function AdminWithdrawalsPage() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-8 py-6 font-black text-rose-500 text-lg italic tracking-tight">
+                  <td className="px-4 md:px-8 py-6 font-black text-rose-500 text-lg italic tracking-tight">
                     ${withd.amount.toLocaleString()}
                   </td>
-                  <td className="px-8 py-6">
+                  <td className="px-4 md:px-8 py-6">
                     <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${
                       withd.status === 'approved' ? 'bg-green-500/10 text-green-500 border-green-500/20' : 
                       withd.status === 'pending' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20 animate-pulse' : 
@@ -112,7 +112,7 @@ export default function AdminWithdrawalsPage() {
                       {withd.status}
                     </span>
                   </td>
-                  <td className="px-8 py-6 text-right">
+                  <td className="px-4 md:px-8 py-6 text-right">
                     {withd.status === 'pending' ? (
                       <div className="flex items-center justify-end gap-3">
                         <button 

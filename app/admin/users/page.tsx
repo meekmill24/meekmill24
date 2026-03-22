@@ -132,17 +132,17 @@ export default function AdminUsersPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="text-left text-slate-600 text-[9px] font-black uppercase tracking-[0.3em] border-b border-slate-800 bg-white/[0.02]">
-                <th className="px-8 py-6">IDENTIFIER</th>
-                <th className="px-8 py-6">CONTACT PROTOCOL</th>
-                <th className="px-8 py-6">AUTHORIZATION</th>
-                <th className="px-8 py-6">PORTFOLIO & CAPITAL</th>
-                <th className="px-8 py-6 text-right">ACTION</th>
+                <th className="px-4 md:px-8 py-6">IDENTIFIER</th>
+                <th className="px-4 md:px-8 py-6">CONTACT PROTOCOL</th>
+                <th className="px-4 md:px-8 py-6">AUTHORIZATION</th>
+                <th className="px-4 md:px-8 py-6">PORTFOLIO & CAPITAL</th>
+                <th className="px-4 md:px-8 py-6 text-right">ACTION</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/50">
               {filteredUsers.map((user) => (
                 <tr key={user.id} className="hover:bg-white/[0.01] transition-colors group relative">
-                  <td className="px-8 py-6">
+                  <td className="px-4 md:px-8 py-6">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-800 flex items-center justify-center text-white font-black italic shadow-inner">
                         {user.username?.[0]?.toUpperCase()}
@@ -164,7 +164,7 @@ export default function AdminUsersPage() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-8 py-6">
+                  <td className="px-4 md:px-8 py-6">
                     <div className="space-y-1.5">
                       <div className="flex items-center gap-2 text-slate-400">
                         <Mail size={12} className="text-slate-700" />
@@ -176,7 +176,7 @@ export default function AdminUsersPage() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-8 py-6">
+                  <td className="px-4 md:px-8 py-6">
                     <div className="flex flex-col gap-2">
                       <div className="flex items-center gap-2">
                         {user.role === 'admin' ? (
@@ -207,7 +207,7 @@ export default function AdminUsersPage() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-8 py-6">
+                  <td className="px-4 md:px-8 py-6">
                     <div className="space-y-2">
                         {editingId === user.id ? (
                           <div className="flex flex-col gap-2">
@@ -256,7 +256,7 @@ export default function AdminUsersPage() {
                         )}
                     </div>
                   </td>
-                  <td className="px-4 md:px-8 py-6 text-right">
+                  <td className="px-4 md:px-4 md:px-8 py-6 text-right">
                     <div className="flex items-center justify-end gap-3 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
                       {editingId === user.id ? (
                         <>
