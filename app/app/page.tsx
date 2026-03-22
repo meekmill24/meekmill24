@@ -104,33 +104,33 @@ export default function HomePage() {
             </div>
         </div>
 
-        {/* Floating Quick-Nav Hub (Mobile Only) */}
-        <div id="quick-nav-hub" className="fixed bottom-28 right-6 z-[100] md:hidden">
+        {/* Floating Quick-Nav Hub (Mobile Only - Relocated to Left) */}
+        <div id="quick-nav-hub" className="fixed top-[84px] left-6 z-[100] md:hidden">
             <button 
                 onClick={() => setIsSpinning(!isSpinning)}
-                className="w-16 h-16 rounded-full bg-gradient-to-tr from-cyan-600 to-indigo-600 flex items-center justify-center text-white shadow-[0_20px_40px_rgba(6,182,212,0.4)] border-2 border-white/20 active:scale-90 transition-all"
+                className="w-14 h-14 rounded-2xl bg-black/60 backdrop-blur-3xl flex items-center justify-center text-cyan-400 shadow-[0_10px_30px_rgba(0,0,0,0.5)] border border-white/10 active:scale-95 transition-all group"
             >
-                {isSpinning ? <CloseIcon size={28} /> : <Grid size={28} />}
+                {isSpinning ? <CloseIcon size={24} /> : <MenuIcon size={24} className="group-hover:scale-110 transition-transform" />}
             </button>
             
             {isSpinning && (
-                <div className="absolute bottom-24 right-0 bg-black/90 backdrop-blur-3xl border border-white/10 rounded-[40px] p-6 w-56 shadow-3xl animate-in fade-in zoom-in-95 duration-200">
+                <div className="absolute top-18 left-0 bg-black/90 backdrop-blur-3xl border border-white/10 rounded-[32px] p-6 w-56 shadow-3xl animate-in slide-in-from-top-4 duration-200">
                     <div className="flex flex-col gap-5">
                         <Link href="#profile" onClick={() => setIsSpinning(false)} className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
-                            <div className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center border border-white/5"><User size={16} /></div>
-                            Profile
+                            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/5"><User size={16} /></div>
+                            Operational Hub
                         </Link>
                         <Link href="#stats-grid" onClick={() => setIsSpinning(false)} className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
-                            <div className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center border border-white/5"><TrendingUp size={16} /></div>
-                            Metrics
+                            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/5"><TrendingUp size={16} /></div>
+                            Terminal Stats
                         </Link>
                         <Link href="#financial-hub" onClick={() => setIsSpinning(false)} className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
-                            <div className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center border border-white/5"><Zap size={16} /></div>
-                            Finance
+                            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/5"><Zap size={16} /></div>
+                            Asset Flow
                         </Link>
                         <Link href="#tiers" onClick={() => setIsSpinning(false)} className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
-                            <div className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center border border-white/5"><Trophy size={16} /></div>
-                            VIP Tiers
+                            <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/5"><Trophy size={16} /></div>
+                            Node Tiers
                         </Link>
                     </div>
                 </div>
@@ -210,55 +210,66 @@ export default function HomePage() {
                     ))}
                 </div>
 
-                {/* Stats Grid - REDUCED INNER CARDS AS REQUESTED */}
-                <div id="stats-grid" className='grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4 p-4 md:p-8 relative z-10'>
-                    {/* Available Balance */}
-                    <div className='bg-black/40 backdrop-blur-md rounded-[24px] p-5 md:p-8 border border-white/5 hover:bg-black/60 transition-all duration-500 group/card shadow-2xl relative overflow-hidden h-full'>
-                        <p className='text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-2'>Available</p>
-                        <div className='flex items-baseline gap-1 md:gap-2 mb-4'>
-                            <span className='text-zinc-600 font-bold text-lg md:text-2xl'>$</span>
-                            <h1 className='text-2xl md:text-4xl font-black italic tracking-tighter text-white drop-shadow-2xl'>
-                                {profile?.wallet_balance?.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                            </h1>
+                {/* Stats Grid - OPTIMIZED FOR LARGE SCREENS AS REQUESTED */}
+                <div id="stats-grid" className='grid grid-cols-2 lg:grid-cols-5 gap-2 md:gap-4 p-4 md:p-8 relative z-10'>
+                    {/* Available Balance - PROMINENT MASTER POSITION ON DESKTOP */}
+                    <div className='col-span-2 lg:col-span-2 bg-gradient-to-br from-zinc-900/80 to-black/40 backdrop-blur-md rounded-[32px] p-6 md:p-10 border border-cyan-500/20 hover:border-cyan-500/40 transition-all duration-500 group/card shadow-2xl relative overflow-hidden h-full flex flex-col justify-between'>
+                        <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                             <WalletIcon size={120} className="text-cyan-400" />
                         </div>
-                        <div className='px-2 py-1 bg-cyan-500/10 border border-cyan-500/20 rounded-full flex items-center gap-1.5 w-fit'>
-                            <div className='w-1 h-1 rounded-full bg-cyan-500 animate-pulse' />
-                            <span className='text-[7px] md:text-[8px] font-black uppercase tracking-widest text-cyan-400'>SECURE</span>
+                        <div>
+                            <p className='text-[9px] md:text-[11px] font-black uppercase tracking-[0.4em] text-cyan-400 mb-2 md:mb-4 italic'>Available Registry</p>
+                            <div className='flex items-baseline gap-2 md:gap-3 mb-6'>
+                                <span className='text-zinc-600 font-bold text-2xl md:text-4xl'>$</span>
+                                <h1 className='text-3xl md:text-6xl font-black italic tracking-tighter text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.2)]'>
+                                    {profile?.wallet_balance?.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                </h1>
+                            </div>
+                        </div>
+                        <div className='inline-flex items-center gap-2 px-4 py-2 bg-cyan-500/10 border border-cyan-500/20 rounded-full w-fit group/btn hover:bg-cyan-500/20 transition-all cursor-pointer'>
+                            <div className='w-2 h-2 rounded-full bg-cyan-500 animate-pulse' />
+                            <span className='text-[8px] md:text-[10px] font-black uppercase tracking-widest text-cyan-400'>SECURE NODE</span>
                         </div>
                     </div>
 
                     {/* Today's Profit */}
-                    <div className='bg-black/40 backdrop-blur-md rounded-[24px] p-5 md:p-8 border border-white/5 hover:bg-black/60 transition-all duration-500 group/card shadow-2xl relative overflow-hidden h-full'>
-                        <p className='text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-2'>Profit</p>
-                        <div className='flex items-baseline gap-1 md:gap-2 mb-4'>
-                            <span className='text-emerald-900 font-bold text-lg md:text-2xl'>$</span>
-                            <h1 className='text-2xl md:text-4xl font-black italic tracking-tighter text-emerald-400'>
-                                {(profile?.wallet_balance * 0.0155).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                            </h1>
+                    <div className='lg:col-span-1 bg-black/40 backdrop-blur-md rounded-[24px] p-5 md:p-8 border border-white/5 hover:bg-black/60 transition-all duration-500 group/card shadow-2xl relative overflow-hidden h-full flex flex-col justify-between'>
+                        <div>
+                            <p className='text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-2'>Cycle Profit</p>
+                            <div className='flex items-baseline gap-1 md:gap-2 mb-4'>
+                                <span className='text-emerald-900 font-bold text-lg md:text-2xl'>$</span>
+                                <h1 className='text-2xl md:text-4xl font-black italic tracking-tighter text-emerald-400'>
+                                    {(profile?.wallet_balance * 0.0155).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                </h1>
+                            </div>
                         </div>
                         <div className="w-full h-1 bg-zinc-800 rounded-full overflow-hidden">
-                            <div className="h-full bg-emerald-500 w-3/4 animate-pulse" />
+                            <div className="h-full bg-emerald-500 w-3/4 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
                         </div>
                     </div>
 
                     {/* Referral Bonus */}
-                    <div className='bg-black/40 backdrop-blur-md rounded-[24px] p-5 md:p-8 border border-white/5 hover:bg-black/60 transition-all duration-500 group/card shadow-2xl relative overflow-hidden h-full'>
-                        <p className='text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-2'>Referral</p>
-                        <div className='flex items-baseline gap-1 md:gap-2 mb-4'>
-                            <span className='text-purple-900 font-bold text-lg md:text-2xl'>$</span>
-                            <h1 className='text-2xl md:text-4xl font-black italic tracking-tighter text-white'>0.00</h1>
+                    <div className='lg:col-span-1 bg-black/40 backdrop-blur-md rounded-[24px] p-5 md:p-8 border border-white/5 hover:bg-black/60 transition-all duration-500 group/card shadow-2xl relative overflow-hidden h-full flex flex-col justify-between'>
+                        <div>
+                            <p className='text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-2'>Network</p>
+                            <div className='flex items-baseline gap-1 md:gap-2 mb-4'>
+                                <span className='text-purple-900 font-bold text-lg md:text-2xl'>$</span>
+                                <h1 className='text-2xl md:text-4xl font-black italic tracking-tighter text-white'>0.00</h1>
+                            </div>
                         </div>
                         <span className='text-[7px] md:text-[8px] font-black uppercase tracking-widest text-white/20 animate-pulse tracking-[0.5em]'>READY</span>
                     </div>
 
                     {/* Task Progress */}
-                    <div className='bg-black/40 backdrop-blur-md rounded-[24px] p-5 md:p-8 border border-white/5 hover:bg-black/60 transition-all duration-500 group/card shadow-2xl relative overflow-hidden h-full'>
-                        <p className='text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-2'>Progress</p>
-                        <div className='flex items-baseline gap-1 md:gap-2 mb-4'>
-                            <h1 className='text-2xl md:text-4xl font-black italic tracking-tighter text-white'>
-                                {(profile?.completed_count || 0) % (profile?.level?.tasks_per_set || 40)}
-                            </h1>
-                            <span className="text-[10px] md:text-base text-zinc-700 font-bold">/ {profile?.level?.tasks_per_set || 40}</span>
+                    <div className='lg:col-span-1 bg-black/40 backdrop-blur-md rounded-[24px] p-5 md:p-8 border border-white/5 hover:bg-black/60 transition-all duration-500 group/card shadow-2xl relative overflow-hidden h-full flex flex-col justify-between'>
+                        <div>
+                            <p className='text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-2'>Unit cycles</p>
+                            <div className='flex items-baseline gap-1 md:gap-2 mb-4'>
+                                <h1 className='text-2xl md:text-4xl font-black italic tracking-tighter text-white'>
+                                    {(profile?.completed_count || 0) % (profile?.level?.tasks_per_set || 40)}
+                                </h1>
+                                <span className="text-[10px] md:text-base text-zinc-700 font-bold">/ {profile?.level?.tasks_per_set || 40}</span>
+                            </div>
                         </div>
                         <div className='w-full h-1 bg-white/5 rounded-full overflow-hidden'>
                             <div 
