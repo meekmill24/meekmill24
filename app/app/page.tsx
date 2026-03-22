@@ -239,7 +239,7 @@ export default function HomePage() {
                             <div className='flex items-baseline gap-1 md:gap-2 mb-4'>
                                 <span className='text-emerald-900 font-bold text-lg md:text-2xl'>$</span>
                                 <h1 className='text-2xl md:text-4xl font-black italic tracking-tighter text-emerald-400'>
-                                    {(profile?.wallet_balance * 0.0155).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                    {((profile?.wallet_balance || 0) * 0.0155).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </h1>
                             </div>
                         </div>
@@ -300,27 +300,27 @@ export default function HomePage() {
             </div>
         </div>
 
-        {/* VIP Tiers */}
+        {/* VIP Tiers - COMPACT NODES AS REQUESTED */}
         <div id="tiers" className='px-6 mb-20'>
-            <div className='flex items-center gap-4 mb-10'>
+            <div className='flex items-center gap-4 mb-6'>
                 <div className="w-1.5 h-6 bg-purple-600 rounded-full" />
                 <h4 className='text-xl font-black tracking-tight uppercase italic'>Verified Nodes</h4>
             </div>
-            <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8'>
             {levels.slice(0, 2).map((level, idx) => (
-                <div key={idx} className='w-full rounded-[48px] p-10 bg-zinc-900 border border-white/10 relative group overflow-hidden shadow-3xl hover:border-cyan-500/30 transition-all'>
+                <div key={idx} className='w-full rounded-[32px] md:rounded-[48px] p-6 md:p-10 bg-zinc-900/60 backdrop-blur-3xl border border-white/10 relative group overflow-hidden shadow-3xl hover:border-cyan-500/30 transition-all'>
                     <div className='absolute -right-12 -top-12 w-48 h-48 bg-cyan-500/5 rounded-full blur-[80px]' />
-                    <h5 className='text-xs font-black text-cyan-400 uppercase tracking-widest mb-2 opacity-60'>{level.name}</h5>
-                    <p className='text-5xl font-black italic tracking-tighter mb-8'>$ {level.id === 1 ? '100' : level.id === 2 ? '500' : Number(level.price).toLocaleString()}</p>
-                    <div className='flex items-center gap-4 mb-10'>
-                        <div className='px-3 py-1 bg-white/5 rounded-full border border-white/10 text-[9px] font-bold tracking-widest text-zinc-400 uppercase'>{(level.commission_rate * 100).toFixed(1)}% Yield</div>
-                        <div className='px-3 py-1 bg-white/5 rounded-full border border-white/10 text-[9px] font-bold tracking-widest text-zinc-400 uppercase'>{level.tasks_per_set} Units/Cycle</div>
+                    <h5 className='text-[8px] md:text-[10px] font-black text-cyan-400 uppercase tracking-widest mb-1 opacity-60'>{level.name}</h5>
+                    <p className='text-3xl md:text-5xl font-black italic tracking-tighter mb-4 md:mb-8'>$ {level.id === 1 ? '100' : level.id === 2 ? '500' : Number(level.price).toLocaleString()}</p>
+                    <div className='flex items-center gap-3 mb-6 md:mb-10'>
+                        <div className='px-2.5 py-1 bg-white/5 rounded-full border border-white/10 text-[8px] font-bold tracking-widest text-zinc-400 uppercase'>{(level.commission_rate * 100).toFixed(1)}% Yield</div>
+                        <div className='px-2.5 py-1 bg-white/5 rounded-full border border-white/10 text-[8px] font-bold tracking-widest text-zinc-400 uppercase'>{level.tasks_per_set} Units</div>
                     </div>
                     <button className={cn(
-                        'w-full py-5 rounded-3xl font-black text-[10px] tracking-widest uppercase transition-all shadow-xl active:scale-95',
+                        'w-full py-4 md:py-5 rounded-2xl md:rounded-3xl font-black text-[9px] md:text-[10px] tracking-widest uppercase transition-all shadow-xl active:scale-95',
                         Number(profile?.level_id) >= Number(level.id) ? 'bg-cyan-500 text-black hover:bg-cyan-400 shadow-cyan-500/20' : 'bg-white/5 text-white/30 border border-white/10'
                     )}>
-                        {Number(profile?.level_id) >= Number(level.id) ? 'Operational' : 'Access Restricted'}
+                        {Number(profile?.level_id) >= Number(level.id) ? 'Operational' : 'Restricted'}
                     </button>
                 </div>
             ))}
