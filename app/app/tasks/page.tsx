@@ -405,22 +405,29 @@ export default function TasksPage() {
                                     </div>
                                 </div>
                                 
-                                <div className="space-y-1">
-                                    <div className="flex items-center gap-2">
-                                        <h1 className="text-2xl md:text-3xl font-black italic tracking-tighter uppercase text-white">
-                                            {profile?.username}
-                                        </h1>
-                                        <ShieldCheck className="text-cyan-400" size={18} />
-                                    </div>
-                                    <div className="flex flex-col md:flex-row md:items-center gap-3">
-                                        <span className="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-[9px] font-black text-cyan-400 uppercase tracking-widest italic">
-                                            Level {profile?.level_id || 1}: Junior Level
-                                        </span>
-                                        <div className="hidden md:block w-1 h-1 rounded-full bg-white/20" />
-                                        <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest italic">
-                                            Node Terminal: 042-ALPHA
-                                        </span>
-                                    </div>
+                                 <div className="space-y-1">
+                                     <div className="flex items-center gap-2">
+                                         <h1 className="text-2xl md:text-3xl font-black italic tracking-tighter uppercase text-white">
+                                             {profile?.username}
+                                         </h1>
+                                         <ShieldCheck className="text-cyan-400" size={18} />
+                                     </div>
+                                     <div className="flex flex-col md:flex-row md:items-center gap-3">
+                                         <span className="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-[9px] font-black text-cyan-400 uppercase tracking-widest italic">
+                                             Level {profile?.level_id || 1}: Junior Level
+                                         </span>
+                                         <div className="flex items-center gap-2">
+                                             <div className="w-1 h-1 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                                             <span className="text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em] italic">
+                                                 Yield Node: {(commissionRate * 100).toFixed(2)}%
+                                             </span>
+                                         </div>
+                                         <div className="hidden md:block w-1 h-1 rounded-full bg-white/20" />
+                                         <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest italic leading-none">
+                                             Node Terminal: 042-ALPHA
+                                         </span>
+                                     </div>
+                                 </div>
                                 </div>
                             </div>
 
@@ -502,7 +509,6 @@ export default function TasksPage() {
                         </div>
                     </div>
                 </div>
-            </div>
 
             {/* Matrix Grid Distribution */}
             <div className="max-w-7xl mx-auto px-6 space-y-20">
@@ -598,8 +604,8 @@ export default function TasksPage() {
                             </p>
                         </div>
                     </div>
+                    </div>
                 </div>
-            </div>
 
             {/* Matching Overlay */}
             {selectedItem && isMatchingFound && (
