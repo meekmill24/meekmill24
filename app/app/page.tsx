@@ -202,7 +202,7 @@ export default function HomePage() {
                         </div>
                     </div>
 
-                    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10 px-8 pb-16'>
+                    <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 relative z-10 px-6 md:px-8 pb-16'>
                         {/* Available Balance */}
                         <div className='bg-black/60 backdrop-blur-md rounded-[32px] p-10 pb-14 border border-white/10 hover:bg-black/80 transition-all duration-500 group/card shadow-2xl overflow-hidden'>
                             <div className="absolute top-0 right-0 p-8 opacity-5">

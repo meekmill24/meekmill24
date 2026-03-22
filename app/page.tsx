@@ -1,6 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
@@ -47,6 +49,40 @@ export default function LandingPage() {
       bg: 'bg-rose-500/10'
     }
   ];
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    
+    // GSAP Reveal Animations
+    const ctx = gsap.context(() => {
+      gsap.from(".reveal-stat", {
+        y: 60,
+        opacity: 0,
+        duration: 1,
+        stagger: 0.2,
+        ease: "power4.out",
+        scrollTrigger: {
+          trigger: "#stats",
+          start: "top 80%",
+        }
+      });
+
+      gsap.from(".reveal-feature", {
+        scale: 0.9,
+        opacity: 0,
+        duration: 1.2,
+        stagger: 0.2,
+        ease: "elastic.out(1, 0.75)",
+        scrollTrigger: {
+          trigger: "#features",
+          start: "top 75%",
+        }
+      });
+    }, containerRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] text-white overflow-x-hidden selection:bg-cyan-500/30 selection:text-cyan-200">
@@ -131,7 +167,7 @@ export default function LandingPage() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="bg-zinc-900/40 backdrop-blur-2xl border border-white/5 p-10 rounded-[40px] group hover:border-white/10 transition-all glow-mesh shadow-2xl"
+                className="reveal-stat bg-zinc-900/40 backdrop-blur-2xl border border-white/5 p-10 rounded-[40px] group hover:border-white/10 transition-all glow-mesh shadow-2xl"
               >
                 <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-cyan-400 mb-6 group-hover:scale-110 group-hover:rotate-6 transition-all shadow-lg shadow-cyan-500/10">
                   <stat.icon size={24} />
@@ -155,7 +191,7 @@ export default function LandingPage() {
               <motion.div 
                 key={i}
                 whileHover={{ y: -10 }}
-                className="relative group"
+                className="reveal-feature relative group"
               >
                 <div className={`w-16 h-16 rounded-[24px] ${feature.bg} flex items-center justify-center ${feature.color} mb-8 shadow-2xl transition-all group-hover:scale-110 group-hover:rotate-3`}>
                   <feature.icon size={32} strokeWidth={2.5} />

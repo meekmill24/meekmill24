@@ -12,7 +12,8 @@ import {
   QrCode, 
   Upload, 
   Smartphone,
-  Info
+  Info,
+  Zap
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useCurrency } from '@/context/CurrencyContext';

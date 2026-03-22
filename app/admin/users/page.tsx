@@ -256,8 +256,8 @@ export default function AdminUsersPage() {
                         )}
                     </div>
                   </td>
-                  <td className="px-8 py-6 text-right">
-                    <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <td className="px-4 md:px-8 py-6 text-right">
+                    <div className="flex items-center justify-end gap-3 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
                       {editingId === user.id ? (
                         <>
                           <button onClick={handleSave} className="p-2.5 bg-green-500/10 text-green-500 rounded-xl hover:bg-green-500/20 transition-all border border-green-500/10"><Save size={16} /></button>
