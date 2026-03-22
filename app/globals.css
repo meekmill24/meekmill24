@@ -74,6 +74,10 @@
   --radius-sm: calc(var(--radius) - 4px);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

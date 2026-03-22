@@ -21,8 +21,11 @@ import {
   Search,
   ChevronDown,
   ArrowUpFromLine,
-  MessageCircle,
-  HelpCircle
+  MessageCircle, 
+  HelpCircle,
+  Menu as MenuIcon,
+  X as CloseIcon,
+  Grid
 } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
 import ActivityFeed from '@/components/ActivityFeed'
@@ -122,8 +125,41 @@ export default function HomePage() {
             <ChevronRight className='w-4 h-4 text-white/40' />
         </div>
 
+        {/* Quick Nav Floating Hub */}
+        <div id="quick-nav-hub" className="fixed bottom-32 right-6 z-[100] md:hidden">
+            <button 
+                onClick={() => setIsSpinning(!isSpinning)} // Reusing isSpinning for menu toggle state temporarily or add new state
+                className="w-14 h-14 rounded-full bg-gradient-to-tr from-cyan-600 to-indigo-600 flex items-center justify-center text-white shadow-[0_10px_30px_rgba(6,182,212,0.4)] border border-white/20 active:scale-90 transition-transform"
+            >
+                {isSpinning ? <CloseIcon size={24} /> : <Grid size={24} />}
+            </button>
+            
+            {isSpinning && (
+                <div className="absolute bottom-20 right-0 bg-black/80 backdrop-blur-3xl border border-white/10 rounded-[32px] p-6 w-48 shadow-3xl animate-in zoom-in-95 duration-200">
+                    <div className="flex flex-col gap-4">
+                        <Link href="#profile" onClick={() => setIsSpinning(false)} className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
+                            <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center"><User size={14} /></div>
+                            Profile Hub
+                        </Link>
+                        <Link href="#stats-grid" onClick={() => setIsSpinning(false)} className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
+                            <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center"><TrendingUp size={14} /></div>
+                            Statistics
+                        </Link>
+                        <Link href="#financial-hub" onClick={() => setIsSpinning(false)} className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
+                            <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center"><Zap size={14} /></div>
+                            Actions
+                        </Link>
+                        <Link href="#tiers" onClick={() => setIsSpinning(false)} className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
+                            <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center"><Trophy size={14} /></div>
+                            VIP Tiers
+                        </Link>
+                    </div>
+                </div>
+            )}
+        </div>
+
         {/* User Greeting & Stats Card (Refined per User request) */}
-        <div className='px-6 pt-4 mb-16'>
+        <div id="profile" className='px-6 pt-4 mb-16'>
             <div className='relative overflow-hidden rounded-[48px] border border-white/10 shadow-3xl bg-zinc-900/60 backdrop-blur-3xl group'>
                 {/* Background Image Banner */}
                 <div className='absolute inset-0 z-0 opacity-40 group-hover:scale-105 transition-transform duration-1000'>
@@ -202,7 +238,7 @@ export default function HomePage() {
                         </div>
                     </div>
 
-                    <div className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 relative z-10 px-6 md:px-8 pb-16'>
+                    <div id="stats-grid" className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 relative z-10 px-6 md:px-8 pb-16'>
                         {/* Available Balance */}
                         <div className='bg-black/60 backdrop-blur-md rounded-[32px] p-10 pb-14 border border-white/10 hover:bg-black/80 transition-all duration-500 group/card shadow-2xl overflow-hidden'>
                             <div className="absolute top-0 right-0 p-8 opacity-5">
@@ -280,7 +316,7 @@ export default function HomePage() {
         </div>
 
         {/* Financial Hub */}
-        <div className='px-6 mb-12'>
+        <div id="financial-hub" className='px-6 mb-12'>
             <div className='flex items-center justify-between mb-8'>
                 <div className="flex items-center gap-4">
                     <div className="w-1.5 h-6 bg-cyan-600 rounded-full" />
@@ -305,7 +341,7 @@ export default function HomePage() {
         </div>
 
         {/* Employee Levels */}
-        <div className='px-6 mb-16'>
+        <div id="tiers" className='px-6 mb-16'>
             <div className='flex items-center justify-between mb-8'>
                 <div className="flex items-center gap-4">
                     <div className="w-1.5 h-6 bg-purple-600 rounded-full" />

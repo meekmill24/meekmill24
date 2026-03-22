@@ -16,10 +16,14 @@ import {
   ArrowUpRight,
   MousePointer2,
   Users,
-  Trophy
+  Trophy,
+  Menu,
+  X
 } from 'lucide-react';
+import { useState } from 'react';
 
 export default function LandingPage() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const stats = [
     { label: 'Strategic Nodes', value: '1.2M+', icon: Globe },
     { label: 'Global Liquidity', value: '$840M+', icon: TrendingUp },
@@ -108,12 +112,52 @@ export default function LandingPage() {
             <Link href="#stats" className="hover:text-white transition-colors">Network</Link>
             <Link href="#security" className="hover:text-white transition-colors">Security</Link>
           </div>
-          <Link href="/auth/login">
-            <button className="px-6 py-2.5 rounded-xl border border-white/10 bg-white/5 text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-black hover:border-white transition-all">
-              Access Terminal
+          <div className="flex items-center gap-4">
+            <Link href="/auth/login" className="hidden sm:block">
+              <button className="px-6 py-2.5 rounded-xl border border-white/10 bg-white/5 text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-black hover:border-white transition-all">
+                Access Terminal
+              </button>
+            </Link>
+            <button 
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="md:hidden p-2 text-white/70 hover:text-white transition-colors"
+            >
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
-          </Link>
+          </div>
         </nav>
+
+        {/* Mobile Menu Overlay */}
+        <div className={`fixed inset-0 z-[60] bg-black/90 backdrop-blur-2xl md:hidden transition-all duration-500 ${isMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+          <div className="flex flex-col items-center justify-center h-full gap-8">
+            <Link 
+              href="#features" 
+              onClick={() => setIsMenuOpen(false)}
+              className="text-4xl font-black italic tracking-tighter uppercase hover:text-cyan-400 transition-colors"
+            >
+              Nodes
+            </Link>
+            <Link 
+              href="#stats" 
+              onClick={() => setIsMenuOpen(false)}
+              className="text-4xl font-black italic tracking-tighter uppercase hover:text-purple-400 transition-colors"
+            >
+              Network
+            </Link>
+            <Link 
+              href="#security" 
+              onClick={() => setIsMenuOpen(false)}
+              className="text-4xl font-black italic tracking-tighter uppercase hover:text-rose-400 transition-colors"
+            >
+              Security
+            </Link>
+            <Link href="/auth/login" onClick={() => setIsMenuOpen(false)}>
+              <button className="mt-8 px-12 py-5 bg-white text-black rounded-[24px] font-black text-xs uppercase tracking-[0.3em]">
+                Access Terminal
+              </button>
+            </Link>
+          </div>
+        </div>
 
         {/* Hero Section */}
         <section className="relative pt-32 pb-40 px-8 max-w-7xl mx-auto overflow-hidden">
