@@ -21,6 +21,7 @@ import {
   X,
   Play
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
