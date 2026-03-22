@@ -32,13 +32,6 @@ import ActivityFeed from '@/components/ActivityFeed'
 import DraggableChat from '@/components/DraggableChat'
 import Link from 'next/link'
 import Image from 'next/image'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/context/AuthContext'
@@ -48,7 +41,6 @@ import { getLevels } from '@/lib/actions/admin'
 export default function HomePage() {
   const { profile, loading: profileLoading } = useAuth()
   const { format } = useCurrency()
-  const [isStartModalOpen, setIsStartModalOpen] = useState(false)
   const [isSpinning, setIsSpinning] = useState(false)
   const [levels, setLevels] = useState<any[]>([])
 
@@ -66,7 +58,7 @@ export default function HomePage() {
 
   if (profileLoading) {
     return (
-      <div className='flex items-center justify-center min-h-screen bg-black'>
+      <div className='flex items-center justify-center min-h-screen bg-[#0a0a0a]'>
         <Spinner className='h-8 w-8 text-primary' />
       </div>
     )
@@ -84,8 +76,8 @@ export default function HomePage() {
   ]
 
   return (
-    <main className='min-h-screen bg-[#0a0a0a] text-white pb-24 relative overflow-x-hidden'>
-      {/* Background Image (behind cards) */}
+    <main className='min-h-screen bg-[#0a0a0a] text-white pb-32 relative overflow-x-hidden'>
+      {/* Background Layer */}
       <div className='fixed inset-0 z-0 opacity-20 pointer-events-none'>
         <Image 
             src="/strategic_hub_bg.png" 
@@ -95,62 +87,49 @@ export default function HomePage() {
         />
       </div>
 
-      <div className='relative z-10'>
-        {/* Header */}
-        <div className='flex items-center justify-between px-6 py-5 bg-black/40 backdrop-blur-md sticky top-0 z-30 border-b border-white/5'>
-            <div className='flex items-center gap-2'>
-                <Image src="/logo.png" alt="Logo" width={32} height={32} className="rounded-lg shadow-lg" />
-                <h1 className='text-2xl font-black italic tracking-tighter'>Captiv8</h1>
-            </div>
-            <div className='flex items-center gap-4 text-white/80'>
-            <Link href="/app/profile">
-                <div className='w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10'>
-                    <User className='w-5 h-5' />
-                </div>
-            </Link>
-            <div className='w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/10'>
-                <Bell className='w-5 h-5' />
-            </div>
-            </div>
-        </div>
-
-        {/* Promo Banner */}
-        <div className='mx-6 mb-6 mt-4 bg-zinc-900/40 backdrop-blur-md rounded-2xl p-4 flex items-center justify-between border border-white/5 shadow-lg shadow-black/20'>
+      <div className='max-w-7xl mx-auto relative z-10'>
+        {/* Header Hub */}
+        <div className='flex items-center justify-between px-6 py-4 bg-black/40 backdrop-blur-xl sticky top-0 z-50 border-b border-white/5'>
             <div className='flex items-center gap-3'>
-            <div className='w-10 h-10 rounded-full bg-purple-600/20 flex items-center justify-center'>
-                <Bell className='w-5 h-5 text-purple-400' />
+                <Image src="/logo.png" alt="Logo" width={40} height={40} className="rounded-2xl shadow-2xl border border-white/10" />
+                <h1 className='text-3xl font-black italic tracking-tighter bg-gradient-to-r from-white to-white/40 bg-clip-text text-transparent underline decoration-cyan-500/30 decoration-4 underline-offset-8'>Captiv8</h1>
             </div>
-            <p className='text-xs font-black uppercase tracking-widest text-[#007CBA] animate-pulse'>1-5000 USDT reward available now</p>
+            <div className='flex items-center gap-4'>
+                <Link href="/app/profile" className='w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 shadow-inner hover:bg-white/10 transition-all'>
+                    <User className='w-6 h-6 text-cyan-400' />
+                </Link>
+                <div className='w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 shadow-inner group'>
+                    <Bell className='w-6 h-6 group-hover:rotate-12 transition-transform' />
+                </div>
             </div>
-            <ChevronRight className='w-4 h-4 text-white/40' />
         </div>
 
-        {/* Quick Nav Floating Hub */}
-        <div id="quick-nav-hub" className="fixed bottom-32 right-6 z-[100] md:hidden">
+        {/* Floating Quick-Nav Hub (Mobile Only) */}
+        <div id="quick-nav-hub" className="fixed bottom-28 right-6 z-[100] md:hidden">
             <button 
-                onClick={() => setIsSpinning(!isSpinning)} // Reusing isSpinning for menu toggle state temporarily or add new state
-                className="w-14 h-14 rounded-full bg-gradient-to-tr from-cyan-600 to-indigo-600 flex items-center justify-center text-white shadow-[0_10px_30px_rgba(6,182,212,0.4)] border border-white/20 active:scale-90 transition-transform"
+                onClick={() => setIsSpinning(!isSpinning)}
+                className="w-16 h-16 rounded-full bg-gradient-to-tr from-cyan-600 to-indigo-600 flex items-center justify-center text-white shadow-[0_20px_40px_rgba(6,182,212,0.4)] border-2 border-white/20 active:scale-90 transition-all"
             >
-                {isSpinning ? <CloseIcon size={24} /> : <Grid size={24} />}
+                {isSpinning ? <CloseIcon size={28} /> : <Grid size={28} />}
             </button>
             
             {isSpinning && (
-                <div className="absolute bottom-20 right-0 bg-black/80 backdrop-blur-3xl border border-white/10 rounded-[32px] p-6 w-48 shadow-3xl animate-in zoom-in-95 duration-200">
-                    <div className="flex flex-col gap-4">
-                        <Link href="#profile" onClick={() => setIsSpinning(false)} className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
-                            <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center"><User size={14} /></div>
-                            Profile Hub
+                <div className="absolute bottom-24 right-0 bg-black/90 backdrop-blur-3xl border border-white/10 rounded-[40px] p-6 w-56 shadow-3xl animate-in fade-in zoom-in-95 duration-200">
+                    <div className="flex flex-col gap-5">
+                        <Link href="#profile" onClick={() => setIsSpinning(false)} className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
+                            <div className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center border border-white/5"><User size={16} /></div>
+                            Profile
                         </Link>
-                        <Link href="#stats-grid" onClick={() => setIsSpinning(false)} className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
-                            <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center"><TrendingUp size={14} /></div>
-                            Statistics
+                        <Link href="#stats-grid" onClick={() => setIsSpinning(false)} className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
+                            <div className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center border border-white/5"><TrendingUp size={16} /></div>
+                            Metrics
                         </Link>
-                        <Link href="#financial-hub" onClick={() => setIsSpinning(false)} className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
-                            <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center"><Zap size={14} /></div>
-                            Actions
+                        <Link href="#financial-hub" onClick={() => setIsSpinning(false)} className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
+                            <div className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center border border-white/5"><Zap size={16} /></div>
+                            Finance
                         </Link>
-                        <Link href="#tiers" onClick={() => setIsSpinning(false)} className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
-                            <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center"><Trophy size={14} /></div>
+                        <Link href="#tiers" onClick={() => setIsSpinning(false)} className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
+                            <div className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center border border-white/5"><Trophy size={16} /></div>
                             VIP Tiers
                         </Link>
                     </div>
@@ -158,236 +137,182 @@ export default function HomePage() {
             )}
         </div>
 
-        {/* User Greeting & Stats Card (Refined per User request) */}
-        <div id="profile" className='px-6 pt-4 mb-16'>
+        {/* Promo Bar */}
+        <div className='mx-6 mt-8 mb-4 bg-gradient-to-r from-zinc-900/60 to-black/20 backdrop-blur-md rounded-2xl p-4 flex items-center justify-between border border-white/5 group border-l-purple-500/50 border-l-4'>
+            <div className='flex items-center gap-4'>
+                <div className='w-10 h-10 rounded-xl bg-purple-600/20 flex items-center justify-center shadow-inner'>
+                    <Zap className='w-5 h-5 text-purple-400 fill-purple-400/20' />
+                </div>
+                <div>
+                    <p className='text-[8px] font-black uppercase tracking-[0.4em] text-white/40'>Institutional Bonus</p>
+                    <p className='text-xs font-black uppercase tracking-widest text-white'>Claim up to 5000 USDT reward nodes</p>
+                </div>
+            </div>
+            <ChevronRight className='w-5 h-5 text-white/20 group-hover:text-white transition-colors transition-transform group-hover:translate-x-1' />
+        </div>
+
+        {/* Hero Section */}
+        <div id="profile" className='px-6 pt-4 mb-12'>
             <div className='relative overflow-hidden rounded-[48px] border border-white/10 shadow-3xl bg-zinc-900/60 backdrop-blur-3xl group'>
-                {/* Background Image Banner */}
                 <div className='absolute inset-0 z-0 opacity-40 group-hover:scale-105 transition-transform duration-1000'>
-                    <Image 
-                        src="/strategic_hub_bg.png" 
-                        alt="Background" 
-                        fill 
-                        className="object-cover"
-                    />
+                    <Image src="/strategic_hub_bg.png" alt="BG" fill className="object-cover" />
                 </div>
                 <div className='absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-0' />
                 
-                <div className='relative z-10 p-6 md:p-10 flex flex-col md:flex-row md:items-center gap-6 md:gap-10 border-b border-white/5 py-10 md:pb-12'>
-                        <div className='w-24 h-24 rounded-[32px] bg-gradient-to-tr from-cyan-600 via-blue-600 to-indigo-500 flex items-center justify-center shadow-[0_20px_60px_rgba(6,182,212,0.3)] p-[1.5px] group-hover:rotate-6 transition-transform duration-700'>
-                            <div className="w-full h-full rounded-[30px] bg-black/40 flex items-center justify-center backdrop-blur-md">
-                                <span className="text-4xl font-black italic text-white drop-shadow-2xl">
-                                    {profile?.username?.[0]?.toUpperCase()}
-                                </span>
+                {/* Banner Content (Reduced mobile padding) */}
+                <div className="relative z-10 p-5 md:p-12 flex flex-col md:flex-row items-center gap-6 md:gap-10">
+                    <div className='w-24 h-24 md:w-32 md:h-32 rounded-[32px] md:rounded-[40px] bg-gradient-to-tr from-cyan-600 via-blue-600 to-indigo-500 flex items-center justify-center shadow-3xl p-[2px] group-hover:rotate-3 transition-transform duration-700'>
+                        <div className="w-full h-full rounded-[30px] md:rounded-[38px] bg-black/40 flex items-center justify-center backdrop-blur-md">
+                            <span className="text-4xl md:text-5xl font-black italic text-white drop-shadow-2xl">{profile?.username?.[0]?.toUpperCase()}</span>
+                        </div>
+                    </div>
+                    <div className='flex-1 text-center md:text-left'>
+                        <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6">
+                            <h2 className='text-3xl md:text-6xl font-black tracking-tighter italic uppercase text-white drop-shadow-2xl'>HELLO, {profile?.username || profile?.email?.split('@')[0]}</h2>
+                            <div className='flex items-center justify-center md:justify-start gap-2 px-4 py-1.5 bg-black/40 text-cyan-400 rounded-full border border-cyan-500/20 backdrop-blur-md'>
+                                <div className='w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_rgba(6,182,212,0.6)]' />
+                                <span className='text-[9px] font-black uppercase tracking-widest'>Node Verified</span>
                             </div>
                         </div>
-                        <div className='flex-1 w-full'>
-                            <div className="flex items-center justify-between md:justify-start gap-3">
-                                <h2 className='text-2xl md:text-3xl font-black tracking-tighter italic uppercase text-white drop-shadow-2xl'>Hello, {profile?.username || profile?.email?.split('@')[0]}</h2>
-                                <ShieldCheck className="text-cyan-400" size={20} />
-                            </div>
-                            <div className='flex flex-wrap items-center gap-4 mt-3'>
-                                <div className='flex items-center gap-2 bg-black/40 px-3 py-1.5 rounded-xl border border-white/5 group/id hover:border-cyan-500/30 transition-colors'>
-                                    <span className='text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400'>ID: {profile?.referral_code || profile?.id?.slice(0, 8).toUpperCase()}</span>
-                                    <button 
-                                        onClick={() => {
-                                            const code = profile?.referral_code || profile?.id?.slice(0, 8).toUpperCase() || '';
-                                            if (code) {
-                                                navigator.clipboard.writeText(code);
-                                                import('sonner').then(({ toast }) => toast.success("ID Copied"));
-                                            }
-                                        }}
-                                        className='p-1 hover:text-cyan-400 transition-colors text-white/40'
-                                    >
-                                        <Copy size={12} />
-                                    </button>
-                                </div>
-                                <div className='flex items-center gap-2 px-4 py-1.5 bg-cyan-500/10 text-cyan-400 rounded-full border border-cyan-500/20 backdrop-blur-md'>
-                                    <div className='w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_rgba(6,182,212,0.6)]' />
-                                    <span className='text-[9px] font-black uppercase tracking-widest'>Verified Agent</span>
-                                </div>
+                        <div className='flex items-center justify-center md:justify-start gap-3 mt-4'>
+                            <div className='bg-white/5 px-4 py-2 rounded-xl flex items-center gap-3 border border-white/5'>
+                                <span className='font-mono text-[10px] font-bold text-zinc-500 uppercase tracking-widest'>ID: {profile?.referral_code || profile?.id?.slice(0, 8).toUpperCase()}</span>
+                                <button onClick={() => {
+                                    const code = profile?.referral_code || profile?.id?.slice(0, 8).toUpperCase() || '';
+                                    navigator.clipboard.writeText(code);
+                                    import('sonner').then(({ toast }) => toast.success("ID Copied"));
+                                }} className='hover:text-cyan-400 transition-colors'><Copy size={12} /></button>
                             </div>
                         </div>
+                    </div>
+                    <div className="w-full md:w-auto">
+                        <Link href="/app/tasks" className="p-1 rounded-[32px] bg-gradient-to-tr from-cyan-600 via-blue-600 to-indigo-500 flex flex-col items-center justify-center group/startBtn shadow-xl active:scale-95 transition-all">
+                            <div className="px-12 py-6 md:py-10 rounded-[30px] bg-black/40 backdrop-blur-xl flex flex-col items-center gap-2">
+                                <Play size={32} className="text-white fill-white drop-shadow-2xl" />
+                                <span className="text-[10px] font-black tracking-[0.4em] text-white">INVOKE NODE</span>
+                            </div>
+                        </Link>
+                    </div>
+                </div>
 
-                        {/* START BUTTON ADDED AS REQUESTED */}
-                        <div className="flex flex-col items-center md:items-end w-full md:w-auto">
-                            <Link href="/app/tasks" className="p-1 rounded-[32px] bg-gradient-to-tr from-cyan-600 via-blue-600 to-indigo-500 shadow-[0_20px_60px_rgba(6,182,212,0.3)] hover:scale-105 active:scale-95 transition-all group/bt w-full md:w-auto">
-                                <div className="px-10 py-6 md:py-8 rounded-[30px] bg-black/40 backdrop-blur-xl flex flex-col items-center gap-1 group-hover/bt:bg-white/5 transition-all">
-                                    <Play size={28} className="text-white fill-white shadow-2xl md:w-10 md:h-10" />
-                                    <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] text-white">START</span>
-                                </div>
-                            </Link>
+                {/* Sub-Metric Rows */}
+                <div className="relative z-10 px-8 py-8 grid grid-cols-2 md:grid-cols-4 gap-6 bg-white/[0.02] border-t border-white/5">
+                    {[
+                        { label: 'Yield Rate', value: `${(profile?.level?.commission_rate ? (profile.level.commission_rate * 100).toFixed(1) : '0.5')}%`, color: 'text-cyan-400' },
+                        { label: 'Execution', value: '1x NODE', color: 'text-white/40' },
+                        { label: 'Capacity', value: `${profile?.level?.tasks_per_set || 40} Units`, color: 'text-white/40' },
+                        { label: 'Cycles', value: '3 Daily', color: 'text-white/40' }
+                    ].map((m, i) => (
+                        <div key={i} className={cn("flex flex-col", i > 0 && "md:border-l md:border-white/5 md:pl-6")}>
+                            <span className={cn("text-[9px] font-black uppercase tracking-[0.2em] mb-1 italic", m.color || "text-white/40")}>{m.label}</span>
+                            <span className="text-xl md:text-2xl font-black italic tracking-tighter">{m.value}</span>
+                        </div>
+                    ))}
+                </div>
+
+                {/* Stats Grid - REDUCED INNER CARDS AS REQUESTED */}
+                <div id="stats-grid" className='grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4 p-4 md:p-8 relative z-10'>
+                    {/* Available Balance */}
+                    <div className='bg-black/40 backdrop-blur-md rounded-[24px] p-5 md:p-8 border border-white/5 hover:bg-black/60 transition-all duration-500 group/card shadow-2xl relative overflow-hidden h-full'>
+                        <p className='text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-2'>Available</p>
+                        <div className='flex items-baseline gap-1 md:gap-2 mb-4'>
+                            <span className='text-zinc-600 font-bold text-lg md:text-2xl'>$</span>
+                            <h1 className='text-2xl md:text-4xl font-black italic tracking-tighter text-white drop-shadow-2xl'>
+                                {profile?.wallet_balance?.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                            </h1>
+                        </div>
+                        <div className='px-2 py-1 bg-cyan-500/10 border border-cyan-500/20 rounded-full flex items-center gap-1.5 w-fit'>
+                            <div className='w-1 h-1 rounded-full bg-cyan-500 animate-pulse' />
+                            <span className='text-[7px] md:text-[8px] font-black uppercase tracking-widest text-cyan-400'>SECURE</span>
                         </div>
                     </div>
 
-                    <div className="px-8 pb-10 md:pb-12 grid grid-cols-2 md:grid-cols-4 gap-6 relative z-10">
-                        <div className="flex flex-col">
-                            <span className="text-[10px] font-black text-cyan-400/60 uppercase tracking-widest italic mb-1">Yield Rate</span>
-                            <span className="text-2xl font-black italic">{(profile?.level?.commission_rate ? (profile.level.commission_rate * 100).toFixed(1) : '0.5')}%</span>
+                    {/* Today's Profit */}
+                    <div className='bg-black/40 backdrop-blur-md rounded-[24px] p-5 md:p-8 border border-white/5 hover:bg-black/60 transition-all duration-500 group/card shadow-2xl relative overflow-hidden h-full'>
+                        <p className='text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-2'>Profit</p>
+                        <div className='flex items-baseline gap-1 md:gap-2 mb-4'>
+                            <span className='text-emerald-900 font-bold text-lg md:text-2xl'>$</span>
+                            <h1 className='text-2xl md:text-4xl font-black italic tracking-tighter text-emerald-400'>
+                                {(profile?.wallet_balance * 0.0155).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            </h1>
                         </div>
-                        <div className="flex flex-col border-l border-white/5 pl-6">
-                            <span className="text-[10px] font-black text-white/40 uppercase tracking-widest italic mb-1">Node</span>
-                            <span className="text-2xl font-black italic">1x</span>
-                        </div>
-                        <div className="flex flex-col border-l border-white/5 pl-6">
-                            <span className="text-[10px] font-black text-white/40 uppercase tracking-widest italic mb-1">Stream Capacity</span>
-                            <span className="text-2xl font-black italic">{profile?.level?.tasks_per_set || 40} Units</span>
-                        </div>
-                        <div className="flex flex-col border-l border-white/5 pl-6">
-                            <span className="text-[10px] font-black text-white/40 uppercase tracking-widest italic mb-1">Daily Cap</span>
-                            <span className="text-2xl font-black italic">3 Sets</span>
+                        <div className="w-full h-1 bg-zinc-800 rounded-full overflow-hidden">
+                            <div className="h-full bg-emerald-500 w-3/4 animate-pulse" />
                         </div>
                     </div>
 
-                    <div id="stats-grid" className='grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 relative z-10 px-6 md:px-8 pb-16'>
-                        {/* Available Balance */}
-                        <div className='bg-black/60 backdrop-blur-md rounded-[32px] p-10 pb-14 border border-white/10 hover:bg-black/80 transition-all duration-500 group/card shadow-2xl overflow-hidden'>
-                            <div className="absolute top-0 right-0 p-8 opacity-5">
-                                <WalletIcon size={80} className="text-white" />
-                            </div>
-                            <div className='flex items-center justify-between mb-4'>
-                                <p className='text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em] italic'>Available Balance</p>
-                            </div>
-                            <h4 className='text-2xl md:text-4xl font-black text-white italic tracking-tighter'>$ {(profile?.wallet_balance || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</h4>
-                            <div className='mt-6 flex items-center gap-2 text-[9px] font-black text-cyan-400 bg-cyan-400/10 w-fit px-3 py-1.5 rounded-xl border border-cyan-400/10'>
-                                <Zap className='w-3 h-3 fill-cyan-400/20' />
-                                <span className='uppercase tracking-widest'>NODE ACTIVE</span>
-                            </div>
+                    {/* Referral Bonus */}
+                    <div className='bg-black/40 backdrop-blur-md rounded-[24px] p-5 md:p-8 border border-white/5 hover:bg-black/60 transition-all duration-500 group/card shadow-2xl relative overflow-hidden h-full'>
+                        <p className='text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-2'>Referral</p>
+                        <div className='flex items-baseline gap-1 md:gap-2 mb-4'>
+                            <span className='text-purple-900 font-bold text-lg md:text-2xl'>$</span>
+                            <h1 className='text-2xl md:text-4xl font-black italic tracking-tighter text-white'>0.00</h1>
                         </div>
+                        <span className='text-[7px] md:text-[8px] font-black uppercase tracking-widest text-white/20 animate-pulse tracking-[0.5em]'>READY</span>
+                    </div>
 
-                        {/* Today's Profit */}
-                        <div className='bg-black/60 backdrop-blur-md rounded-[32px] p-10 pb-14 border border-white/10 hover:bg-black/80 transition-all duration-500 group/card shadow-2xl overflow-hidden'>
-                            <div className='flex items-center justify-between mb-4'>
-                                <div className="flex items-center gap-3">
-                                    <TrendingUp className='text-emerald-400 w-4 h-4' />
-                                    <p className='text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em] italic'>Today's Profit</p>
-                                </div>
-                            </div>
-                            <h4 className='text-2xl md:text-4xl font-black text-emerald-400 italic tracking-tighter'>$ {(profile?.profit || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</h4>
-                            <div className="h-1 w-full bg-emerald-500/10 rounded-full mt-6" />
+                    {/* Task Progress */}
+                    <div className='bg-black/40 backdrop-blur-md rounded-[24px] p-5 md:p-8 border border-white/5 hover:bg-black/60 transition-all duration-500 group/card shadow-2xl relative overflow-hidden h-full'>
+                        <p className='text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-2'>Progress</p>
+                        <div className='flex items-baseline gap-1 md:gap-2 mb-4'>
+                            <h1 className='text-2xl md:text-4xl font-black italic tracking-tighter text-white'>
+                                {(profile?.completed_count || 0) % (profile?.level?.tasks_per_set || 40)}
+                            </h1>
+                            <span className="text-[10px] md:text-base text-zinc-700 font-bold">/ {profile?.level?.tasks_per_set || 40}</span>
                         </div>
-
-                        {/* Referral Bonus */}
-                        <div className='bg-black/60 backdrop-blur-md rounded-[32px] p-10 pb-14 border border-white/10 hover:bg-black/80 transition-all duration-500 group/card shadow-2xl overflow-hidden'>
-                            <div className='flex items-center justify-between mb-4'>
-                                <div className="flex items-center gap-3">
-                                    <Users className='text-purple-400 w-4 h-4' />
-                                    <p className='text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em] italic'>Referral Bonus</p>
-                                </div>
-                            </div>
-                            <h4 className='text-2xl md:text-4xl font-black text-purple-400 italic tracking-tighter'>$ {(profile?.referral_earned || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</h4>
-                            <div className="h-1 w-full bg-purple-500/10 rounded-full mt-6" />
+                        <div className='w-full h-1 bg-white/5 rounded-full overflow-hidden'>
+                            <div 
+                                className='h-full bg-gradient-to-r from-cyan-600 to-blue-500 transition-all duration-1000' 
+                                style={{ width: `${Math.min((((profile?.completed_count || 0) % (profile?.level?.tasks_per_set || 40)) / (profile?.level?.tasks_per_set || 40)) * 100, 100)}%` }}
+                            />
                         </div>
-
-                        {/* Freeze Balance */}
-                        <div className='bg-black/60 backdrop-blur-md rounded-[32px] p-10 pb-14 border border-white/10 hover:bg-black/80 transition-all duration-500 group/card shadow-2xl overflow-hidden'>
-                            <div className="absolute top-0 right-0 p-8 opacity-5">
-                                <Lock size={80} className="text-white" />
-                            </div>
-                            <div className='flex items-center justify-between mb-4'>
-                                <p className='text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em] italic'>Freeze Balance</p>
-                            </div>
-                            <h4 className='text-2xl md:text-4xl font-black text-white italic tracking-tighter'>$ {(profile?.freeze_balance || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</h4>
-                            <div className='mt-6 flex items-center gap-2 text-[9px] font-black text-amber-500 bg-amber-500/10 w-fit px-3 py-1.5 rounded-xl border border-amber-500/10'>
-                                <RefreshCw className='w-3 h-3' />
-                                <span className='uppercase tracking-widest'>IN CLEARANCE</span>
-                            </div>
-                        </div>
-
-                        <div className='bg-black/60 backdrop-blur-md rounded-[32px] p-10 pb-14 border border-white/10 hover:bg-black/80 transition-all duration-500 group/card shadow-2xl overflow-hidden'>
-                            <div className='flex items-center justify-between mb-4'>
-                                <div className="flex items-center gap-3">
-                                    <RefreshCw className="w-4 h-4 text-cyan-400" />
-                                    <p className='text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em] italic'>Task Progress</p>
-                                </div>
-                            </div>
-                            <div className="flex items-baseline gap-2">
-                                <h4 className='text-4xl font-black text-white italic tracking-tighter'>{(profile?.completed_count || 0) % (profile?.level?.tasks_per_set || 40)}</h4>
-                                <span className="text-xl text-zinc-700 font-bold">/ {profile?.level?.tasks_per_set || 40}</span>
-                            </div>
-                            <div className='w-full h-2 bg-white/5 rounded-full mt-6 overflow-hidden border border-white/5'>
-                                    <div 
-                                        className='h-full bg-gradient-to-r from-cyan-600 to-blue-500 shadow-[0_0_15px_rgba(6,182,212,0.4)] rounded-full transition-all duration-1000' 
-                                        style={{ width: `${Math.min((((profile?.completed_count || 0) % (profile?.level?.tasks_per_set || 40)) / (profile?.level?.tasks_per_set || 40)) * 100, 100)}%` }}
-                                    />
-                            </div>
-                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
         {/* Financial Hub */}
-        <div id="financial-hub" className='px-6 mb-12'>
-            <div className='flex items-center justify-between mb-8'>
-                <div className="flex items-center gap-4">
-                    <div className="w-1.5 h-6 bg-cyan-600 rounded-full" />
-                    <h4 className='text-lg font-black tracking-tight uppercase italic opacity-90'>Financial Hub</h4>
-                </div>
-                <div className='h-[1px] flex-1 mx-6 bg-white/5' />
+        <div id="financial-hub" className='px-6 mb-16'>
+            <div className='flex items-center gap-4 mb-8'>
+                <div className="w-1.5 h-6 bg-cyan-600 rounded-full" />
+                <h4 className='text-xl font-black tracking-tight uppercase italic'>Strategic Hub</h4>
             </div>
-            <div className='grid grid-cols-4 gap-x-4 gap-y-12'>
+            <div className='grid grid-cols-4 gap-x-4 gap-y-10'>
             {menuItems.map((item, idx) => (
-                <Link key={idx} href={item.href || '#'} className='flex flex-col items-center gap-4 group'>
-                <div className={`w-14 h-14 rounded-full ${item.iconBg} border border-white/5 flex items-center justify-center shadow-2xl transition-all duration-500 group-hover:scale-110 group-hover:-translate-y-1 group-active:scale-90 group-hover:border-white/20`}>
-                    {'textIcon' in item ? (
-                    <span className={`text-[10px] font-black ${item.color}`}>{item.textIcon as string}</span>
-                    ) : (
-                    <item.icon className={`w-6 h-6 ${item.color} group-hover:brightness-125 transition-all`} strokeWidth={2.5} />
-                    )}
+                <Link key={idx} href={item.href || '#'} className='flex flex-col items-center gap-3 group'>
+                <div className={cn("w-14 h-14 rounded-full border border-white/5 flex items-center justify-center shadow-2xl transition-all duration-500 group-hover:scale-110 group-active:scale-95 group-hover:border-white/20", item.iconBg)}>
+                    <item.icon className={cn("w-6 h-6 group-hover:brightness-125 transition-all", item.color)} strokeWidth={2.5} />
                 </div>
-                <span className='text-[10px] font-black tracking-[0.2em] text-white/30 text-center uppercase leading-tight group-hover:text-white/60 transition-colors'>{item.label}</span>
+                <span className='text-[10px] font-black tracking-widest text-zinc-500 group-hover:text-white transition-colors uppercase'>{item.label}</span>
                 </Link>
             ))}
             </div>
         </div>
 
-        {/* Employee Levels */}
-        <div id="tiers" className='px-6 mb-16'>
-            <div className='flex items-center justify-between mb-8'>
-                <div className="flex items-center gap-4">
-                    <div className="w-1.5 h-6 bg-purple-600 rounded-full" />
-                    <h4 className='text-lg font-black tracking-tight uppercase italic opacity-90'>Tiers & Influence</h4>
-                </div>
-                <Link href="/app/levels" className='text-[10px] font-black text-cyan-500 hover:text-cyan-400 flex items-center gap-2 transition-all uppercase tracking-widest'>
-                    Expand <ChevronRight className='w-4 h-4' />
-                </Link>
+        {/* VIP Tiers */}
+        <div id="tiers" className='px-6 mb-20'>
+            <div className='flex items-center gap-4 mb-10'>
+                <div className="w-1.5 h-6 bg-purple-600 rounded-full" />
+                <h4 className='text-xl font-black tracking-tight uppercase italic'>Verified Nodes</h4>
             </div>
-            
-            <div className='max-w-5xl mx-auto'>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
             {levels.slice(0, 2).map((level, idx) => (
-                <div key={idx} className={`w-full rounded-[48px] p-10 ${idx === 0 ? 'bg-zinc-800 text-white' : 'bg-zinc-900 text-white'} border border-white/5 relative group overflow-hidden shadow-2xl shadow-black/60 transition-all duration-500 hover:scale-[1.02] hover:border-white/20`}>
-                <div className='absolute -right-12 -top-12 w-48 h-48 bg-cyan-500/5 rounded-full blur-[80px] group-hover:bg-cyan-500/10 transition-all duration-700' />
-                <div className='absolute top-8 right-8'>
-                    <div className={cn(
-                        'w-10 h-10 rounded-full flex items-center justify-center',
-                        Number(profile?.level_id) >= Number(level.id) ? 'bg-cyan-500 text-black shadow-lg shadow-cyan-500/30' : 'bg-white/5 text-white/20'
-                    )}>
-                        <CircleCheck className="w-6 h-6" />
+                <div key={idx} className='w-full rounded-[48px] p-10 bg-zinc-900 border border-white/10 relative group overflow-hidden shadow-3xl hover:border-cyan-500/30 transition-all'>
+                    <div className='absolute -right-12 -top-12 w-48 h-48 bg-cyan-500/5 rounded-full blur-[80px]' />
+                    <h5 className='text-xs font-black text-cyan-400 uppercase tracking-widest mb-2 opacity-60'>{level.name}</h5>
+                    <p className='text-5xl font-black italic tracking-tighter mb-8'>$ {level.id === 1 ? '100' : level.id === 2 ? '500' : Number(level.price).toLocaleString()}</p>
+                    <div className='flex items-center gap-4 mb-10'>
+                        <div className='px-3 py-1 bg-white/5 rounded-full border border-white/10 text-[9px] font-bold tracking-widest text-zinc-400 uppercase'>{(level.commission_rate * 100).toFixed(1)}% Yield</div>
+                        <div className='px-3 py-1 bg-white/5 rounded-full border border-white/10 text-[9px] font-bold tracking-widest text-zinc-400 uppercase'>{level.tasks_per_set} Units/Cycle</div>
                     </div>
-                </div>
-                <h5 className='text-xs font-black opacity-40 mb-2 uppercase tracking-widest leading-none'>{level.name}</h5>
-                <p className='text-4xl font-black tracking-tighter mb-6'>$ {
-                    level.id === 1 ? '100' :
-                    level.id === 2 ? '500' :
-                    level.id === 3 ? '1,500' :
-                    Number(level.price).toLocaleString()
-                }</p>
-                <p className='text-[11px] font-medium leading-relaxed text-zinc-400 mb-12'>
-                    {level.id === 1 ? 'Secure commissions of 0.5% by completing 40 units pulse 3 daily sets.' :
-                     level.id === 2 ? 'Secure commissions of 0.6% by completing 45 units pulse 3 daily sets.' :
-                     level.id === 3 ? 'Secure commissions of 0.8% by completing 50 units pulse 3 daily sets.' :
-                     'Strategic protocol verification and premium yield capture node.'}
-                </p>
-                
-                <button className={cn(
-                    'w-full py-5 rounded-2xl font-black text-[10px] tracking-[0.3em] uppercase transition-all shadow-xl active:scale-95',
-                    Number(profile?.level_id) >= Number(level.id) ? 'bg-white text-black hover:bg-zinc-200' : 'bg-white/5 text-white/20 border border-white/5'
-                )}>
-                    {Number(profile?.level_id) >= Number(level.id) ? 'OPERATIONAL' : 'LOCKED ACCESS'}
-                </button>
+                    <button className={cn(
+                        'w-full py-5 rounded-3xl font-black text-[10px] tracking-widest uppercase transition-all shadow-xl active:scale-95',
+                        Number(profile?.level_id) >= Number(level.id) ? 'bg-cyan-500 text-black hover:bg-cyan-400 shadow-cyan-500/20' : 'bg-white/5 text-white/30 border border-white/10'
+                    )}>
+                        {Number(profile?.level_id) >= Number(level.id) ? 'Operational' : 'Access Restricted'}
+                    </button>
                 </div>
             ))}
-                </div>
             </div>
         </div>
 
