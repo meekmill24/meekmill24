@@ -303,7 +303,32 @@ export default function ProfilePage() {
         {/* Menu Sections */}
         <div className='space-y-6 pb-20'>
             <div className='space-y-3'>
-                <div className="flex items-center justify-between ml-4 mb-4">
+                <div className="flex items-center justify-between ml-4 mb-4 mt-8">
+                    <p className='text-[10px] font-black uppercase tracking-[0.3em] text-zinc-600'>Compliance & Recognition</p>
+                    <div className="h-px flex-1 mx-6 bg-white/5" />
+                </div>
+
+                {[
+                    { icon: Award, label: 'Agent Certification', sub: 'Authorized proof of performance', href: '/app/profile/certificate' },
+                    { icon: FileText, label: 'User Agreement', sub: 'Regulatory protocol and terms', href: '/app/terms' },
+                ].map((item, idx) => (
+                    <Link key={idx} href={item.href} className='group block'>
+                        <div className='flex items-center justify-between p-6 rounded-[32px] bg-zinc-900/30 border border-white/5 hover:bg-zinc-800/80 transition-all hover:border-white/20 hover:shadow-2xl hover:shadow-black/40'>
+                            <div className='flex items-center gap-5'>
+                                <div className='w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center group-hover:bg-amber-500 group-hover:text-black transition-all duration-500 shadow-xl group-hover:shadow-amber-500/20'>
+                                    <item.icon className='w-5 h-5 transition-transform duration-500 group-hover:scale-110' />
+                                </div>
+                                <div>
+                                    <p className='text-sm font-black tracking-tight uppercase italic'>{item.label}</p>
+                                    <p className='text-[9px] font-bold text-zinc-600 uppercase tracking-widest mt-0.5 group-hover:text-zinc-400'>{item.sub}</p>
+                                </div>
+                            </div>
+                            <ChevronRight className='w-4 h-4 text-zinc-700 group-hover:text-white group-hover:translate-x-1 transition-all' />
+                        </div>
+                    </Link>
+                ))}
+
+                <div className="flex items-center justify-between ml-4 mb-4 mt-8">
                     <p className='text-[10px] font-black uppercase tracking-[0.3em] text-zinc-600'>System Configuration</p>
                     <div className="h-px flex-1 mx-6 bg-white/5" />
                 </div>
