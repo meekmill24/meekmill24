@@ -366,6 +366,54 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* Ready to Start - Final Call to Action */}
+        <section className="px-8 pb-32 max-w-7xl mx-auto">
+          <div className="relative overflow-hidden rounded-[80px] bg-slate-900 border border-white/5 py-24 md:py-32 px-10 text-center group">
+            {/* High-Fidelity Background Asset */}
+            <div className="absolute inset-0 z-0">
+               <Image 
+                src="/ready_to_start_bg_1774267671240.png" 
+                alt="Institutional Background" 
+                fill 
+                className="object-cover opacity-60 group-hover:scale-105 transition-transform duration-[3000ms]"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-950/40 to-slate-950/90" />
+            </div>
+
+            <div className="relative z-10 max-w-4xl mx-auto space-y-12">
+              <div className="inline-flex items-center gap-3 px-6 py-2.5 bg-cyan-500/10 border border-cyan-500/20 rounded-full text-[10px] font-black uppercase tracking-[0.4em] text-cyan-400">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+                </span>
+                READY TO INITIATE SESSION?
+              </div>
+
+              <h2 className="text-5xl md:text-8xl font-black italic tracking-tighter uppercase leading-[0.85] text-white">
+                FINALIZE YOUR <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-tr from-cyan-400 to-blue-500 drop-shadow-[0_0_30px_rgba(6,182,212,0.4)]">AGENT LINK</span>
+              </h2>
+
+              <p className="max-w-2xl mx-auto text-slate-400 text-lg md:text-xl font-medium italic">
+                Join our elite global network of synchronized agent nodes. Verify high-fidelity assets and harvest institutional gains in real-time.
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
+                <Link href="/auth/login" className="w-full sm:w-auto">
+                  <button className="w-full sm:w-auto px-16 py-6 bg-cyan-500 text-slate-950 rounded-[32px] font-black text-xs uppercase tracking-[0.4em] shadow-[0_20px_60px_rgba(6,182,212,0.3)] hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 group/btn">
+                    ACTIVATE NODE <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </Link>
+                <Link href="/auth/sign-up" className="w-full sm:w-auto">
+                  <button className="w-full sm:w-auto px-12 py-6 bg-white/5 border border-white/10 text-white rounded-[32px] font-black text-[10px] uppercase tracking-[0.4em] hover:bg-white/10 transition-all">
+                    CREATE REGISTRY
+                  </button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Professional Footer */}
         <footer className="px-8 py-24 border-t border-white/5 bg-slate-950/20">
           <div className="max-w-7xl mx-auto flex flex-col items-center">
