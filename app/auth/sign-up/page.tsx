@@ -171,7 +171,7 @@ export default function Page() {
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="referral" className="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">Referral Code (Optional)</Label>
+                        <Label htmlFor="referral" className="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">Referral Code</Label>
                         <div className="relative">
                         <Share2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                         <Input

@@ -122,7 +122,7 @@ export default function Page() {
                   </div>
                   <div className="grid gap-2">
                     <div className="flex items-center justify-between ml-1">
-                      <Label htmlFor="password" title="password" className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Access Key</Label>
+                      <Label htmlFor="password" title="password" className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Password</Label>
                       <Link href="#" className="text-[10px] font-black text-cyan-400 uppercase tracking-widest hover:underline">Reset</Link>
                     </div>
                     <div className="relative group">
