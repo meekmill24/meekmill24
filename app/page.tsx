@@ -46,8 +46,9 @@ export default function LandingPage() {
   const tiers = [
     { name: 'JUNIOR NODE', price: '100', yield: '0.5%', tasks: '40', color: 'cyan' },
     { name: 'ASSOCIATE NODE', price: '500', yield: '1.2%', tasks: '45', color: 'purple' },
-    { name: 'EXECUTIVE NODE', price: '2,500', yield: '1.8%', tasks: '50', color: 'emerald' },
-    { name: 'INSTITUTIONAL HUB', price: '10,000', yield: '2.5%', tasks: '60', color: 'rose' }
+    { name: 'SENIOR NODE', price: '1,000', yield: '1.8%', tasks: '50', color: 'emerald' },
+    { name: 'ELITE NODE', price: '1,500', yield: '2.2%', tasks: '55', color: 'blue' },
+    { name: 'MASTER HUB', price: '5,000', yield: '2.5%', tasks: '60', color: 'rose' }
   ];
 
   const testimonials = [

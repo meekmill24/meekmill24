@@ -319,7 +319,14 @@ export default function HomePage() {
                 <div key={idx} className='w-full rounded-[32px] md:rounded-[48px] p-6 md:p-10 bg-zinc-900/60 backdrop-blur-3xl border border-white/10 relative group overflow-hidden shadow-3xl hover:border-cyan-500/30 transition-all animate-in fade-in slide-in-from-bottom-4 duration-500' style={{ animationDelay: `${idx * 50}ms` }}>
                     <div className='absolute -right-12 -top-12 w-48 h-48 bg-cyan-500/5 rounded-full blur-[80px]' />
                     <h5 className='text-[8px] md:text-[10px] font-black text-cyan-400 uppercase tracking-widest mb-1 opacity-60'>{level.name}</h5>
-                                            <p className='text-3xl md:text-5xl font-black italic tracking-tighter mb-4 md:mb-8'>$ {level.id === 3 ? '1,000' : level.id === 5 ? '5,000' : Number(level.price).toLocaleString()}</p>
+                                            <p className='text-3xl md:text-5xl font-black italic tracking-tighter mb-4 md:mb-8'>$ {
+                                                level.id === 1 ? '100' : 
+                                                level.id === 2 ? '500' : 
+                                                level.id === 3 ? '1,000' : 
+                                                level.id === 4 ? '1,500' : 
+                                                level.id === 5 ? '5,000' : 
+                                                Number(level.price).toLocaleString()
+                                            }</p>
                     <div className='flex items-center gap-3 mb-6 md:mb-10'>
                         <div className='px-2.5 py-1 bg-white/5 rounded-full border border-white/10 text-[8px] font-bold tracking-widest text-zinc-400 uppercase'>{(level.commission_rate * 100).toFixed(1)}% Yield</div>
                         <div className='px-2.5 py-1 bg-white/5 rounded-full border border-white/10 text-[8px] font-bold tracking-widest text-zinc-400 uppercase'>{level.tasks_per_set} Units</div>
