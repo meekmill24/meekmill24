@@ -105,13 +105,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             async (event, session) => {
                 if (!mounted) return;
 
+                // LOGIC CALIBRATION: Prevent refreshes on simple background token updates
+                if (event === 'TOKEN_REFRESHED' && user?.id === session?.user?.id) {
+                    return;
+                }
+
                 if (event === 'INITIAL_SESSION' && !initialized) return;
 
                 if (session?.user) {
                     console.log("Logged in as:", session.user.email, "| ID:", session.user.id);
-                    setLoading(true);
-                    setUser(session.user);
-                    await fetchProfile(session.user.id);
+                    // Only trigger full loading state if it is a new user context
+                    if (user?.id !== session.user.id) {
+                        setLoading(true);
+                        setUser(session.user);
+                        await fetchProfile(session.user.id);
+                    } else {
+                        setUser(session.user);
+                    }
                 } else if (event === 'SIGNED_OUT') {
                     console.log("Auth session signed out");
                     setUser(null);
