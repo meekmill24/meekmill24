@@ -3,7 +3,8 @@
 import React from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { ChevronLeft, Spinner } from 'lucide-react';
+import { ChevronLeft } from 'lucide-react';
+import { Spinner } from '@/components/ui/spinner';
 import InstitutionalCertificate from '@/components/InstitutionalCertificate';
 
 export default function CertificatePage() {
