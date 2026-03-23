@@ -26,12 +26,16 @@ import {
 import { toast } from 'sonner';
 
 const PROFESSIONAL_PHOTO_PATHS = [
-    'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80', // Headphones
-    'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=800&q=80', // Smartwatch
-    'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&q=80', // Laptop
-    'https://images.unsplash.com/photo-1592078615290-033ee584e267?w=800&q=80', // Chair
-    'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80', // Gym
-    'https://images.unsplash.com/photo-1575311373937-040b8e3fd6b6?w=800&q=80'  // Coffee/Premium
+    '/items/premium/maxresdefault.jpg',
+    '/items/premium/whitr_bg.jpg',
+    '/items/premium/13.jpg',
+    '/items/premium/14.jpg',
+    '/items/premium/15.jpg',
+    '/items/premium/16.jpg',
+    '/items/premium/2.jpeg',
+    '/items/premium/1a98ee99a0281cea19aed5243c9dea58.jpg',
+    '/items/premium/20201026_WEB-Sound-Bar-Guide-Lifestyle-Images-1-Mobile.jpg',
+    '/items/premium/1460282850_4621-1_760.jpg'
 ];
 
 function ImagePreview({ url, alt, size = 'md' }: { url: string; alt: string; size?: 'sm' | 'md' | 'lg' }) {
