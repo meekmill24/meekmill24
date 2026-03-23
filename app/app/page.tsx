@@ -30,6 +30,7 @@ import {
 import { Spinner } from '@/components/ui/spinner'
 import ActivityFeed from '@/components/ActivityFeed'
 import DraggableChat from '@/components/DraggableChat'
+import NotificationCenter from '@/components/NotificationCenter'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
@@ -99,9 +100,7 @@ export default function HomePage() {
                 <Link href="/app/profile" className='w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 shadow-inner hover:bg-white/10 transition-all'>
                     <User className='w-6 h-6 text-cyan-400' />
                 </Link>
-                <div className='w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 shadow-inner group'>
-                    <Bell className='w-6 h-6 group-hover:rotate-12 transition-transform' />
-                </div>
+                <NotificationCenter />
             </div>
         </div>
 

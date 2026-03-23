@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation'; 
 import { LayoutDashboard, Users, Layers, Grid3X3, Share2, Receipt, LogOut, DollarSign, Menu, X, ArrowDownToLine, ArrowUpFromLine, Package, Bell, Settings, AlertCircle, } from 'lucide-react'; 
 import AnimatePage from '@/components/AnimatePage'; 
+import NotificationCenter from '@/components/NotificationCenter';
 
 const navItems = [ 
   { icon: LayoutDashboard, label: 'Dashboard', href: '/admin' }, 
@@ -156,6 +157,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <span>{totalPending} Action Needed</span>
               </div>
             )}
+            <NotificationCenter />
             <div className="flex items-center gap-3 px-4 py-2 bg-slate-800/50 rounded-full border border-slate-700">
               <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-sm font-bold">
                 {profile?.username?.[0]?.toUpperCase() || 'A'}
