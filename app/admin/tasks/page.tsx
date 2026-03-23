@@ -23,14 +23,15 @@ import {
     Database,
     Zap
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 const PROFESSIONAL_PHOTO_PATHS = [
-    '/items/premium/headphones.png',
-    '/items/premium/smartwatch.png',
-    '/items/premium/laptop.png',
-    '/items/premium/chair.png',
-    '/items/premium/dumbbells.png',
-    '/items/premium/treadmill.png'
+    'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80', // Headphones
+    'https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=800&q=80', // Smartwatch
+    'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800&q=80', // Laptop
+    'https://images.unsplash.com/photo-1592078615290-033ee584e267?w=800&q=80', // Chair
+    'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&q=80', // Gym
+    'https://images.unsplash.com/photo-1575311373937-040b8e3fd6b6?w=800&q=80'  // Coffee/Premium
 ];
 
 function ImagePreview({ url, alt, size = 'md' }: { url: string; alt: string; size?: 'sm' | 'md' | 'lg' }) {
@@ -350,7 +351,7 @@ export default function AdminTasksPage() {
             </div>
 
             {/* Filter & Actions Bar */}
-            <div className="bg-slate-900/40 p-8 rounded-[40px] border border-white/5 backdrop-blur-xl relative z-40 group">
+            <div className="bg-slate-900/40 p-4 md:p-8 rounded-[32px] md:rounded-[40px] border border-white/5 backdrop-blur-xl relative z-40 group">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/5 rounded-full blur-[100px] -mr-32 -mt-32 opacity-0 group-hover:opacity-100 transition-opacity" />
                 
                 <div className="flex flex-col xl:flex-row gap-6 items-center justify-between relative z-10">

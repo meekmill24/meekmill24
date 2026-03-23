@@ -77,7 +77,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const totalPending = pendingCounts.deposits + pendingCounts.withdrawals;
 
   return ( 
-    <div className="min-h-screen flex bg-[#0F172A] text-slate-200 relative overflow-hidden"> 
+    <div className="min-h-screen flex bg-[#0F172A] text-slate-200 relative overflow-x-hidden"> 
       {/* Mobile Menu Toggle */}
       <button 
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}

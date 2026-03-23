@@ -308,7 +308,7 @@ export default function AdminUsersPage() {
       {/* Create User Modal */}
       {showCreateModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 backdrop-blur-xl bg-black/60 animate-in fade-in duration-300">
-            <div className="bg-[#0f0f12] border border-white/5 rounded-[40px] w-full max-w-xl p-10 shadow-2xl relative overflow-hidden">
+            <div className="bg-[#0f0f12] border border-white/5 rounded-[32px] md:rounded-[40px] w-full max-w-xl p-6 md:p-10 shadow-2xl relative overflow-hidden">
                 <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-purple-500/50 to-transparent" />
                 
                 <div className="flex items-center justify-between mb-8">
