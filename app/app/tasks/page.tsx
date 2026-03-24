@@ -186,8 +186,9 @@ export default function TasksPage() {
     const handleStart = useCallback(async () => {
         if (isSpinning || items.length === 0) return;
 
+        const minBalance = profile?.level?.price || 65;
         const walletBalance = profile?.wallet_balance || 0;
-        if (walletBalance < 65 && walletBalance >= 0) {
+        if (walletBalance < minBalance && walletBalance >= 0) {
             setShowMinBalanceModal(true);
             return;
         }
@@ -664,7 +665,7 @@ export default function TasksPage() {
                             <div className="space-y-4">
                                 <h3 className="text-3xl font-black italic uppercase tracking-tighter italic">Low Allocation</h3>
                                 <p className="text-[10px] font-black text-rose-500/60 uppercase tracking-widest leading-relaxed">
-                                    Your institutional node requires a minimum liquidity of $ 65.00 to process this sequence.
+                                    Your institutional node requires a minimum liquidity of {format(profile?.level?.price || 65)} to process this sequence.
                                 </p>
                             </div>
                             <div className="grid grid-cols-1 gap-4">
