@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
+import { cn } from '@/lib/utils';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useCurrency } from '@/context/CurrencyContext';
@@ -31,7 +32,8 @@ import {
     Play,
     RefreshCw,
     AlertCircle,
-    ChevronRight
+    ChevronRight,
+    Lock
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
