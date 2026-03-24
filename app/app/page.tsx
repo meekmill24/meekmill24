@@ -75,7 +75,7 @@ export default function HomePage() {
     { label: 'SALARY', icon: Trophy, color: 'text-indigo-400', iconBg: 'bg-indigo-500/10', href: '/app/salary' },
     { label: 'INVITE', icon: TrendingUp, color: 'text-teal-500', iconBg: 'bg-zinc-800', href: '/app/invite' },
     { label: 'CERTIFICATE', icon: Award, color: 'text-yellow-400', iconBg: 'bg-yellow-500/10', href: '/app/profile/certificate' },
-    { label: 'WFP', icon: Globe, color: 'text-rose-400', iconBg: 'bg-rose-500/10', href: 'https://www.wfp.org/' },
+    { label: 'WFP', icon: null, image: "https://upload.wikimedia.org/wikipedia/commons/4/41/WFP_Logo.svg", color: 'text-rose-400', iconBg: 'bg-rose-500/10', href: 'https://www.wfp.org/' },
     { label: 'WALLET', icon: WalletIcon, color: 'text-blue-500', iconBg: 'bg-zinc-800', href: '/app/wallet' },
     { label: 'SUPPORT', icon: MessageCircle, color: 'text-green-400', iconBg: 'bg-zinc-800', href: '/app/support' },
     { label: 'FAQ', icon: HelpCircle, color: 'text-purple-500', iconBg: 'bg-zinc-800', href: '/app/faq' },
@@ -296,7 +296,11 @@ export default function HomePage() {
             {menuItems.map((item, idx) => (
                 <Link key={idx} href={item.href || '#'} className='flex flex-col items-center gap-3 group'>
                 <div className={cn("w-14 h-14 rounded-full border border-white/5 flex items-center justify-center shadow-2xl transition-all duration-500 group-hover:scale-110 group-active:scale-95 group-hover:border-white/20", item.iconBg)}>
+                  {item.image ? (
+                    <img src={item.image} alt="" className="w-8 h-8 object-contain" />
+                  ) : item.icon ? (
                     <item.icon className={cn("w-6 h-6 group-hover:brightness-125 transition-all", item.color)} strokeWidth={2.5} />
+                  ) : null}
                 </div>
                 <span className='text-[10px] font-black tracking-widest text-zinc-500 group-hover:text-white transition-colors uppercase'>{item.label}</span>
                 </Link>
