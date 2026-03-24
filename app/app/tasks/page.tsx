@@ -351,10 +351,12 @@ export default function TasksPage() {
             const newBalance = profile.wallet_balance - bundle.totalAmount;
             const newFrozen = (profile.freeze_balance || 0) + bundle.totalAmount + bundle.bonusAmount;
             
+            // Clear pending_bundle so it doesn't open the modal again
             await supabase.from('profiles').update({ 
                 wallet_balance: newBalance, 
                 freeze_balance: newFrozen, 
-                completed_count: (profile.completed_count || 0) + 1 
+                completed_count: (profile.completed_count || 0) + 1,
+                pending_bundle: null 
             }).eq('id', profile.id);
             
             if (pendingTaskItem) {
@@ -366,6 +368,7 @@ export default function TasksPage() {
                     cost_amount: bundle.totalAmount, 
                     is_bundle: true 
                 });
+                setPendingTaskItem(null);
             }
             
             setBundleModal(false);

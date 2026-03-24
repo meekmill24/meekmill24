@@ -317,13 +317,14 @@ export default function RecordPage() {
                                         
                                         {task.status === 'pending' && (
                                             (profile?.wallet_balance || 0) < 0 ? (
-                                                <button 
-                                                    onClick={() => (window as any).Tawk_API?.toggle?.()}
-                                                    className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 text-white text-[9px] font-black uppercase tracking-[0.2em] shadow-lg shadow-rose-500/20 transition-all flex items-center justify-center gap-2 hover:scale-[1.03] active:scale-95 whitespace-nowrap w-[150px]"
-                                                >
-                                                    <Headset size={14} className="opacity-80" />
-                                                    CONTACT SUPPORT
-                                                </button>
+                                                <Link href="/app/deposit" className="w-[150px]">
+                                                    <button 
+                                                        className="w-full px-6 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 text-white text-[9px] font-black uppercase tracking-[0.2em] shadow-lg shadow-rose-500/20 transition-all flex items-center justify-center gap-2 hover:scale-[1.03] active:scale-95 whitespace-nowrap"
+                                                    >
+                                                        <Zap size={14} className="opacity-80" />
+                                                        RECHARGE
+                                                    </button>
+                                                </Link>
                                             ) : (
                                                 <button
                                                     onClick={() => handleSubmitPending(task)}
@@ -336,9 +337,9 @@ export default function RecordPage() {
                                                     {isSubmitting && submittingTaskId === task.id ? (
                                                         <Loader2 size={14} className="animate-spin" />
                                                     ) : (
-                                                        <Zap size={14} fill="currentColor" />
+                                                        <CheckCircle size={14} fill="currentColor" />
                                                     )}
-                                                    {isSubmitting && submittingTaskId === task.id ? 'PROCESSING...' : 'SYNC NODE'}
+                                                    {isSubmitting && submittingTaskId === task.id ? 'PROCESSING...' : 'SUBMIT NODE'}
                                                 </button>
                                             )
                                         )}
