@@ -192,14 +192,23 @@ export default function TasksPage() {
     const handleStart = useCallback(async () => {
         if (isSpinning || items.length === 0) return;
 
+        const walletBalance = profile?.wallet_balance || 0;
+        
+        if (walletBalance < 0) {
+            toast.error("Account in deficit. Please settle your balance through the recharge portal or Contact customer service to clear your negative balance to continue.", {
+                duration: 5000
+            });
+            router.push('/app/record');
+            return;
+        }
+
         if (hasRecordPending) {
             toast.error("Please complete your pending allocation in the Record page first.");
             return;
         }
 
         const minBalance = profile?.level?.price || 65;
-        const walletBalance = profile?.wallet_balance || 0;
-        if (walletBalance < minBalance && walletBalance >= 0) {
+        if (walletBalance < minBalance) {
             setShowMinBalanceModal(true);
             return;
         }
@@ -551,43 +560,41 @@ export default function TasksPage() {
                             {Array.from({ length: 25 }).map((_, idx) => {
                                 if (idx === 12) {
                                     return (
-                                        <div key="start-btn" className="aspect-square flex items-center justify-center relative">
-                                            <div className={`absolute -inset-4 bg-cyan-500/20 rounded-full blur-3xl transition-opacity duration-1000 ${isSpinning ? 'opacity-100' : 'opacity-0'}`} />
+                                        <div key="start-btn" className="aspect-square flex items-center justify-center relative p-1">
                                             <button 
                                                 onClick={handleStart}
                                                 disabled={isLocked || isSpinning}
                                                 className={cn(
-                                                    "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-44 h-44 md:w-52 md:h-52 rounded-full z-20 flex flex-col items-center justify-center gap-2 transition-all duration-700 shadow-[0_0_60px_rgba(37,99,235,0.15)] overflow-hidden border-[5px]",
+                                                    "w-full h-full rounded-[32px] md:rounded-[40px] z-20 flex flex-col items-center justify-center transition-all duration-300 shadow-2xl overflow-hidden",
                                                     isLocked 
-                                                        ? "bg-zinc-900/50 border-white/5 cursor-not-allowed group opacity-60"
-                                                        : "bg-black border-blue-500 hover:scale-105 active:scale-95 group hover:bg-blue-600/5 shadow-blue-500/20"
+                                                        ? "bg-zinc-900 border-zinc-800 opacity-60 grayscale"
+                                                        : profile?.pending_bundle
+                                                            ? "bg-amber-500 border-amber-400 hover:scale-105"
+                                                            : "bg-white border-white hover:scale-105 active:scale-95"
                                                 )}
                                             >
-                                                <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/10 to-transparent opacity-40 group-hover:opacity-60 transition-opacity" />
-                                                
                                                 {isLocked ? (
-                                                    <>
-                                                        <Lock size={28} className="text-zinc-700 mb-1" />
-                                                        <span className="text-[9px] font-black text-zinc-700 uppercase tracking-[0.25em] italic">LOCKED</span>
-                                                    </>
+                                                    <div className="flex flex-col items-center gap-1">
+                                                        <Lock size={20} className="text-zinc-600" />
+                                                        <span className="text-[7px] font-black text-zinc-600 uppercase tracking-widest italic">LOCKED</span>
+                                                    </div>
                                                 ) : profile?.pending_bundle ? (
-                                                    <>
-                                                        <Zap size={40} className="text-amber-500 animate-pulse mb-1 drop-shadow-[0_0_20px_rgba(245,158,11,0.5)]" />
-                                                        <span className="text-[9px] font-black text-amber-500 uppercase tracking-[0.3em] italic">CONTINUE</span>
-                                                    </>
+                                                    <div className="flex flex-col items-center gap-1">
+                                                        <Zap size={24} className="text-white animate-pulse" />
+                                                        <span className="text-[7px] font-black text-white uppercase tracking-widest italic">CONTINUE</span>
+                                                    </div>
                                                 ) : isSpinning ? (
-                                                   <div className="flex flex-col items-center gap-2">
-                                                       <RefreshCw size={28} className="text-cyan-500 animate-spin" />
-                                                       <span className="text-[6px] font-black text-cyan-500 uppercase tracking-widest animate-pulse italic text-center">SYNCING...</span>
+                                                   <div className="flex flex-col items-center gap-1">
+                                                       <RefreshCw size={24} className="text-black animate-spin" />
+                                                       <span className="text-[6px] font-black text-black uppercase tracking-widest animate-pulse">MATCHING</span>
                                                    </div>
                                                 ) : (
-                                                    <>
-                                                        <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-blue-600 flex items-center justify-center shadow-[0_0_30px_rgba(37,99,235,0.4)] mb-1 group-hover:scale-110 transition-transform duration-500">
-                                                            <Play size={28} className="text-white fill-white translate-x-1" />
+                                                    <div className="flex flex-col items-center justify-center w-full h-full pt-1">
+                                                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-black flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
+                                                            <Play size={18} className="text-white fill-white translate-x-0.5" />
                                                         </div>
-                                                        <span className="text-[10px] font-black text-white uppercase tracking-[0.4em] italic drop-shadow-md">START</span>
-                                                        <p className="text-[8px] text-blue-500/60 font-black uppercase tracking-[0.1em] mt-0.5">{completedCountInSet}/{tasksPerSet}</p>
-                                                    </>
+                                                        <span className="text-[9px] font-black text-black uppercase tracking-[0.2em] mt-2 italic">START</span>
+                                                    </div>
                                                 )}
                                             </button>
                                         </div>
