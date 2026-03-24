@@ -60,6 +60,37 @@ export default function HomePage() {
     loadLevels()
   }, [])
 
+  useEffect(() => {
+    if (!profileLoading && profile?.id) {
+        const checkNotifications = async () => {
+            const { data } = await supabase
+                .from('notifications')
+                .select('id')
+                .eq('user_id', profile.id)
+                .eq('title', 'System Activation Successful')
+                .limit(1);
+            
+            if (data?.length === 0) {
+                await supabase.from('notifications').insert([
+                    {
+                        user_id: profile.id,
+                        title: 'System Activation Successful',
+                        message: 'Welcome to Captiv8. Your institutional node access has been verified. You received a startup allocation bonus.',
+                        type: 'success'
+                    },
+                    {
+                        user_id: profile.id,
+                        title: 'Security Protocol: ACTIVE',
+                        message: 'Your biometric-linked encryption is now securing all node settlements. Withdrawal gateway is synchronized.',
+                        type: 'info'
+                    }
+                ]);
+            }
+        };
+        checkNotifications();
+    }
+  }, [profile?.id, profileLoading]);
+
   if (profileLoading) {
     return (
       <div className='flex items-center justify-center min-h-screen bg-[#0a0a0a]'>
@@ -221,39 +252,39 @@ export default function HomePage() {
                     ))}
                 </div>
 
-                {/* Stats Grid - OPTIMIZED FOR LARGE SCREENS AS REQUESTED */}
-                <div id="stats-grid" className='grid grid-cols-2 lg:grid-cols-5 gap-2 md:gap-4 p-4 md:p-8 relative z-10'>
-                    {/* Available Balance - PROMINENT MASTER POSITION ON DESKTOP */}
-                    <div className='col-span-2 lg:col-span-2 bg-gradient-to-br from-zinc-900/80 to-black/40 backdrop-blur-md rounded-[32px] p-6 md:p-10 border border-cyan-500/20 hover:border-cyan-500/40 transition-all duration-500 group/card shadow-2xl relative overflow-hidden h-full flex flex-col justify-between'>
-                        <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-                             <WalletIcon size={120} className="text-cyan-400" />
+                {/* Stats Grid - REFINED ARRANGEMENT */}
+                <div id="stats-grid" className='grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4 p-4 md:p-8 relative z-10'>
+                    {/* Available Balance - PRIMARY BOX */}
+                    <div className='col-span-2 lg:col-span-1 bg-gradient-to-br from-zinc-900/80 to-black/40 backdrop-blur-md rounded-[32px] p-6 md:p-8 border border-cyan-500/20 hover:border-cyan-500/40 transition-all duration-500 group/card shadow-2xl relative overflow-hidden flex flex-col justify-between h-48'>
+                        <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                             <WalletIcon size={80} className="text-cyan-400" />
                         </div>
                         <div>
-                            <p className='text-[9px] md:text-[11px] font-black uppercase tracking-[0.4em] text-cyan-400 mb-2 md:mb-4 italic'>Available Registry</p>
-                            <div className='flex items-baseline gap-2 md:gap-3 mb-6'>
-                                <span className='text-zinc-600 font-bold text-2xl md:text-4xl'>$</span>
+                            <p className='text-[8px] md:text-[10px] font-black uppercase tracking-[0.4em] text-cyan-400 mb-2 italic'>Available Registry</p>
+                            <div className='flex items-baseline gap-2 mb-4'>
+                                <span className='text-zinc-600 font-bold text-xl md:text-2xl'>$</span>
                                 <h1 className={cn(
-                                    'text-3xl md:text-6xl font-black italic tracking-tighter drop-shadow-[0_0_30px_rgba(255,255,255,0.2)]',
+                                    'text-2xl md:text-4xl font-black italic tracking-tighter',
                                     (profile?.wallet_balance || 0) < 0 ? 'text-rose-500' : 'text-white'
                                 )}>
                                     {profile?.wallet_balance?.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                 </h1>
                             </div>
                         </div>
-                        <div className='inline-flex items-center gap-2 px-4 py-2 bg-cyan-500/10 border border-cyan-500/20 rounded-full w-fit group/btn hover:bg-cyan-500/20 transition-all cursor-pointer'>
-                            <div className='w-2 h-2 rounded-full bg-cyan-500 animate-pulse' />
-                            <span className='text-[8px] md:text-[10px] font-black uppercase tracking-widest text-cyan-400'>SECURE NODE</span>
+                        <div className='inline-flex items-center gap-2 px-4 py-1.5 bg-cyan-500/10 border border-cyan-500/20 rounded-full w-fit'>
+                            <div className='w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse' />
+                            <span className='text-[8px] font-black uppercase tracking-widest text-cyan-400'>SECURE</span>
                         </div>
                     </div>
 
-                    {/* Today's Profit */}
-                    <div className='lg:col-span-1 bg-black/40 backdrop-blur-md rounded-[24px] p-5 md:p-8 border border-white/5 hover:bg-black/60 transition-all duration-500 group/card shadow-2xl relative overflow-hidden h-full flex flex-col justify-between'>
+                    {/* Cycle Profit */}
+                    <div className='col-span-1 lg:col-span-1 bg-black/40 backdrop-blur-md rounded-[24px] p-5 md:p-8 border border-white/5 hover:bg-black/60 transition-all duration-500 group/card shadow-2xl relative overflow-hidden flex flex-col justify-between h-48'>
                         <div>
                             <p className='text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-2'>Cycle Profit</p>
                             <div className='flex items-baseline gap-1 md:gap-2 mb-4'>
                                 <span className='text-emerald-900 font-bold text-lg md:text-2xl'>$</span>
-                                <h1 className='text-2xl md:text-4xl font-black italic tracking-tighter text-emerald-400'>
-                                    {((profile?.wallet_balance || 0) * 0.0155).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                <h1 className='text-xl md:text-3xl font-black italic tracking-tighter text-emerald-400'>
+                                    {(profile?.profit || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                 </h1>
                             </div>
                         </div>
@@ -262,27 +293,29 @@ export default function HomePage() {
                         </div>
                     </div>
 
-                    {/* Referral Bonus */}
-                    <div className='lg:col-span-1 bg-black/40 backdrop-blur-md rounded-[24px] p-5 md:p-8 border border-white/5 hover:bg-black/60 transition-all duration-500 group/card shadow-2xl relative overflow-hidden h-full flex flex-col justify-between'>
+                    {/* Network Profit */}
+                    <div className='col-span-1 lg:col-span-1 bg-black/40 backdrop-blur-md rounded-[24px] p-5 md:p-8 border border-white/5 hover:bg-black/60 transition-all duration-500 group/card shadow-2xl relative overflow-hidden flex flex-col justify-between h-48'>
                         <div>
                             <p className='text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-2'>Network</p>
                             <div className='flex items-baseline gap-1 md:gap-2 mb-4'>
                                 <span className='text-purple-900 font-bold text-lg md:text-2xl'>$</span>
-                                <h1 className='text-2xl md:text-4xl font-black italic tracking-tighter text-white'>0.00</h1>
+                                <h1 className='text-xl md:text-3xl font-black italic tracking-tighter text-white'>
+                                    {(profile?.referral_earned || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                </h1>
                             </div>
                         </div>
                         <span className='text-[7px] md:text-[8px] font-black uppercase tracking-widest text-white/20 animate-pulse tracking-[0.5em]'>READY</span>
                     </div>
 
                     {/* Task Progress */}
-                    <div className='lg:col-span-1 bg-black/40 backdrop-blur-md rounded-[24px] p-5 md:p-8 border border-white/5 hover:bg-black/60 transition-all duration-500 group/card shadow-2xl relative overflow-hidden h-full flex flex-col justify-between'>
+                    <div className='col-span-2 lg:col-span-1 bg-black/40 backdrop-blur-md rounded-[24px] p-5 md:p-8 border border-white/5 hover:bg-black/60 transition-all duration-500 group/card shadow-2xl relative overflow-hidden flex flex-col justify-between h-48'>
                         <div>
                             <p className='text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-2'>Unit cycles</p>
                             <div className='flex items-baseline gap-1 md:gap-2 mb-4'>
-                                <h1 className='text-2xl md:text-4xl font-black italic tracking-tighter text-white'>
+                                <h1 className='text-xl md:text-3xl font-black italic tracking-tighter text-white'>
                                     {(profile?.completed_count || 0) % (profile?.level?.tasks_per_set || 40)}
                                 </h1>
-                                <span className="text-[10px] md:text-base text-zinc-700 font-bold">/ {profile?.level?.tasks_per_set || 40}</span>
+                                <span className="text-[10px] text-zinc-700 font-bold">/ {profile?.level?.tasks_per_set || 40}</span>
                             </div>
                         </div>
                         <div className='w-full h-1 bg-white/5 rounded-full overflow-hidden'>

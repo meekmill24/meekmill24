@@ -224,6 +224,12 @@ export default function TasksPage() {
             setMatchingStatus("PENDING ALLOCATION DETECTED");
             setActiveBundle(profile.pending_bundle);
             setBundleModal(true);
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#F59E0B', '#FFFFFF', '#3B82F6']
+            });
             return;
         }
 
@@ -305,6 +311,12 @@ export default function TasksPage() {
                 taskItem: { title: item.title, image_url: item.image_url, category: item.category ?? '' },
             });
             setBundleModal(true);
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#F59E0B', '#FFFFFF', '#3B82F6']
+            });
             return;
         }
 
