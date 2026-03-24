@@ -32,13 +32,40 @@ export default function AdminUsersPage() {
 
   const handleSave = async () => {
     if (!editingId) return;
-    const { error } = await supabase.from('profiles').update(editData).eq('id', editingId);
-    if (!error) {
-      toast.success('User updated successfully');
-      setEditingId(null);
-      fetchUsers();
-    } else {
-      toast.error(error.message);
+    
+    // Explicitly casting and filtering fields for the server API
+    const updatePayload = {
+      username: editData.username,
+      phone: editData.phone,
+      level_id: editData.level_id,
+      role: editData.role,
+      wallet_balance: Number(editData.wallet_balance),
+      profit: Number(editData.profit),
+      completed_count: Number(editData.completed_count),
+      current_set: Number(editData.current_set),
+      total_earned: Number(editData.total_earned),
+      is_admin: editData.role === 'admin'
+    };
+
+    try {
+        const res = await fetch('/api/admin/update-user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userId: editingId,
+                updateData: updatePayload
+            })
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to recalibrate node');
+
+        toast.success(`Matrix node calibrated! Balance: $${Number(updatePayload.wallet_balance).toFixed(2)}`);
+        setEditingId(null);
+        fetchUsers();
+    } catch (err: any) {
+        console.error('Calibration failure:', err);
+        toast.error(err.message);
     }
   };
 
@@ -51,23 +78,29 @@ export default function AdminUsersPage() {
 
     let updateData = {};
     if (resetType === 'full') {
-        updateData = { current_set: 1, completed_count: 0, profit: 0 };
+        updateData = { current_set: 1, completed_count: 0, profit: 0, wallet_balance: 45 }; 
     } else {
-        // Advance Set: target is next set start
         const nextSet = (user.current_set || 1) + 1;
         updateData = { current_set: nextSet };
     }
 
-    const { error } = await supabase.from('profiles').update(updateData).eq('id', resetUserId);
-    
-    if (!error) {
-      toast.success(resetType === 'full' ? 'User portfolio reset to set 1, 0 tasks.' : `User advanced to set ${ (user.current_set || 1) + 1}`);
-      setResetUserId(null);
-      fetchUsers();
-    } else {
-      toast.error(error.message);
+    try {
+        const res = await fetch('/api/admin/update-user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: resetUserId, updateData })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Sync failed');
+
+        toast.success(resetType === 'full' ? 'Hard Reset Node Success' : `Set ${ (user.current_set || 1) + 1} Synchronization Established`);
+        setResetUserId(null);
+        fetchUsers();
+    } catch (err: any) {
+        toast.error(err.message);
+    } finally {
+        setResetting(false);
     }
-    setResetting(false);
   };
 
   const handleCreateUser = async (e: React.FormEvent) => {
@@ -196,7 +229,7 @@ export default function AdminUsersPage() {
                             value={editData.level_id || 1}
                             onChange={(e) => setEditData({...editData, level_id: parseInt(e.target.value)})}
                           >
-                            {[1,2,3,4,5].map(lvl => <option key={lvl} value={lvl}>LVL {lvl}</option>)}
+                            {[1,2,3,4,5,6,7,8].map(lvl => <option key={lvl} value={lvl}>LVL {lvl}</option>)}
                           </select>
                         ) : (
                           <span className="px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-[9px] font-black uppercase tracking-widest border border-blue-500/20">
@@ -404,7 +437,7 @@ export default function AdminUsersPage() {
                 </h3>
                 <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-relaxed mb-8">
                     {resetType === 'full' 
-                        ? "Revert participant protocol to Set 1 and Zero profit. This clears today's metrics." 
+                        ? "Revert participant protocol to Set 1 and starting balance. This clears today's metrics." 
                         : "Push participant node to the NEXT task set cycle immediately."}
                 </p>
                 <div className="flex flex-col gap-3">

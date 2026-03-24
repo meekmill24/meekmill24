@@ -14,6 +14,7 @@ export interface Profile {
     freeze_balance: number;
     referral_earned: number;
     avatar_url: string | null;
+    total_earnings?: number;
     email: string;
     completed_count: number;
     current_set: number;

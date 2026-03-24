@@ -75,7 +75,7 @@ export default function HomePage() {
     { label: 'SALARY', icon: Trophy, color: 'text-indigo-400', iconBg: 'bg-indigo-500/10', href: '/app/salary' },
     { label: 'INVITE', icon: TrendingUp, color: 'text-teal-500', iconBg: 'bg-zinc-800', href: '/app/invite' },
     { label: 'CERTIFICATE', icon: Award, color: 'text-yellow-400', iconBg: 'bg-yellow-500/10', href: '/app/profile/certificate' },
-    { label: 'WFP', icon: null, image: "https://upload.wikimedia.org/wikipedia/commons/4/41/WFP_Logo.svg", color: 'text-rose-400', iconBg: 'bg-rose-500/10', href: 'https://www.wfp.org/' },
+    { label: 'WFP', icon: null, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/WFP_Logo_vertical.svg/512px-WFP_Logo_vertical.svg.png", color: 'text-rose-400', iconBg: 'bg-rose-500/10', href: 'https://www.wfp.org/' },
     { label: 'WALLET', icon: WalletIcon, color: 'text-blue-500', iconBg: 'bg-zinc-800', href: '/app/wallet' },
     { label: 'SUPPORT', icon: MessageCircle, color: 'text-green-400', iconBg: 'bg-zinc-800', href: '/app/support' },
     { label: 'FAQ', icon: HelpCircle, color: 'text-purple-500', iconBg: 'bg-zinc-800', href: '/app/faq' },
@@ -193,7 +193,7 @@ export default function HomePage() {
                         <Link href="/app/tasks" className="p-1 rounded-[32px] bg-gradient-to-tr from-cyan-600 via-blue-600 to-indigo-500 flex flex-col items-center justify-center group/startBtn shadow-xl active:scale-95 transition-all">
                             <div className="px-12 py-6 md:py-10 rounded-[30px] bg-black/40 backdrop-blur-xl flex flex-col items-center gap-2">
                                 <Play size={32} className="text-white fill-white drop-shadow-2xl" />
-                                <span className="text-[10px] font-black tracking-[0.4em] text-white">INVOKE NODE</span>
+                                <span className="text-[10px] font-black tracking-[0.4em] text-white">START NODE</span>
                             </div>
                         </Link>
                     </div>

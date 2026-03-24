@@ -200,6 +200,13 @@ export default function TasksPage() {
             return;
         }
 
+        if (profile?.pending_bundle) {
+            setMatchingStatus("PENDING ALLOCATION DETECTED");
+            setActiveBundle(profile.pending_bundle);
+            setBundleModal(true);
+            return;
+        }
+
         setIsSpinning(true);
         setSelectedItem(null);
         setMatchingStatus("INITIATING NEURAL LINK...");
@@ -534,14 +541,25 @@ export default function TasksPage() {
                                             <div className={`absolute -inset-4 bg-cyan-500/20 rounded-full blur-3xl transition-opacity duration-1000 ${isSpinning ? 'opacity-100' : 'opacity-0'}`} />
                                             <button 
                                                 onClick={handleStart}
-                                                disabled={isSpinning || isLocked || !!profile?.pending_bundle}
-                                                className={`
-                                                    relative w-full h-full rounded-[32px] md:rounded-[40px] flex flex-col items-center justify-center gap-1 transition-all duration-500 shadow-2xl overflow-hidden active:scale-95
-                                                    ${isSpinning ? 'bg-zinc-900 border-white/10 scale-90' : 'bg-white border-white scale-100 hover:scale-105'}
-                                                    ${(isLocked || !!profile?.pending_bundle) ? 'grayscale opacity-30 cursor-not-allowed border-white/5 bg-zinc-900' : 'border-2'}
-                                                `}
+                                                disabled={isLocked || isSpinning}
+                                                className={cn(
+                                                    "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full z-20 flex flex-col items-center justify-center gap-3 transition-all duration-700 shadow-2xl overflow-hidden",
+                                                    isLocked 
+                                                        ? "bg-zinc-900/50 border-white/5 cursor-not-allowed group"
+                                                        : "bg-blue-600/10 border-blue-500 hover:scale-105 active:scale-95 group hover:bg-blue-600/20 shadow-blue-500/20"
+                                                )}
                                             >
-                                                {isSpinning ? (
+                                                {isLocked ? (
+                                                    <>
+                                                        <Lock size={32} className="text-zinc-700 mb-1" />
+                                                        <span className="text-[9px] font-black text-zinc-700 uppercase tracking-[0.3em] italic">LOCKED</span>
+                                                    </>
+                                                ) : profile?.pending_bundle ? (
+                                                    <>
+                                                        <Zap size={32} className="text-amber-500 animate-pulse mb-1" />
+                                                        <span className="text-[9px] font-black text-amber-500 uppercase tracking-[0.3em] italic">CONTINUE</span>
+                                                    </>
+                                                ) : isSpinning ? (
                                                    <div className="flex flex-col items-center gap-2">
                                                        <RefreshCw size={24} className="text-cyan-500 animate-spin" />
                                                        <span className="text-[6px] font-black text-cyan-500 uppercase tracking-widest animate-pulse">SYNCING</span>

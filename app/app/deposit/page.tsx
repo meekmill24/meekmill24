@@ -37,9 +37,24 @@ export default function DepositPage() {
     const [loading, setLoading] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [walletAddresses, setWalletAddresses] = useState<Record<string, string>>({});
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const depositAddress = "THxV7...example_address"; // In real app, fetch from site_settings
+    useEffect(() => {
+        const fetchWallets = async () => {
+            const { data } = await supabase.from('site_settings').select('key, value');
+            if (data) {
+                const wallets: Record<string, string> = {};
+                data.forEach(s => {
+                    if (s.key.startsWith('wallet_')) wallets[s.key] = s.value;
+                });
+                setWalletAddresses(wallets);
+            }
+        };
+        fetchWallets();
+    }, []);
+
+    const depositAddress = walletAddresses[`wallet_${network.toLowerCase()}`] || "THxV7...example_address";
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -82,7 +97,6 @@ export default function DepositPage() {
         setUploading(true);
 
         try {
-            // 1. Upload proof to Supabase Storage
             const fileExt = proofFile.name.split('.').pop();
             const fileName = `${profile?.id}-${Date.now()}.${fileExt}`;
             const { data: uploadData, error: uploadError } = await supabase.storage
@@ -95,7 +109,6 @@ export default function DepositPage() {
                 .from('deposit-proofs')
                 .getPublicUrl(fileName);
 
-            // 2. Create transaction record
             const { error: txError } = await supabase
                 .from('transactions')
                 .insert({
@@ -129,7 +142,6 @@ export default function DepositPage() {
             </div>
 
             <div className="relative z-10">
-                {/* Header */}
                 <div className="flex items-center gap-4 px-6 py-8">
                     <button onClick={() => router.back()} className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all">
                         <ArrowLeft size={24} />
@@ -141,7 +153,6 @@ export default function DepositPage() {
                 </div>
 
                 <div className="px-6 space-y-8">
-                    {/* Step 1: Network Selection */}
                     <div className="bg-zinc-900/60 backdrop-blur-2xl rounded-[40px] p-8 border border-white/10 shadow-2xl glow-mesh">
                         <h3 className="text-sm font-black text-white uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
                             <Smartphone size={18} className="text-cyan-400" />
@@ -165,7 +176,6 @@ export default function DepositPage() {
                         </div>
                     </div>
 
-                    {/* Step 2: Amount Selection */}
                     <div className="bg-zinc-900/60 backdrop-blur-2xl rounded-[40px] p-8 border border-white/10 shadow-2xl glow-mesh">
                         <h3 className="text-sm font-black text-white uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
                             <Zap size={18} className="text-yellow-500" />
@@ -204,7 +214,6 @@ export default function DepositPage() {
                         </div>
                     </div>
 
-                    {/* Step 3: Payment Details */}
                     <div className="bg-zinc-900/60 backdrop-blur-2xl rounded-[40px] p-8 border border-white/10 shadow-2xl glow-mesh">
                         <h3 className="text-sm font-black text-white uppercase tracking-[0.2em] mb-8 flex items-center gap-2">
                             <QrCode size={18} className="text-purple-400" />
@@ -229,7 +238,6 @@ export default function DepositPage() {
                         </div>
                     </div>
 
-                    {/* Step 4: Proof Upload */}
                     <div className="bg-zinc-900/60 backdrop-blur-2xl rounded-[40px] p-8 border border-white/10 shadow-2xl glow-mesh">
                         <h3 className="text-sm font-black text-white uppercase tracking-[0.2em] mb-8 flex items-center gap-2">
                             <Upload size={18} className="text-green-500" />

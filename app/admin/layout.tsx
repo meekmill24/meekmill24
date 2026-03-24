@@ -5,14 +5,17 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase'; 
 import Link from 'next/link'; 
 import { usePathname } from 'next/navigation'; 
-import { LayoutDashboard, Users, Layers, Grid3X3, Share2, Receipt, LogOut, DollarSign, Menu, X, ArrowDownToLine, ArrowUpFromLine, Package, Bell, Settings, AlertCircle, Wallet as WalletIcon, } from 'lucide-react'; 
+import { 
+  LayoutDashboard, Users, Layers, Grid3X3, Share2, Receipt, LogOut, DollarSign, Menu, X, ArrowDownToLine, ArrowUpFromLine, Package, Bell, Settings, AlertCircle, Wallet as WalletIcon, ArrowUpRight, Wallet
+} from 'lucide-react'; 
 import AnimatePage from '@/components/AnimatePage'; 
 import NotificationCenter from '@/components/NotificationCenter';
 
 const navItems = [ 
   { icon: LayoutDashboard, label: 'Dashboard', href: '/admin' }, 
   { icon: Users, label: 'Users', href: '/admin/users' }, 
-  { icon: WalletIcon, label: 'Deposit Wallet', href: '/admin/deposits' }, 
+  { icon: WalletIcon, label: 'Deposits', href: '/admin/deposits' },
+  { icon: ArrowUpFromLine, label: 'Withdrawals', href: '/admin/withdrawals' },
   { icon: Package, label: 'Bundles', href: '/admin/bundles' }, 
   { icon: Bell, label: 'Notify Users', href: '/admin/notify' }, 
   { icon: Layers, label: 'Levels', href: '/admin/levels' }, 
@@ -124,11 +127,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     <item.icon size={20} className={isActive ? 'text-white' : 'text-slate-500 group-hover:text-purple-400'} />
                     <span className="font-medium">{item.label}</span>
                   </div>
-                  {hasAlert && (
-                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
-                      {item.label === 'Deposit Wallet' ? (pendingCounts.deposits + pendingCounts.withdrawals) : 0}
-                    </span>
-                  )}
+                {item.label === 'Deposits' && pendingCounts.deposits > 0 && (
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+                    {pendingCounts.deposits}
+                  </span>
+                )}
+                {item.label === 'Withdrawals' && pendingCounts.withdrawals > 0 && (
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
+                    {pendingCounts.withdrawals}
+                  </span>
+                )}
                 </Link>
               );
             })}

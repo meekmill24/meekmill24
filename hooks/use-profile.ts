@@ -35,7 +35,12 @@ export interface UserProfile {
 export function useProfile() {
   const { data, error, isLoading, mutate } = useSWR<{ profile: UserProfile }>(
     '/api/profile',
-    fetcher
+    fetcher,
+    {
+        revalidateOnFocus: false,
+        revalidateIfStale: false,
+        dedupingInterval: 10000 // 10 seconds
+    }
   )
 
   return {

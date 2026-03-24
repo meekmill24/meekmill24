@@ -1,7 +1,7 @@
 'use client'; 
 import { useState, useEffect } from 'react'; 
 import { supabase } from '@/lib/supabase'; 
-import { Settings, Globe, DollarSign, Palette, Save, Loader2, CheckCircle2, X, Plus, ShieldCheck, CreditCard, Layout, UserPlus } from 'lucide-react'; 
+import { Settings, Globe, DollarSign, Palette, Save, Loader2, CheckCircle2, X, Plus, ShieldCheck, CreditCard, Layout, UserPlus, Wallet } from 'lucide-react'; 
 
 export default function AdminSettingsPage() { 
   const [settings, setSettings] = useState<any[]>([]); 
@@ -226,6 +226,10 @@ export default function AdminSettingsPage() {
                 { key: 'min_withdrawal', label: 'Minimum Withdrawal Amount ($)', type: 'number' },
                 { key: 'min_deposit', label: 'Minimum Deposit Amount ($)', type: 'number' },
                 { key: 'referral_bonus', label: 'Base Referral Reward ($)', type: 'number' },
+                { key: 'wallet_trc20', label: 'TRC20 Wallet Address', placeholder: 'T...' },
+                { key: 'wallet_erc20', label: 'ERC20 Wallet Address', placeholder: '0x...' },
+                { key: 'wallet_bep20', label: 'BEP20 Wallet Address', placeholder: '0x...' },
+                { key: 'wallet_btc', label: 'BTC Wallet Address', placeholder: '1...' },
                 { key: 'currency_symbol', label: 'Display Currency', placeholder: '$' },
               ].map((cfg) => {
                 const item = settings.find(s => s.key === cfg.key);

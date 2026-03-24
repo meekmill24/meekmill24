@@ -59,7 +59,7 @@ export default function CertificatePage() {
 
                 <InstitutionalCertificate 
                     username={profile.username || profile.email?.split('@')[0] || 'Unknown'} 
-                    level={profile.level_name || 'Standard Agent'} 
+                    level={profile.level?.name || 'Standard Agent'} 
                     date={today}
                     nodeId={nodeId}
                 />
