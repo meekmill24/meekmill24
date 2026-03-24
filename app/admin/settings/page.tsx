@@ -2,12 +2,14 @@
 import { useState, useEffect } from 'react'; 
 import { supabase } from '@/lib/supabase'; 
 import { Settings, Globe, DollarSign, Palette, Save, Loader2, CheckCircle2, X, Plus, ShieldCheck, CreditCard, Layout, UserPlus, Wallet } from 'lucide-react'; 
+import { toast } from 'sonner';
 
 export default function AdminSettingsPage() { 
   const [settings, setSettings] = useState<any[]>([]); 
   const [loading, setLoading] = useState(true); 
   const [saving, setSaving] = useState(false); 
   const [success, setSuccess] = useState(false); 
+  const [provisioningKeys, setProvisioningKeys] = useState<Record<string, boolean>>({});
 
   useEffect(() => { 
     fetchSettings(); 
@@ -275,12 +277,31 @@ export default function AdminSettingsPage() {
                             </div>
                             <button 
                                 onClick={async () => {
-                                    await supabase.from('site_settings').insert({ key: cfg.key, value: cfg.placeholder });
-                                    fetchSettings();
+                                    setProvisioningKeys(prev => ({ ...prev, [cfg.key]: true }));
+                                    try {
+                                        const { error } = await supabase.from('site_settings').insert({ 
+                                            key: cfg.key, 
+                                            value: cfg.placeholder,
+                                            label: cfg.label
+                                        });
+                                        if (error) throw error;
+                                        await fetchSettings();
+                                        toast.success(`${cfg.label} provisioned!`);
+                                    } catch (err: any) {
+                                        console.error(err);
+                                        toast.error(`Provision failed: ${err.message}`);
+                                    } finally {
+                                        setProvisioningKeys(prev => ({ ...prev, [cfg.key]: false }));
+                                    }
                                 }}
-                                className="px-6 py-2 bg-rose-600 text-white text-[10px] font-black rounded-xl hover:bg-rose-700 transition-all shadow-lg shadow-rose-900/40 active:scale-95 uppercase tracking-widest"
+                                disabled={provisioningKeys[cfg.key]}
+                                className="px-6 py-2 bg-rose-600 text-white text-[10px] font-black rounded-xl hover:bg-rose-700 transition-all shadow-lg shadow-rose-900/40 active:scale-95 uppercase tracking-widest disabled:opacity-50 flex items-center gap-2"
                             >
-                                PROVISION
+                                {provisioningKeys[cfg.key] ? (
+                                    <Loader2 size={12} className="animate-spin" />
+                                ) : (
+                                    'PROVISION'
+                                )}
                             </button>
                         </div>
                     );
