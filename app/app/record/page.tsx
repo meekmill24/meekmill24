@@ -4,19 +4,23 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { useCurrency } from '@/context/CurrencyContext';
-import { Clock, CheckCircle, XCircle, Search, Filter, Zap, Headset, Loader2, TrendingUp, ChevronLeft, HelpCircle } from 'lucide-react';
+import { Clock, CheckCircle, XCircle, Search, Filter, Zap, Headset, Loader2, TrendingUp, ChevronLeft, HelpCircle, AlertTriangle } from 'lucide-react';
 import Portal from '@/components/Portal';
-import { useRouter } from 'next/navigation';
+import { cn } from '@/lib/utils';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import type { UserTask, TaskItem } from '@/lib/types';
 
 export default function RecordPage() {
+    const searchParams = useSearchParams();
     const router = useRouter();
     const { profile, refreshProfile } = useAuth();
     const { format } = useCurrency();
     const [tasks, setTasks] = useState<(UserTask & { task_item: TaskItem })[]>([]);
     const [loading, setLoading] = useState(true);
-    const [filter, setFilter] = useState<'all' | 'completed' | 'pending'>('all');
+    const [filter, setFilter] = useState<'all' | 'completed' | 'pending'>(
+        (searchParams.get('filter') as any) || 'all'
+    );
     const [dateFilter, setDateFilter] = useState<'all' | 'today' | 'yesterday'>('all');
     const [searchQuery, setSearchQuery] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -51,8 +55,12 @@ export default function RecordPage() {
     };
 
     useEffect(() => {
+        const f = searchParams.get('filter') as any;
+        if (f && ['all', 'completed', 'pending'].includes(f)) {
+            setFilter(f);
+        }
         fetchTasks();
-    }, [profile]);
+    }, [profile, searchParams]);
 
     const handleSubmitPending = async (task: UserTask & { task_item: TaskItem }) => {
         if (isSubmitting) return;
@@ -165,15 +173,46 @@ export default function RecordPage() {
                     </div>
                 </div>
                 <div className="glass-card-strong p-6 bg-white/[0.02] border border-white/5 rounded-3xl group">
-                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 opacity-60">Pending Syncs</p>
-                    <div className="flex items-baseline gap-1">
-                        <span className="text-xl font-black text-amber-500 italic">
-                            {tasks.filter(t => t.status === 'pending').length}
+                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-2 opacity-60">Node Integrity Status</p>
+                    <div className="flex items-center gap-2">
+                        <div className={cn(
+                            "w-2 h-2 rounded-full animate-pulse",
+                            (profile?.wallet_balance || 0) < 0 ? "bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.5)]" : "bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.5)]"
+                        )} />
+                        <span className={cn(
+                            "text-sm font-black uppercase tracking-widest italic",
+                            (profile?.wallet_balance || 0) < 0 ? "text-rose-500" : "text-cyan-500"
+                        )}>
+                            {(profile?.wallet_balance || 0) < 0 ? "OFFLINE: DEFICIT" : "ONLINE: SECURE"}
                         </span>
-                        <span className="text-[10px] text-slate-600 font-bold uppercase ml-1">QUEUED</span>
                     </div>
                 </div>
             </div>
+
+            {/* DEFICIT WARNING BANNER */}
+            {(profile?.wallet_balance || 0) < 0 && (
+                <div className="bg-rose-500/10 border border-rose-500/30 rounded-[32px] p-6 flex flex-col md:flex-row items-center justify-between gap-6 animate-pulse">
+                    <div className="flex items-center gap-6">
+                        <div className="w-14 h-14 rounded-2xl bg-rose-500/20 flex items-center justify-center text-rose-500 shrink-0">
+                            <AlertTriangle size={32} />
+                        </div>
+                        <div className="space-y-1">
+                            <h4 className="text-lg font-black text-white italic uppercase tracking-tight leading-none">Account Deficit Detected</h4>
+                            <p className="text-[10px] font-bold text-rose-400 uppercase tracking-widest opacity-80">
+                                Settle negative balance to synchronize remaining sequence activations.
+                            </p>
+                        </div>
+                    </div>
+                    <a 
+                        href={whatsappLink} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="px-8 py-4 bg-rose-500 text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-xl shadow-rose-500/20 hover:scale-105 active:scale-95 transition-all flex items-center gap-2 whitespace-nowrap"
+                    >
+                        <Headset size={16} /> Contact Support
+                    </a>
+                </div>
+            )}
 
             {/* Header / Search */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pt-4">
@@ -298,7 +337,10 @@ export default function RecordPage() {
                                     <div className="flex flex-col">
                                         <span className="text-[10px] text-zinc-500 uppercase tracking-[0.25em] font-black mb-1 opacity-50">NODE_CAP</span>
                                         <div className="flex items-baseline gap-0.5">
-                                            <span className="text-sm font-black text-white tabular-nums italic">
+                                            <span className={cn(
+                                                "text-sm font-black tabular-nums italic",
+                                                (task.cost_amount || 0) < 0 ? "text-rose-500" : "text-white"
+                                            )}>
                                                 {format(task.cost_amount || 0).split('.')[0]}
                                                 <span className="text-[10px] opacity-40">.{format(task.cost_amount || 0).split('.')[1] || '00'}</span>
                                             </span>
@@ -311,8 +353,11 @@ export default function RecordPage() {
                                     <div className="flex flex-col">
                                         <span className="text-[10px] text-zinc-500 uppercase tracking-[0.25em] font-black mb-1 opacity-50">YIELD</span>
                                         <div className="flex items-baseline gap-0.5">
-                                            <span className="text-xl font-black text-green-500 tabular-nums italic drop-shadow-[0_0_10px_rgba(34,197,94,0.3)]">
-                                                +{format(task.earned_amount).split('.')[0]}
+                                            <span className={cn(
+                                                "text-xl font-black tabular-nums italic drop-shadow-[0_0_10px_rgba(34,197,94,0.3)]",
+                                                (task.earned_amount || 0) < 0 ? "text-rose-500" : "text-green-500"
+                                            )}>
+                                                {task.earned_amount >= 0 ? '+' : ''}{format(task.earned_amount).split('.')[0]}
                                                 <span className="text-xs opacity-40">.{format(task.earned_amount).split('.')[1] || '00'}</span>
                                             </span>
                                         </div>

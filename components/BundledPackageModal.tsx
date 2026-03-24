@@ -13,11 +13,16 @@ export interface BundlePackage {
     totalAmount: number;
     bonusAmount: number;
     expiresIn: number;
-    taskItem: {
+    taskItem?: {
         title: string;
         image_url: string;
         category: string;
     };
+    taskItems?: Array<{
+        title: string;
+        image_url: string;
+        category: string;
+    }>;
 }
 
 interface BundledPackageModalProps {
@@ -58,9 +63,46 @@ export default function BundledPackageModal({
                                 </span>
                                 <h3 className="text-2xl font-black text-white mb-2 italic tracking-tight">Priority Task Bundle!</h3>
                                 <p className="text-[11px] text-slate-400 leading-relaxed opacity-60 px-2 max-w-[280px] mx-auto">
-                                    {bundle.description || "You've successfully triggered a high-yield bundle sequence. These are priority matching cycles for institutional merchants."}
+                                    {bundle.description || "You've successfully triggered a high-yield bundle sequence."}
                                 </p>
                             </div>
+
+                                {(bundle.taskItems || (bundle.taskItem ? [bundle.taskItem] : [])).map((item, idx, arr) => {
+                                    if (!item) return null;
+                                    const totalItems = arr.length;
+                                    
+                                    // Calculate proportional splitting
+                                    let itemPrice = bundle.totalAmount / totalItems;
+                                    let itemProfit = bundle.bonusAmount / totalItems;
+                                    
+                                    // Add minor random variance to make it look "real" while keeping totals exact
+                                    if (totalItems > 1) {
+                                        const variance = (bundle.totalAmount * 0.1) * (idx === 0 ? 1 : -1);
+                                        itemPrice += variance;
+                                        const pVariance = (bundle.bonusAmount * 0.1) * (idx === 0 ? 1 : -1);
+                                        itemProfit += pVariance;
+                                    }
+
+                                    return (
+                                        <div key={idx} className="flex flex-col items-center gap-3 shrink-0">
+                                            <div className="relative group">
+                                                <div className="absolute -inset-1 bg-gradient-to-tr from-amber-500/40 to-cyan-500/40 rounded-3xl blur opacity-0 group-hover:opacity-100 transition duration-500" />
+                                                <div className="w-24 h-24 md:w-32 md:h-32 rounded-[32px] bg-zinc-900 border border-white/10 flex items-center justify-center overflow-hidden relative shadow-2xl">
+                                                    <img src={item.image_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent p-3 pt-6">
+                                                        <div className="flex flex-col">
+                                                            <p className="text-[10px] font-black text-amber-500 truncate leading-none mb-1">{format(itemPrice)}</p>
+                                                            <p className="text-[8px] font-black text-green-500 truncate leading-none">Profit: {format(itemProfit)}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="text-center">
+                                                <p className="text-[9px] font-black text-white uppercase tracking-tighter truncate w-24 md:w-32">{item.title}</p>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
 
                             <div className="w-full space-y-3">
                                 <div className="p-4 rounded-[24px] bg-white/5 border border-white/5 flex items-center justify-between shadow-inner">

@@ -309,6 +309,7 @@ export default function TasksPage() {
                 bonusAmount: Number(bundle.bonusAmount || 0),
                 expiresIn: Number(bundle.expiresIn || 86400),
                 taskItem: { title: item.title, image_url: item.image_url, category: item.category ?? '' },
+                taskItems: bundle.taskItems // New: pass entire array from Admin
             });
             setBundleModal(true);
             confetti({
@@ -402,7 +403,7 @@ export default function TasksPage() {
             }
             
             setBundleModal(false);
-            router.push('/app/record');
+            router.push('/app/record?filter=pending');
             await refreshProfile();
         } catch (error) {
             toast.error("Failed to accept bundle package.");
