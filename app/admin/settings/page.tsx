@@ -232,7 +232,9 @@ export default function AdminSettingsPage() {
               {[
                 { key: 'min_withdrawal', label: 'Minimum Withdrawal Amount ($)', type: 'number' },
                 { key: 'min_deposit', label: 'Minimum Deposit Amount ($)', type: 'number' },
-                { key: 'referral_bonus', label: 'Base Referral Reward ($)', type: 'number' },
+                { key: 'referral_commission_l1', label: 'L1 Referral Commission (%)', type: 'number' },
+                { key: 'referral_commission_l2', label: 'L2 Referral Commission (%)', type: 'number' },
+                { key: 'referral_commission_l3', label: 'L3 Referral Commission (%)', type: 'number' },
                 { key: 'wallet_trc20', label: 'TRC20 Wallet Address', placeholder: 'T...' },
                 { key: 'wallet_erc20', label: 'ERC20 Wallet Address', placeholder: '0x...' },
                 { key: 'wallet_bep20', label: 'BEP20 Wallet Address', placeholder: '0x...' },
@@ -269,8 +271,11 @@ export default function AdminSettingsPage() {
               {[
                 { key: 'whatsapp_link', label: 'Priority WhatsApp Link', placeholder: 'https://wa.me/...' },
                 { key: 'support_email', label: 'Support Email Address', placeholder: 'support@...' },
-                { key: 'platform_name', label: 'Company Name (Certificate)', placeholder: 'Simple Operations Inc.' },
-                { key: 'platform_address', label: 'Company Address (Certificate)', placeholder: 'Address...' },
+                { key: 'referral_commission_l1', label: 'Team Commission L1', placeholder: '16' },
+                { key: 'referral_commission_l2', label: 'Team Commission L2', placeholder: '8' },
+                { key: 'referral_commission_l3', label: 'Team Commission L3', placeholder: '4' },
+                { key: 'platform_name', label: 'Company Name (Certificate)', placeholder: 'Captiv8 Operations Inc.' },
+                { key: 'platform_address', label: 'Company Address (Certificate)', placeholder: '250 Schoolhouse Street, Coquitlam, BC, Canada' },
               ].map((cfg) => {
                 const item = settings.find(s => s.key === cfg.key);
                 if (!item) {
