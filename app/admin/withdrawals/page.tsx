@@ -8,19 +8,25 @@ export default function AdminWithdrawalsPage() {
   const [withdrawals, setWithdrawals] = useState<any[]>([]); 
   const [loading, setLoading] = useState(true); 
   const [processingId, setProcessingId] = useState<number | null>(null);
+  const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
 
   const fetchWithdrawals = async () => { 
     setLoading(true);
-    const { data } = await supabase
+    let query = supabase
       .from('transactions')
       .select('*, profile:profiles(username, wallet_balance, withdrawal_wallet_address)')
-      .eq('type', 'withdrawal')
-      .order('created_at', { ascending: false }); 
+      .eq('type', 'withdrawal');
+
+    if (statusFilter !== 'all') {
+      query = query.eq('status', statusFilter);
+    }
+    
+    const { data } = await query.order('created_at', { ascending: false }); 
     if (data) setWithdrawals(data); 
     setLoading(false); 
   }; 
 
-  useEffect(() => { fetchWithdrawals(); }, []); 
+  useEffect(() => { fetchWithdrawals(); }, [statusFilter]); 
 
   const handleAction = async (id: number, status: 'approved' | 'rejected', amount: number, userId: string) => { 
     setProcessingId(id);
@@ -55,9 +61,20 @@ export default function AdminWithdrawalsPage() {
           <h2 className="text-3xl font-bold text-white tracking-tight italic uppercase">Withdrawal Requests</h2>
           <p className="text-slate-400 mt-1">Review and process fund disbursement requests to external wallets.</p>
         </div>
-        <button onClick={fetchWithdrawals} className="p-3 bg-slate-900/50 border border-slate-800 text-slate-400 rounded-2xl hover:text-rose-400 transition-all">
-          <Clock size={20} className={loading && withdrawals.length > 0 ? 'animate-spin' : ''} />
-        </button>
+        <div className="flex bg-slate-900 border border-slate-800 p-1 rounded-2xl gap-1">
+          {['all', 'pending', 'approved', 'rejected'].map((s) => (
+            <button
+              key={s}
+              onClick={() => setStatusFilter(s as any)}
+              className={`
+                px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all
+                ${statusFilter === s ? 'bg-rose-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}
+              `}
+            >
+              {s}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="bg-slate-900/40 border border-slate-800 rounded-[32px] overflow-hidden backdrop-blur-md">

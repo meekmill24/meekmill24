@@ -8,19 +8,25 @@ export default function AdminDepositsPage() {
   const [deposits, setDeposits] = useState<any[]>([]); 
   const [loading, setLoading] = useState(true); 
   const [processingId, setProcessingId] = useState<number | null>(null);
+  const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
 
   const fetchDeposits = async () => { 
     setLoading(true);
-    const { data } = await supabase
+    let query = supabase
       .from('transactions')
       .select('*, profile:profiles(username, wallet_balance)')
-      .eq('type', 'deposit')
-      .order('created_at', { ascending: false }); 
+      .eq('type', 'deposit');
+    
+    if (statusFilter !== 'all') {
+      query = query.eq('status', statusFilter);
+    }
+
+    const { data } = await query.order('created_at', { ascending: false }); 
     if (data) setDeposits(data); 
     setLoading(false); 
   }; 
 
-  useEffect(() => { fetchDeposits(); }, []); 
+  useEffect(() => { fetchDeposits(); }, [statusFilter]); 
 
   const handleAction = async (id: number, status: 'approved' | 'rejected', amount: number, userId: string) => { 
     setProcessingId(id);
@@ -55,11 +61,18 @@ export default function AdminDepositsPage() {
           <h2 className="text-4xl font-black text-white tracking-tighter italic uppercase bg-gradient-to-r from-white to-white/40 bg-clip-text text-transparent">Deposit Requests</h2>
           <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em] mt-1">Review and approve incoming funds to user wallets.</p>
         </div>
-        <div className="flex -space-x-3">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="w-10 h-10 rounded-full border-2 border-[#0F172A] bg-slate-800 flex items-center justify-center text-[10px] font-bold text-slate-400">
-               {i}
-            </div>
+        <div className="flex bg-slate-900 border border-slate-800 p-1 rounded-2xl gap-1">
+          {['all', 'pending', 'approved', 'rejected'].map((s) => (
+            <button
+              key={s}
+              onClick={() => setStatusFilter(s as any)}
+              className={`
+                px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all
+                ${statusFilter === s ? 'bg-indigo-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}
+              `}
+            >
+              {s}
+            </button>
           ))}
         </div>
       </div>
