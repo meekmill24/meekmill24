@@ -1,49 +1,69 @@
 'use client';
 
-import { HeadphonesIcon, ChevronLeft, MessageSquare, Mail, Phone, Clock, ChevronRight, Zap, Target, Activity, ShieldCheck } from 'lucide-react';
+import { HeadphonesIcon, ChevronLeft, MessageSquare, Mail, Phone, Clock, ChevronRight, Zap, Target, Activity, ShieldCheck, Loader2 } from 'lucide-react';
 import Link from 'next/link';
-
-const WHATSAPP_NUMBER = '1234567890';
-const WHATSAPP_MESSAGE = 'Hello, I need help with my Captiv8 AI Node account.';
-const TAWK_TO_LINK = '#tawk';
-
-const channels = [
-    {
-        icon: MessageSquare,
-        title: 'Neural Chat Support',
-        subtitle: 'Avg. latency: 45ms (Live Node)',
-        color: 'bg-indigo-500/20 text-indigo-400',
-        badge: 'Online Now',
-        badgeColor: 'bg-green-500/20 text-green-500',
-        action: TAWK_TO_LINK,
-        target: '_blank',
-        description: 'Instant verification for account-level queries and transactional support.'
-    },
-    {
-        icon: Phone,
-        title: 'Priority WhatsApp',
-        subtitle: 'Direct encrypted channel',
-        color: 'bg-green-500/20 text-green-500',
-        badge: 'Secure',
-        badgeColor: 'bg-green-500/20 text-green-500',
-        action: `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`,
-        target: '_blank',
-        description: 'Fast-track communication for VIP tier members and corporate wallet synchronization.'
-    },
-    {
-        icon: Mail,
-        title: 'Governance Email',
-        subtitle: 'support@captiv8.ai',
-        color: 'bg-purple-500/20 text-purple-400',
-        badge: '24h SLA',
-        badgeColor: 'bg-purple-500/20 text-purple-400',
-        action: 'mailto:support@captiv8.ai',
-        target: '_self',
-        description: 'In-depth inquiries regarding institutional partnership and legal compliance.'
-    },
-];
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabase';
 
 export default function CustomerServicePage() {
+    const [settings, setSettings] = useState<any>({});
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            const { data } = await supabase.from('site_settings').select('*');
+            if (data) {
+                const s: any = {};
+                data.forEach(item => s[item.key] = item.value);
+                setSettings(s);
+            }
+            setLoading(false);
+        };
+        fetchSettings();
+    }, []);
+
+    const channels = [
+        {
+            icon: MessageSquare,
+            title: 'Neural Chat Support',
+            subtitle: 'Avg. latency: 45ms (Live Node)',
+            color: 'bg-indigo-500/20 text-indigo-400',
+            badge: 'Online Now',
+            badgeColor: 'bg-green-500/20 text-green-500',
+            action: '#tawk',
+            target: '_blank',
+            description: 'Instant verification for account-level queries and transactional support.'
+        },
+        {
+            icon: Phone,
+            title: 'Priority WhatsApp',
+            subtitle: 'Direct encrypted channel',
+            color: 'bg-green-500/20 text-green-500',
+            badge: 'Secure',
+            badgeColor: 'bg-green-500/20 text-green-500',
+            action: settings.whatsapp_link || 'https://wa.me/1234567890',
+            target: '_blank',
+            description: 'Fast-track communication for VIP tier members and corporate wallet synchronization.'
+        },
+        {
+            icon: Mail,
+            title: 'Governance Email',
+            subtitle: settings.support_email || 'support@captiv8.ai',
+            color: 'bg-purple-500/20 text-purple-400',
+            badge: '24h SLA',
+            badgeColor: 'bg-purple-500/20 text-purple-400',
+            action: `mailto:${settings.support_email || 'support@captiv8.ai'}`,
+            target: '_self',
+            description: 'In-depth inquiries regarding institutional partnership and legal compliance.'
+        },
+    ];
+
+    if (loading) return (
+        <div className="min-h-screen flex items-center justify-center bg-black">
+            <Loader2 className="animate-spin text-indigo-500" size={40} />
+        </div>
+    );
+
     return (
         <div className="max-w-5xl mx-auto pb-20 animate-in fade-in duration-500 space-y-12 px-4 md:px-8">
 
@@ -78,7 +98,7 @@ export default function CustomerServicePage() {
                         <div className="space-y-4">
                             <h2 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tighter leading-none italic">Node Assistance <br/> Required?</h2>
                             <p className="text-slate-400 text-xs md:text-sm uppercase font-bold tracking-[0.2em] opacity-80 max-w-lg leading-relaxed">
-                                Captiv8 technicians are monitoring neural optimization processes in real-time. Select a dedicated priority node below.
+                                {settings.site_name || 'Captiv8'} technicians are monitoring neural optimization processes in real-time. Select a dedicated priority node below.
                             </p>
                         </div>
                     </div>
@@ -121,7 +141,7 @@ export default function CustomerServicePage() {
                 </h3>
                 <div className="grid grid-cols-1 gap-4">
                     {channels.map((c, idx) => {
-                        const isTawk = c.action === TAWK_TO_LINK;
+                        const isTawk = c.action === '#tawk';
                         const Component = isTawk ? 'button' : 'a';
                         const props = isTawk
                             ? { onClick: () => (window as any).Tawk_API?.maximize() }

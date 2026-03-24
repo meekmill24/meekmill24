@@ -250,28 +250,46 @@ export default function AdminSettingsPage() {
             </div>
           </section>
 
-          {/* Custom Messages */}
+          {/* Operational Hub & Support */}
           <section className="bg-slate-900/40 border border-slate-800 p-8 rounded-[32px] backdrop-blur-sm">
             <div className="flex items-center gap-3 mb-8">
-              <div className="p-2 bg-amber-500/10 rounded-lg text-amber-500">
-                <Layout size={20} />
+              <div className="p-2 bg-indigo-500/10 rounded-lg text-indigo-400">
+                <ShieldCheck size={20} />
               </div>
-              <h3 className="text-lg font-bold text-white italic uppercase tracking-tight">Announcement Text</h3>
+              <h3 className="text-lg font-bold text-white italic uppercase tracking-tight">Operational Hub</h3>
             </div>
             <div className="space-y-6">
               {[
-                { key: 'marquee_text', label: 'Marquee / Scrolling Alert' },
-                { key: 'home_note', label: 'Dashboard Notice / Disclaimer' },
+                { key: 'whatsapp_link', label: 'Priority WhatsApp Link', placeholder: 'https://wa.me/...' },
+                { key: 'support_email', label: 'Support Email Address', placeholder: 'support@...' },
+                { key: 'platform_name', label: 'Company Name (Certificate)', placeholder: 'Simple Operations Inc.' },
+                { key: 'platform_address', label: 'Company Address (Certificate)', placeholder: 'Address...' },
               ].map((cfg) => {
                 const item = settings.find(s => s.key === cfg.key);
-                if (!item) return null;
+                if (!item) {
+                    return (
+                        <div key={cfg.key} className="p-4 bg-red-500/5 border border-red-500/10 rounded-2xl flex items-center justify-between">
+                            <span className="text-[10px] font-black text-red-500/60 uppercase">{cfg.label} Missing</span>
+                            <button 
+                                onClick={async () => {
+                                    await supabase.from('site_settings').insert({ key: cfg.key, value: cfg.placeholder });
+                                    fetchSettings();
+                                }}
+                                className="px-3 py-1 bg-red-500 text-white text-[9px] font-black rounded-lg"
+                            >
+                                PROVISION
+                            </button>
+                        </div>
+                    );
+                }
                 return (
                   <div key={cfg.key} className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 pl-1">{cfg.label}</label>
-                    <textarea 
-                      className="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-purple-500/20 transition-all font-medium h-32"
+                    <input 
+                      className="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 transition-all font-medium"
                       value={item.value}
                       onChange={(e) => handleUpdate(cfg.key, e.target.value)}
+                      placeholder={cfg.placeholder}
                     />
                   </div>
                 );

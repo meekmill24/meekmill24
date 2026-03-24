@@ -75,7 +75,14 @@ export default function HomePage() {
     { label: 'SALARY', icon: Trophy, color: 'text-indigo-400', iconBg: 'bg-indigo-500/10', href: '/app/salary' },
     { label: 'INVITE', icon: TrendingUp, color: 'text-teal-500', iconBg: 'bg-zinc-800', href: '/app/invite' },
     { label: 'CERTIFICATE', icon: Award, color: 'text-yellow-400', iconBg: 'bg-yellow-500/10', href: '/app/profile/certificate' },
-    { label: 'WFP', icon: null, image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/WFP_Logo_vertical.svg/512px-WFP_Logo_vertical.svg.png", color: 'text-rose-400', iconBg: 'bg-rose-500/10', href: 'https://www.wfp.org/' },
+    { 
+      label: 'WFP', 
+      icon: null, 
+      image: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTYwIj4KICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMCwgMTApIj4KICAgIDxwYXRoIGQ9Ik00MCwwIEM2MCwwIDgwLDIwIDgwLDQwIEM4MCw2MCA2MCw4MCA0MCw4MCBDMjAsODAgMCw2MCAwLDQwIEMwLDIwIDIwLDAgNDAsMCBaIiBmaWxsPSIjMDZCODkyIi8+CiAgICA8cGF0aCBkPSJNNDAsNjAgTDUwLDUwIEw0MCw0MCBMMzAsNTAgTDQwLDYwIFoiIGZpbGw9IndoaXRlIi8+CiAgICA8dGV4dCB4PSI0MCIgeT0iMTMwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjQiIGZvbnQtd2VpZ2h0PSJib2xkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMDZCODkyIj5XRlA8L3RleHQ+CiAgPC9nPgo8L3N2Zz4=",
+      color: 'text-rose-400', 
+      iconBg: 'bg-rose-500/10', 
+      href: 'https://www.wfp.org/' 
+    },
     { label: 'WALLET', icon: WalletIcon, color: 'text-blue-500', iconBg: 'bg-zinc-800', href: '/app/wallet' },
     { label: 'SUPPORT', icon: MessageCircle, color: 'text-green-400', iconBg: 'bg-zinc-800', href: '/app/support' },
     { label: 'FAQ', icon: HelpCircle, color: 'text-purple-500', iconBg: 'bg-zinc-800', href: '/app/faq' },

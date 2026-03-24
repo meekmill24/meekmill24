@@ -317,14 +317,24 @@ export default function RecordPage() {
                                         
                                         {task.status === 'pending' && (
                                             (profile?.wallet_balance || 0) < 0 ? (
-                                                <Link href="/app/deposit" className="w-[150px]">
-                                                    <button 
-                                                        className="w-full px-6 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 text-white text-[9px] font-black uppercase tracking-[0.2em] shadow-lg shadow-rose-500/20 transition-all flex items-center justify-center gap-2 hover:scale-[1.03] active:scale-95 whitespace-nowrap"
-                                                    >
-                                                        <Zap size={14} className="opacity-80" />
-                                                        RECHARGE
-                                                    </button>
-                                                </Link>
+                                                <div className="flex flex-col gap-2 w-[150px]">
+                                                    <Link href="/app/deposit" className="w-full">
+                                                        <button 
+                                                            className="w-full px-6 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 text-white text-[9px] font-black uppercase tracking-[0.2em] shadow-lg shadow-rose-500/20 transition-all flex items-center justify-center gap-2 hover:scale-[1.03] active:scale-95 whitespace-nowrap"
+                                                        >
+                                                            <Zap size={14} className="opacity-80" />
+                                                            RECHARGE
+                                                        </button>
+                                                    </Link>
+                                                    <Link href="/app/support" className="w-full">
+                                                        <button 
+                                                            className="w-full px-6 py-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 text-[9px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 hover:bg-white/10"
+                                                        >
+                                                            <Headset size={14} className="opacity-60" />
+                                                            SUPPORT
+                                                        </button>
+                                                    </Link>
+                                                </div>
                                             ) : (
                                                 <button
                                                     onClick={() => handleSubmitPending(task)}
