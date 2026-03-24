@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { useAuth } from '@/context/AuthContext';
 import { useLanguage } from '@/context/LanguageContext';
 import { useCurrency } from '@/context/CurrencyContext';
+import { toast } from 'sonner';
 import type { TaskItem } from '@/lib/types';
 import ItemDetailModal from '@/components/ItemDetailModal';
 import BundledPackageModal from '@/components/BundledPackageModal';
@@ -61,6 +62,8 @@ export default function TasksPage() {
     const [modalSeen, setModalSeen] = useState(false);
     const [showMinBalanceModal, setShowMinBalanceModal] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
+    const [hasRecordPending, setHasRecordPending] = useState(false);
+    const [hasPendingTask, setHasPendingTask] = useState(false);
 
     // Dynamic Progress Logic
     const [tasksPerSet, setTasksPerSet] = useState(40);
@@ -88,10 +91,12 @@ export default function TasksPage() {
                 supabase.from('user_tasks')
                     .select('task_item_id, status, completed_at')
                     .eq('user_id', profile.id)
-                    .neq('status', 'cancelled')
-                    .gt('completed_at', filterDate),
+                    .neq('status', 'cancelled'),
                 supabase.from('task_items').select('*').eq('is_active', true).limit(1000)
             ]);
+
+            const tasksFromDb = (pastTasksRes.data || []) as any[];
+            setHasRecordPending(tasksFromDb.some(t => t.status === 'pending'));
 
             if (levelsRes.data) {
                 const currentLevel = levelsRes.data.find(l => Number(l.id) === Number(profile.level_id));
@@ -188,6 +193,11 @@ export default function TasksPage() {
 
     const handleStart = useCallback(async () => {
         if (isSpinning || items.length === 0) return;
+
+        if (hasRecordPending) {
+            toast.error("Please complete your pending allocation in the Record page first.");
+            return;
+        }
 
         const minBalance = profile?.level?.price || 65;
         const walletBalance = profile?.wallet_balance || 0;
@@ -549,7 +559,7 @@ export default function TasksPage() {
                                                 onClick={handleStart}
                                                 disabled={isLocked || isSpinning}
                                                 className={cn(
-                                                    "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-56 h-56 md:w-64 md:h-64 rounded-full z-20 flex flex-col items-center justify-center gap-3 transition-all duration-700 shadow-[0_0_80px_rgba(37,99,235,0.15)] overflow-hidden border-[6px]",
+                                                    "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-44 h-44 md:w-52 md:h-52 rounded-full z-20 flex flex-col items-center justify-center gap-2 transition-all duration-700 shadow-[0_0_60px_rgba(37,99,235,0.15)] overflow-hidden border-[5px]",
                                                     isLocked 
                                                         ? "bg-zinc-900/50 border-white/5 cursor-not-allowed group opacity-60"
                                                         : "bg-black border-blue-500 hover:scale-105 active:scale-95 group hover:bg-blue-600/5 shadow-blue-500/20"
@@ -559,26 +569,26 @@ export default function TasksPage() {
                                                 
                                                 {isLocked ? (
                                                     <>
-                                                        <Lock size={32} className="text-zinc-700 mb-1" />
-                                                        <span className="text-[10px] font-black text-zinc-700 uppercase tracking-[0.3em] italic">LOCKED</span>
+                                                        <Lock size={28} className="text-zinc-700 mb-1" />
+                                                        <span className="text-[9px] font-black text-zinc-700 uppercase tracking-[0.25em] italic">LOCKED</span>
                                                     </>
                                                 ) : profile?.pending_bundle ? (
                                                     <>
-                                                        <Zap size={48} className="text-amber-500 animate-pulse mb-1 drop-shadow-[0_0_20px_rgba(245,158,11,0.5)]" />
-                                                        <span className="text-[10px] font-black text-amber-500 uppercase tracking-[0.4em] italic">CONTINUE</span>
+                                                        <Zap size={40} className="text-amber-500 animate-pulse mb-1 drop-shadow-[0_0_20px_rgba(245,158,11,0.5)]" />
+                                                        <span className="text-[9px] font-black text-amber-500 uppercase tracking-[0.3em] italic">CONTINUE</span>
                                                     </>
                                                 ) : isSpinning ? (
-                                                   <div className="flex flex-col items-center gap-3">
-                                                       <RefreshCw size={32} className="text-cyan-500 animate-spin" />
-                                                       <span className="text-[7px] font-black text-cyan-500 uppercase tracking-widest animate-pulse italic">SYNCING NODE</span>
+                                                   <div className="flex flex-col items-center gap-2">
+                                                       <RefreshCw size={28} className="text-cyan-500 animate-spin" />
+                                                       <span className="text-[6px] font-black text-cyan-500 uppercase tracking-widest animate-pulse italic text-center">SYNCING...</span>
                                                    </div>
                                                 ) : (
                                                     <>
-                                                        <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-blue-600 flex items-center justify-center shadow-[0_0_30px_rgba(37,99,235,0.4)] mb-2 group-hover:scale-110 transition-transform duration-500">
-                                                            <Play size={32} className="text-white fill-white translate-x-1" />
+                                                        <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-blue-600 flex items-center justify-center shadow-[0_0_30px_rgba(37,99,235,0.4)] mb-1 group-hover:scale-110 transition-transform duration-500">
+                                                            <Play size={28} className="text-white fill-white translate-x-1" />
                                                         </div>
-                                                        <span className="text-xs font-black text-white uppercase tracking-[0.5em] italic drop-shadow-md">START</span>
-                                                        <p className="text-[9px] text-blue-500/60 font-black uppercase tracking-[0.2em] mt-1">{completedCountInSet}/{tasksPerSet}</p>
+                                                        <span className="text-[10px] font-black text-white uppercase tracking-[0.4em] italic drop-shadow-md">START</span>
+                                                        <p className="text-[8px] text-blue-500/60 font-black uppercase tracking-[0.1em] mt-0.5">{completedCountInSet}/{tasksPerSet}</p>
                                                     </>
                                                 )}
                                             </button>

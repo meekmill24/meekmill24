@@ -268,14 +268,17 @@ export default function AdminSettingsPage() {
                 const item = settings.find(s => s.key === cfg.key);
                 if (!item) {
                     return (
-                        <div key={cfg.key} className="p-4 bg-red-500/5 border border-red-500/10 rounded-2xl flex items-center justify-between">
-                            <span className="text-[10px] font-black text-red-500/60 uppercase">{cfg.label} Missing</span>
+                        <div key={cfg.key} className="p-6 bg-rose-500/10 border border-rose-500/20 rounded-3xl flex items-center justify-between group">
+                            <div className="flex flex-col">
+                                <span className="text-[10px] font-black text-rose-500 uppercase tracking-[0.2em]">{cfg.label} MISSING</span>
+                                <span className="text-[9px] text-rose-500/60 font-medium italic mt-0.5">Deployment node disconnected</span>
+                            </div>
                             <button 
                                 onClick={async () => {
                                     await supabase.from('site_settings').insert({ key: cfg.key, value: cfg.placeholder });
                                     fetchSettings();
                                 }}
-                                className="px-3 py-1 bg-red-500 text-white text-[9px] font-black rounded-lg"
+                                className="px-6 py-2 bg-rose-600 text-white text-[10px] font-black rounded-xl hover:bg-rose-700 transition-all shadow-lg shadow-rose-900/40 active:scale-95 uppercase tracking-widest"
                             >
                                 PROVISION
                             </button>

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { useCurrency } from '@/context/CurrencyContext';
-import { Clock, CheckCircle, XCircle, Search, Filter, Zap, Headset, Loader2, TrendingUp, ChevronLeft } from 'lucide-react';
+import { Clock, CheckCircle, XCircle, Search, Filter, Zap, Headset, Loader2, TrendingUp, ChevronLeft, HelpCircle } from 'lucide-react';
 import Portal from '@/components/Portal';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -23,6 +23,16 @@ export default function RecordPage() {
     const [profitAdded, setProfitAdded] = useState<number | null>(null);
     const [showBundleSuccessToast, setShowBundleSuccessToast] = useState(false);
     const [submittingTaskId, setSubmittingTaskId] = useState<number | null>(null);
+
+    const [whatsappLink, setWhatsappLink] = useState('https://wa.me/your_number');
+
+    useEffect(() => {
+        const fetchSupport = async () => {
+            const { data } = await supabase.from('site_settings').select('value').eq('key', 'whatsapp_link').single();
+            if (data?.value) setWhatsappLink(data.value);
+        };
+        fetchSupport();
+    }, []);
 
     const fetchTasks = async () => {
         if (!profile) return;
@@ -318,21 +328,21 @@ export default function RecordPage() {
                                         
                                         {task.status === 'pending' && (
                                             (profile?.wallet_balance || 0) < 0 ? (
-                                                <div className="flex flex-col gap-2 w-[150px]">
-                                                    <Link href="/app/deposit" className="w-full">
+                                                <div className="flex flex-col gap-2 w-[180px]">
+                                                    <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="w-full">
                                                         <button 
-                                                            className="w-full px-6 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 text-white text-[9px] font-black uppercase tracking-[0.2em] shadow-lg shadow-rose-500/20 transition-all flex items-center justify-center gap-2 hover:scale-[1.03] active:scale-95 whitespace-nowrap"
+                                                            className="w-full px-6 py-3 rounded-2xl bg-gradient-to-r from-rose-500 to-rose-600 text-white text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-rose-500/30 transition-all flex items-center justify-center gap-2 hover:scale-[1.03] active:scale-95 whitespace-nowrap border-b-4 border-rose-800"
                                                         >
-                                                            <Zap size={14} className="opacity-80" />
-                                                            RECHARGE
+                                                            <Headset size={16} className="opacity-80" />
+                                                            CONTACT SUPPORT
                                                         </button>
-                                                    </Link>
+                                                    </a>
                                                     <Link href="/app/support" className="w-full">
                                                         <button 
-                                                            className="w-full px-6 py-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 text-[9px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 hover:bg-white/10"
+                                                            className="w-full px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 hover:bg-white/10"
                                                         >
-                                                            <Headset size={14} className="opacity-60" />
-                                                            SUPPORT
+                                                            <HelpCircle size={16} className="opacity-60" />
+                                                            HELP CENTER
                                                         </button>
                                                     </Link>
                                                 </div>
@@ -340,9 +350,9 @@ export default function RecordPage() {
                                                 <button
                                                     onClick={() => handleSubmitPending(task)}
                                                     disabled={isSubmitting}
-                                                    className={`px-6 py-2.5 rounded-xl bg-indigo-500 text-white text-[9px] font-black uppercase tracking-[0.2em] shadow-lg shadow-indigo-500/20 transition-all flex items-center justify-center gap-2
+                                                    className={`px-8 py-3 rounded-2xl bg-indigo-500 text-white text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-indigo-500/20 transition-all flex items-center justify-center gap-2
                                                         ${isSubmitting && submittingTaskId === task.id ? 'opacity-50 cursor-wait' : 'hover:scale-[1.03] active:scale-95 cursor-pointer'}
-                                                        whitespace-nowrap w-[150px]
+                                                        whitespace-nowrap w-[180px] border-b-4 border-indigo-700
                                                     `}
                                                 >
                                                     {isSubmitting && submittingTaskId === task.id ? (
