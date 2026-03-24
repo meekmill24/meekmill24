@@ -98,10 +98,10 @@ export default function TasksPage() {
 
             if (levelsRes.data) {
                 const currentLevel = levelsRes.data.find(l => Number(l.id) === Number(profile.level_id));
-                if (currentLevel) {
-                    setTasksPerSet(currentLevel.tasks_per_set);
-                    setSetsPerDay(currentLevel.sets_per_day || 3);
-                    setCommissionRate(Number(currentLevel.commission_rate) || 0.005);
+                if (profile?.level) {
+                    setTasksPerSet(profile.tasks_per_set_override || profile.level.tasks_per_set || 40);
+                    setSetsPerDay(profile.sets_per_day_override || profile.level.sets_per_day || 3);
+                    setCommissionRate(profile.level.commission_rate || 0.005);
                 }
             }
 

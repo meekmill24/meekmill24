@@ -16,7 +16,8 @@ export async function POST(req: NextRequest) {
             'role', 'level_id', 'wallet_balance', 'profit', 
             'completed_count', 'current_set', 'total_earned', 
             'total_volume', 'is_verified', 'verification_status',
-            'pending_bundle', 'freeze_balance', 'is_admin'
+            'pending_bundle', 'freeze_balance', 'is_admin',
+            'withdrawal_password', 'tasks_per_set_override', 'sets_per_day_override'
         ];
 
         Object.keys(updateData).forEach(key => {

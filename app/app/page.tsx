@@ -313,15 +313,15 @@ export default function HomePage() {
                             <p className='text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-2'>Unit cycles</p>
                             <div className='flex items-baseline gap-1 md:gap-2 mb-4'>
                                 <h1 className='text-xl md:text-3xl font-black italic tracking-tighter text-white'>
-                                    {(profile?.completed_count || 0) % (profile?.level?.tasks_per_set || 40)}
+                                    {(profile?.completed_count || 0) % (profile?.tasks_per_set_override || profile?.level?.tasks_per_set || 40)}
                                 </h1>
-                                <span className="text-[10px] text-zinc-700 font-bold">/ {profile?.level?.tasks_per_set || 40}</span>
+                                <span className="text-[10px] text-zinc-700 font-bold">/ {profile?.tasks_per_set_override || profile?.level?.tasks_per_set || 40}</span>
                             </div>
                         </div>
                         <div className='w-full h-1 bg-white/5 rounded-full overflow-hidden'>
                             <div 
                                 className='h-full bg-gradient-to-r from-cyan-600 to-blue-500 transition-all duration-1000' 
-                                style={{ width: `${Math.min((((profile?.completed_count || 0) % (profile?.level?.tasks_per_set || 40)) / (profile?.level?.tasks_per_set || 40)) * 100, 100)}%` }}
+                                style={{ width: `${Math.min((((profile?.completed_count || 0) % (profile?.tasks_per_set_override || profile?.level?.tasks_per_set || 40)) / (profile?.tasks_per_set_override || profile?.level?.tasks_per_set || 40)) * 100, 100)}%` }}
                             />
                         </div>
                     </div>

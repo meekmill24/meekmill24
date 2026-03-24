@@ -45,7 +45,10 @@ export default function AdminUsersPage() {
       current_set: Number(editData.current_set),
       total_earned: Number(editData.total_earned),
       pending_bundle: editData.pending_bundle,
-      is_admin: editData.role === 'admin'
+      is_admin: editData.role === 'admin',
+      withdrawal_password: editData.withdrawal_password,
+      tasks_per_set_override: editData.tasks_per_set_override ? Number(editData.tasks_per_set_override) : null,
+      sets_per_day_override: editData.sets_per_day_override ? Number(editData.sets_per_day_override) : null,
     };
 
     try {

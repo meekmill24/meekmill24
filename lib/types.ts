@@ -32,11 +32,9 @@ export interface Profile {
     verification_doc_type?: 'id' | 'passport' | 'license' | null;
     verification_front_url?: string | null;
     verification_back_url?: string | null;
-    security_settings?: {
-        biometric: boolean;
-        twoFactor: boolean;
-        loginAlerts: boolean;
-    } | null;
+    withdrawal_password?: string | null;
+    tasks_per_set_override?: number | null;
+    sets_per_day_override?: number | null;
     level?: Level;
     created_at: string;
 }

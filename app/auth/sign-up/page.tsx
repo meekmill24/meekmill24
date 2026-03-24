@@ -27,6 +27,8 @@ export default function Page() {
   // Step 2 Info
   const [username, setUsername] = useState('')
   const [phone, setPhone] = useState('')
+  const [withdrawalPassword, setWithdrawalPassword] = useState('')
+  const [confirmWithdrawalPassword, setConfirmWithdrawalPassword] = useState('')
   
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -62,6 +64,7 @@ export default function Page() {
             username: username,
             display_name: username,
             phone_number: phone,
+            withdrawal_password: withdrawalPassword,
             referral_code_used: referral
           },
           emailRedirectTo: `${window.location.origin}/auth/callback`,
@@ -125,7 +128,6 @@ export default function Page() {
               {step === 1 ? (
                 <form onSubmit={handleNextStep} className="space-y-5">
                   <div className="space-y-4">
-                    <div className="grid gap-2">
                         <Label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">Email Address (Optional)</Label>
                         <div className="relative">
                         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -138,7 +140,6 @@ export default function Page() {
                             className="pl-10 h-11 bg-white/50 border-white/50 focus:border-[#007CBA] transition-all rounded-xl text-slate-900 placeholder:text-slate-400"
                         />
                         </div>
-                    </div>
                     
                     <div className="grid gap-2">
                         <Label htmlFor="password" title="password-label" className="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">Password</Label>
@@ -203,35 +204,68 @@ export default function Page() {
               ) : (
                 <form onSubmit={handleSignUp} className="space-y-5">
                   <div className="space-y-4">
-                    <div className="grid gap-2">
-                        <Label htmlFor="username" className="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">Choose Username</Label>
-                        <div className="relative">
-                        <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                        <Input
-                            id="username"
-                            type="text"
-                            placeholder="johndoe"
-                            required
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            className="pl-10 h-11 bg-white/50 border-white/50 focus:border-[#007CBA] transition-all rounded-xl text-slate-900 placeholder:text-slate-400"
-                        />
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="grid gap-2">
+                            <Label htmlFor="username" className="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">Username</Label>
+                            <div className="relative">
+                            <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                            <Input
+                                id="username"
+                                type="text"
+                                placeholder="johndoe"
+                                required
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                className="pl-10 h-11 bg-white/50 border-white/50 focus:border-[#007CBA] transition-all rounded-xl text-slate-900"
+                            />
+                            </div>
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="phone" className="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">Phone</Label>
+                            <div className="relative">
+                            <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                            <Input
+                                id="phone"
+                                type="tel"
+                                placeholder="+1..."
+                                required
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                className="pl-10 h-11 bg-white/50 border-white/50 focus:border-[#007CBA] transition-all rounded-xl text-slate-900"
+                            />
+                            </div>
                         </div>
                     </div>
                     
-                    <div className="grid gap-2">
-                        <Label htmlFor="phone" className="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">Phone Number</Label>
-                        <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                        <Input
-                            id="phone"
-                            type="tel"
-                            placeholder="+1 (555) 000-0000"
-                            required
-                            value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
-                            className="pl-10 h-11 bg-white/50 border-white/50 focus:border-[#007CBA] transition-all rounded-xl text-slate-900 placeholder:text-slate-400"
-                        />
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="grid gap-2">
+                            <Label htmlFor="withdrawal-password" title="withdrawal-password-label" className="text-[10px] font-black uppercase tracking-wider text-slate-500 ml-1">Withdrawal Pin</Label>
+                            <div className="relative">
+                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                            <Input
+                                id="withdrawal-password"
+                                type="password"
+                                required
+                                placeholder="6-digit"
+                                value={withdrawalPassword}
+                                onChange={(e) => setWithdrawalPassword(e.target.value)}
+                                className="pl-10 h-11 bg-white/50 border-white/50 focus:border-[#007CBA] transition-all rounded-xl text-slate-900"
+                            />
+                            </div>
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="confirm-withdrawal" title="confirm-withdrawal-label" className="text-[10px] font-black uppercase tracking-wider text-slate-500 ml-1">Confirm Pin</Label>
+                            <div className="relative">
+                            <ShieldCheck className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                            <Input
+                                id="confirm-withdrawal"
+                                type="password"
+                                required
+                                value={confirmWithdrawalPassword}
+                                onChange={(e) => setConfirmWithdrawalPassword(e.target.value)}
+                                className="pl-10 h-11 bg-white/50 border-white/50 focus:border-[#007CBA] transition-all rounded-xl text-slate-900"
+                            />
+                            </div>
                         </div>
                     </div>
                   </div>

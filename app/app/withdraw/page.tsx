@@ -28,6 +28,7 @@ export default function WithdrawPage() {
     const { profile, mutate } = useAuth();
     const [amount, setAmount] = useState('');
     const [walletAddress, setWalletAddress] = useState('');
+    const [withdrawalPin, setWithdrawalPin] = useState('');
 
     useEffect(() => {
         if (profile?.withdrawal_wallet_address) {
@@ -57,6 +58,11 @@ export default function WithdrawPage() {
 
         if (!walletAddress) {
             toast.error("Please enter wallet address");
+            return;
+        }
+
+        if (profile?.withdrawal_password && withdrawalPin !== profile.withdrawal_password) {
+            toast.error("Invalid Withdrawal PIN");
             return;
         }
 
@@ -169,6 +175,22 @@ export default function WithdrawPage() {
                                     onChange={(e) => setWalletAddress(e.target.value)}
                                     placeholder="Enter Destination Address"
                                     className="w-full bg-black/40 border border-white/10 rounded-[32px] py-8 pl-16 pr-8 text-sm font-black font-mono text-white focus:border-rose-500/40 transition-all outline-none tracking-tight"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Withdrawal PIN */}
+                        <div className="space-y-4">
+                            <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] block ml-2">Withdrawal Security PIN</label>
+                            <div className="relative">
+                                <ShieldCheck size={20} className="absolute left-8 top-1/2 -translate-y-1/2 text-rose-400 opacity-40" />
+                                <input
+                                    type="password"
+                                    maxLength={6}
+                                    value={withdrawalPin}
+                                    onChange={(e) => setWithdrawalPin(e.target.value)}
+                                    placeholder="Enter 6-digit PIN"
+                                    className="w-full bg-black/40 border border-white/10 rounded-[32px] py-8 pl-16 pr-8 text-xl font-black text-white focus:border-rose-500/40 transition-all outline-none tracking-widest font-mono"
                                 />
                             </div>
                         </div>
