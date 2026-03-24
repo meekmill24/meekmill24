@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from '@/context/AuthContext';
 import { useCurrency } from '@/context/CurrencyContext';
@@ -11,7 +11,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import type { UserTask, TaskItem } from '@/lib/types';
 
-export default function RecordPage() {
+function RecordContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const { profile, refreshProfile } = useAuth();
@@ -456,5 +456,17 @@ export default function RecordPage() {
                 )}
             </Portal>
         </div>
+    );
+}
+
+export default function RecordPage() {
+    return (
+        <Suspense fallback={
+            <div className="flex items-center justify-center py-32">
+                <div className="w-12 h-12 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin" />
+            </div>
+        }>
+            <RecordContent />
+        </Suspense>
     );
 }

@@ -3,19 +3,16 @@
 import { CheckCircle, ShieldCheck, ArrowRight, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
-export default function VerifyPage() {
+function VerifyContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [status, setStatus] = useState<'verifying' | 'success' | 'error'>('verifying');
 
     useEffect(() => {
         const verify = async () => {
-            // Supabase handles the actual verification via the hash in the URL if handled by auth/callback
-            // But if they land here, it means they clicked the link.
-            // We'll show a success message after a brief delay to simulate verification.
             setTimeout(() => {
                 setStatus('success');
             }, 2000);
@@ -82,5 +79,17 @@ export default function VerifyPage() {
                 </div>
             </div>
         </main>
+    );
+}
+
+export default function VerifyPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center p-6">
+                <Zap className="text-white animate-pulse" size={48} />
+            </div>
+        }>
+            <VerifyContent />
+        </Suspense>
     );
 }
