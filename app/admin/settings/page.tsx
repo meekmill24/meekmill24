@@ -281,8 +281,7 @@ export default function AdminSettingsPage() {
                                     try {
                                         const { error } = await supabase.from('site_settings').insert({ 
                                             key: cfg.key, 
-                                            value: cfg.placeholder,
-                                            label: cfg.label
+                                            value: cfg.placeholder
                                         });
                                         if (error) throw error;
                                         await fetchSettings();
