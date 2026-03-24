@@ -29,14 +29,19 @@ export default function AdminSettingsPage() {
   const handleSave = async () => { 
     setSaving(true); 
     try { 
+      // Call the API endpoint which uses service role
       await Promise.all(settings.map(s => 
-        supabase.from('site_settings').update({ value: s.value }).eq('key', s.key)
-      )); 
+        fetch('/api/admin/site-settings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key: s.key, value: s.value })
+        }).then(res => res.json().then(data => { if (!res.ok) throw new Error(data.error); }))
+      ));
       setSuccess(true); 
       setTimeout(() => setSuccess(false), 3000); 
-    } catch (err) { 
+    } catch (err: any) { 
       console.error(err);
-      alert('Failed to save settings'); 
+      toast.error(err.message || 'Failed to recalibrate core preferences'); 
     } finally { 
       setSaving(false); 
     } 
@@ -279,13 +284,17 @@ export default function AdminSettingsPage() {
                                 onClick={async () => {
                                     setProvisioningKeys(prev => ({ ...prev, [cfg.key]: true }));
                                     try {
-                                        const { error } = await supabase.from('site_settings').insert({ 
-                                            key: cfg.key, 
-                                            value: cfg.placeholder
+                                        const res = await fetch('/api/admin/site-settings', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ key: cfg.key, value: cfg.placeholder })
                                         });
-                                        if (error) throw error;
+
+                                        const data = await res.json();
+                                        if (!res.ok) throw new Error(data.error || 'Identity Rejected');
+
                                         await fetchSettings();
-                                        toast.success(`${cfg.label} provisioned!`);
+                                        toast.success(`${cfg.label} synchronization established!`);
                                     } catch (err: any) {
                                         console.error(err);
                                         toast.error(`Provision failed: ${err.message}`);
