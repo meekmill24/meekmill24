@@ -40,7 +40,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import confetti from 'canvas-confetti';
-import { toast } from 'sonner';
 
 export default function TasksPage() {
     const { profile, refreshProfile } = useAuth();
@@ -63,7 +62,6 @@ export default function TasksPage() {
     const [showMinBalanceModal, setShowMinBalanceModal] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [hasRecordPending, setHasRecordPending] = useState(false);
-    const [hasPendingTask, setHasPendingTask] = useState(false);
 
     // Dynamic Progress Logic
     const [tasksPerSet, setTasksPerSet] = useState(40);

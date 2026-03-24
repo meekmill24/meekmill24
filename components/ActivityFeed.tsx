@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useCurrency } from '@/context/CurrencyContext';
-import { useTheme } from 'next-themes';
 import { Award, Zap, TrendingUp, UserCheck } from 'lucide-react';
 
 interface Activity {
@@ -27,7 +26,6 @@ const ACTIONS = [
 
 export default function ActivityFeed() {
     const { format } = useCurrency();
-    const { theme } = useTheme();
     const [activities, setActivities] = useState<Activity[]>([]);
     const [currentActivity, setCurrentActivity] = useState<Activity | null>(null);
     const [isVisible, setIsVisible] = useState(false);
@@ -88,11 +86,7 @@ export default function ActivityFeed() {
         }`}>
             <div 
                 onClick={handleSupportClick}
-                className={`px-4 py-3 flex items-center gap-3 border transition-all duration-300 min-w-[240px] cursor-pointer hover:scale-105 active:scale-95 ${
-                theme === 'dark' 
-                ? 'border-white/10 bg-slate-900/80 backdrop-blur-xl shadow-none' 
-                : 'border-slate-200 bg-white shadow-[0_15px_50px_-10px_rgba(0,0,0,0.3)]'
-            } rounded-[20px]`}>
+                className={`px-4 py-3 flex items-center gap-3 border transition-all duration-300 min-w-[240px] cursor-pointer hover:scale-105 active:scale-95 border-white/10 bg-slate-900/80 backdrop-blur-xl shadow-none rounded-[20px]`}>
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
                     currentActivity.type === 'earning' ? 'bg-green-500/20 text-green-500' : 
                     currentActivity.type === 'upgrade' ? 'bg-amber-500/20 text-amber-500' : 'bg-purple-500/20 text-purple-400'
@@ -103,7 +97,7 @@ export default function ActivityFeed() {
                 
                 <div className="flex flex-col">
                     <div className="flex items-center gap-1.5">
-                        <span className="text-[11px] font-black text-white uppercase tracking-tighter">
+                        <span className="text-[11px] font-black text-cyan-500 uppercase tracking-tighter">
                             {currentActivity.username}
                         </span>
                         <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">
