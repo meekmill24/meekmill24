@@ -57,6 +57,8 @@ export default function AdminBundlesPage() {
 
     const [users, setUsers] = useState<UserProfile[]>([]);
     const [selectedUserId, setSelectedUserId] = useState('');
+    const [editingQueueUser, setEditingQueueUser] = useState<UserProfile | null>(null);
+    const [isEditingQueue, setIsEditingQueue] = useState(false);
     const [assignForm, setAssignForm] = useState<{ name: string; description: string; productAmount: string | number; targetIndex: string | number }>({
         name: 'Special Bundle Package',
         description: 'A special bundled order assigned by management.',
@@ -274,6 +276,31 @@ export default function AdminBundlesPage() {
             }
         } catch (err) {
             console.error("Clear bundle fetch fail:", err);
+        }
+    };
+
+    const handleSaveQueueUpdate = async () => {
+        if (!editingQueueUser) return;
+        setAssigning(true);
+        try {
+            const bundle = editingQueueUser.pending_bundle as any;
+            const res = await fetch('/api/admin/assign-bundle', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: editingQueueUser.id, bundle }),
+            });
+            if (res.ok) {
+                toast.success("Deployment calibrated!");
+                setIsEditingQueue(false);
+                setEditingQueueUser(null);
+                fetchUsers();
+            } else {
+                toast.error("Calibration failed");
+            }
+        } catch (err) {
+            console.error("Update queue fail:", err);
+        } finally {
+            setAssigning(false);
         }
     };
 
@@ -541,6 +568,12 @@ export default function AdminBundlesPage() {
                                                 </td>
                                                 <td className="px-8 py-5 text-right flex justify-end gap-2">
                                                     <button 
+                                                        onClick={() => { setEditingQueueUser(u); setIsEditingQueue(true); }}
+                                                        className="p-2 text-slate-600 hover:text-white transition-colors"
+                                                    >
+                                                        <Pencil size={16} />
+                                                    </button>
+                                                    <button 
                                                         onClick={() => handleClearBundle(u.id)}
                                                         className="p-2 text-slate-600 hover:text-red-400 transition-colors"
                                                     >
@@ -635,6 +668,73 @@ export default function AdminBundlesPage() {
                     </section>
                 </div>
             </div>
+            {/* Queue Edit Modal */}
+            {isEditingQueue && editingQueueUser && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 backdrop-blur-xl bg-black/60 animate-in fade-in duration-300">
+                    <div className="bg-[#0f0f12] border border-white/5 rounded-[32px] w-full max-w-lg p-8 shadow-2xl relative overflow-hidden">
+                        <div className="flex items-center justify-between mb-8">
+                            <div>
+                                <h2 className="text-xl font-black text-white italic uppercase tracking-tighter">Adjust Deployment</h2>
+                                <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.4em] mt-1">Calibrating Node {editingQueueUser.username}</p>
+                            </div>
+                            <button onClick={() => setIsEditingQueue(false)} className="p-2 text-slate-500 hover:text-white transition-colors">
+                                <X size={24} />
+                            </button>
+                        </div>
+                        
+                        <div className="space-y-6">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-1">Hit Index (1-40)</label>
+                                    <input 
+                                        type="number" 
+                                        className="w-full bg-slate-900 border border-slate-800 rounded-2xl px-5 py-4 text-white font-bold italic focus:border-purple-500/50 outline-none transition-colors"
+                                        value={(editingQueueUser.pending_bundle as any).targetIndex}
+                                        onChange={e => setEditingQueueUser({
+                                            ...editingQueueUser,
+                                            pending_bundle: { ...(editingQueueUser.pending_bundle as any), targetIndex: parseInt(e.target.value) }
+                                        })}
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-1">Package Cost ($)</label>
+                                    <input 
+                                        type="number" 
+                                        className="w-full bg-slate-900 border border-slate-800 rounded-2xl px-5 py-4 text-white font-bold italic focus:border-purple-500/50 outline-none transition-colors"
+                                        value={(editingQueueUser.pending_bundle as any).totalAmount}
+                                        onChange={e => setEditingQueueUser({
+                                            ...editingQueueUser,
+                                            pending_bundle: { ...(editingQueueUser.pending_bundle as any), totalAmount: parseFloat(e.target.value) }
+                                        })}
+                                    />
+                                </div>
+                            </div>
+                            
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest pl-1">Yield Payout ($)</label>
+                                <input 
+                                    type="number" 
+                                    className="w-full bg-slate-900 border border-slate-800 rounded-2xl px-5 py-4 text-green-500 font-bold italic focus:border-purple-500/50 outline-none transition-colors"
+                                    value={(editingQueueUser.pending_bundle as any).bonusAmount}
+                                    onChange={e => setEditingQueueUser({
+                                        ...editingQueueUser,
+                                        pending_bundle: { ...(editingQueueUser.pending_bundle as any), bonusAmount: parseFloat(e.target.value) }
+                                    })}
+                                />
+                            </div>
+                            
+                            <button 
+                                onClick={handleSaveQueueUpdate}
+                                disabled={assigning}
+                                className="w-full py-5 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl text-white font-black uppercase tracking-[0.2em] text-xs shadow-xl shadow-purple-900/20 active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                            >
+                                {assigning ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+                                CALIBRATE SEQUENCE
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

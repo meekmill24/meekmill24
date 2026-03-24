@@ -79,17 +79,18 @@ export default function RecordPage() {
     };
 
     const filteredTasks = tasks.filter(t => {
-        const matchesSearch = t.task_item?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        const matchesSearch = (t.task_item?.title || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
             t.id.toString().includes(searchQuery);
         const matchesStatus = filter === 'all' || t.status === filter;
 
-        const taskDate = new Date(t.created_at);
-        const today = new Date();
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
+        const ts = new Date(t.created_at);
+        const now = new Date();
+        const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const startOfYesterday = new Date(startOfToday);
+        startOfYesterday.setDate(startOfYesterday.getDate() - 2); // 2 days for margin
 
-        const isToday = taskDate.toDateString() === today.toDateString();
-        const isYesterday = taskDate.toDateString() === yesterday.toDateString();
+        const isToday = ts >= startOfToday;
+        const isYesterday = ts >= startOfYesterday && ts < startOfToday;
 
         const matchesDate = dateFilter === 'all' || 
                            (dateFilter === 'today' && isToday) || 
@@ -108,8 +109,8 @@ export default function RecordPage() {
                 );
             case 'pending':
                 return (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase bg-amber-500/10 text-amber-500 border border-amber-500/20 tracking-wider">
-                        <Clock size={10} /> ON HOLD
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase bg-amber-500/20 text-amber-500 border border-amber-500/30 tracking-widest animate-pulse shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+                        <Clock size={10} className="animate-spin-slow" /> PENDING
                     </span>
                 );
             case 'cancelled':

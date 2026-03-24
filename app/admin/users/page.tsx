@@ -265,15 +265,27 @@ export default function AdminUsersPage() {
                                     placeholder="Profit"
                                 />
                               </div>
-                              <div className="relative">
-                                <CheckCircle className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-700" size={10} />
-                                <input 
-                                    className="bg-black/40 border border-purple-500/50 rounded-lg pl-6 pr-2 py-1 text-white text-[11px] font-bold focus:outline-none w-32"
-                                    type="number"
-                                    value={editData.completed_count ?? ''}
-                                    onChange={(e) => setEditData({...editData, completed_count: e.target.value === '' ? undefined : parseInt(e.target.value)})}
-                                    placeholder="Tasks"
-                                />
+                              <div className="flex gap-1.5">
+                                <div className="relative flex-1">
+                                  <CheckCircle className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-700" size={10} />
+                                  <input 
+                                      className="bg-black/40 border border-purple-500/50 rounded-lg pl-6 pr-2 py-1 text-white text-[11px] font-bold focus:outline-none w-full"
+                                      type="number"
+                                      value={editData.completed_count ?? ''}
+                                      onChange={(e) => setEditData({...editData, completed_count: e.target.value === '' ? undefined : parseInt(e.target.value)})}
+                                      placeholder="Tasks"
+                                  />
+                                </div>
+                                <div className="relative flex-1">
+                                  <Layers className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-700" size={10} />
+                                  <input 
+                                      className="bg-black/40 border border-purple-500/50 rounded-lg pl-6 pr-2 py-1 text-white text-[11px] font-bold focus:outline-none w-full"
+                                      type="number"
+                                      value={editData.current_set ?? ''}
+                                      onChange={(e) => setEditData({...editData, current_set: e.target.value === '' ? undefined : parseInt(e.target.value)})}
+                                      placeholder="Set"
+                                  />
+                                </div>
                               </div>
 
                               <div className="mt-2 pt-2 border-t border-slate-800 space-y-2">
