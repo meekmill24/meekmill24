@@ -59,7 +59,6 @@ export default function TasksPage() {
     const [modalSeen, setModalSeen] = useState(false);
     const [showMinBalanceModal, setShowMinBalanceModal] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
-    const [isMatchingFound, setIsMatchingFound] = useState(false);
 
     // Dynamic Progress Logic
     const [tasksPerSet, setTasksPerSet] = useState(40);
@@ -250,13 +249,10 @@ export default function TasksPage() {
             setHighlightedIndex(finalIndex);
             setIsSpinning(false);
             setMatchingStatus("MATCH SECURED");
-            setSelectedItem(matchedItem);
             
-            if (pb && Number(pb.targetIndex) === currentItemIndex) {
-                 handleTaskSelection(matchedItem, pb, currentItemIndex);
-            } else {
-                 setIsMatchingFound(true);
-            }
+            setTimeout(() => {
+                handleTaskSelection(matchedItem, pb, currentItemIndex);
+            }, 500);
         }, 2000);
     }, [isSpinning, items, isLocked, profile, currentSet, isAllSetsDone, modalSeen, completedCountInSet]);
 
@@ -304,7 +300,6 @@ export default function TasksPage() {
 
             const earnedAmount = data?.earned_amount ? Number(data.earned_amount) : 0;
             setModalOpen(false);
-            setIsMatchingFound(false);
             setSelectedItem(null);
             toast.success(`Succesfully optimized. Profit: ${format(earnedAmount)}`);
             
@@ -607,43 +602,6 @@ export default function TasksPage() {
                     </div>
                 </div>
 
-            {/* Matching Overlay */}
-            {selectedItem && isMatchingFound && (
-                <div className="fixed inset-0 z-[9999] bg-black/90 backdrop-blur-2xl flex items-center justify-center animate-in fade-in duration-500">
-                    <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/10 via-transparent to-transparent pointer-events-none" />
-                    <div className="relative flex flex-col items-center gap-12 text-center max-w-sm px-10">
-                        <div className="relative group/match">
-                            <div className="absolute -inset-10 bg-cyan-500/20 rounded-full blur-[80px] animate-pulse group-hover/match:scale-150 transition-transform duration-1000" />
-                            <div className="w-48 h-48 rounded-[48px] overflow-hidden bg-black/40 border-2 border-cyan-500 shadow-[0_0_60px_rgba(6,182,212,0.3)] p-4 relative z-10 animate-scale-in">
-                                <img src={selectedItem.image_url} alt="" className="w-full h-full object-contain" />
-                            </div>
-                            <div className="absolute -bottom-4 -right-4 w-12 h-12 rounded-2xl bg-cyan-500 flex items-center justify-center text-black shadow-2xl z-20 animate-bounce">
-                                <CheckCircle size={24} />
-                            </div>
-                        </div>
-
-                        <div className="space-y-4 relative z-10">
-                            <h3 className="text-3xl font-black italic uppercase tracking-tighter text-white drop-shadow-2xl">
-                                Match Found
-                            </h3>
-                            <div className="flex flex-col items-center gap-2">
-                                <p className="text-[10px] font-black text-cyan-500 uppercase tracking-[0.4em] animate-pulse">Establishing Secure Node...</p>
-                                <div className="h-px w-32 bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent mt-4" />
-                            </div>
-                        </div>
-
-                        <button 
-                            onClick={() => {
-                                setIsMatchingFound(false);
-                                setModalOpen(true);
-                            }}
-                            className="relative z-10 w-full py-6 rounded-[28px] bg-white text-black font-black uppercase tracking-[0.3em] text-[10px] hover:scale-105 active:scale-95 transition-all shadow-[0_20px_50px_rgba(255,255,255,0.15)] mt-4"
-                        >
-                            Open Assignment
-                        </button>
-                    </div>
-                </div>
-            )}
 
             {/* Modals */}
             <ItemDetailModal

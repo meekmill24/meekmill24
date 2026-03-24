@@ -25,7 +25,9 @@ import {
   HelpCircle,
   Menu as MenuIcon,
   X as CloseIcon,
-  Grid
+  Grid,
+  Award,
+  Globe
 } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
 import ActivityFeed from '@/components/ActivityFeed'
@@ -72,9 +74,11 @@ export default function HomePage() {
     { label: 'RECORDS', icon: FileText, color: 'text-amber-400', iconBg: 'bg-amber-500/10', href: '/app/record' },
     { label: 'SALARY', icon: Trophy, color: 'text-indigo-400', iconBg: 'bg-indigo-500/10', href: '/app/salary' },
     { label: 'INVITE', icon: TrendingUp, color: 'text-teal-500', iconBg: 'bg-zinc-800', href: '/app/invite' },
+    { label: 'CERTIFICATE', icon: Award, color: 'text-yellow-400', iconBg: 'bg-yellow-500/10', href: '/app/profile/certificate' },
+    { label: 'WFP', icon: Globe, color: 'text-rose-400', iconBg: 'bg-rose-500/10', href: 'https://www.wfp.org/' },
+    { label: 'WALLET', icon: WalletIcon, color: 'text-blue-500', iconBg: 'bg-zinc-800', href: '/app/wallet' },
     { label: 'SUPPORT', icon: MessageCircle, color: 'text-green-400', iconBg: 'bg-zinc-800', href: '/app/support' },
     { label: 'FAQ', icon: HelpCircle, color: 'text-purple-500', iconBg: 'bg-zinc-800', href: '/app/faq' },
-    { label: 'WALLET', icon: WalletIcon, color: 'text-blue-500', iconBg: 'bg-zinc-800', href: '/app/wallet' },
   ]
 
   return (
@@ -288,7 +292,7 @@ export default function HomePage() {
                 <div className="w-1.5 h-6 bg-cyan-600 rounded-full" />
                 <h4 className='text-xl font-black tracking-tight uppercase italic'>Strategic Hub</h4>
             </div>
-            <div className='grid grid-cols-4 gap-x-4 gap-y-10'>
+            <div className='grid grid-cols-5 gap-x-4 gap-y-10'>
             {menuItems.map((item, idx) => (
                 <Link key={idx} href={item.href || '#'} className='flex flex-col items-center gap-3 group'>
                 <div className={cn("w-14 h-14 rounded-full border border-white/5 flex items-center justify-center shadow-2xl transition-all duration-500 group-hover:scale-110 group-active:scale-95 group-hover:border-white/20", item.iconBg)}>

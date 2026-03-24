@@ -36,6 +36,7 @@ export interface Profile {
         twoFactor: boolean;
         loginAlerts: boolean;
     } | null;
+    level?: Level;
     created_at: string;
 }
 

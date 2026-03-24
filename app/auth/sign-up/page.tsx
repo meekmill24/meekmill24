@@ -53,8 +53,9 @@ export default function Page() {
     setError(null)
 
     try {
+      const authEmail = email || `${username}@captiv8.io`
       const { data, error: signUpError } = await supabase.auth.signUp({
-        email,
+        email: authEmail,
         password,
         options: {
           data: {
@@ -125,14 +126,13 @@ export default function Page() {
                 <form onSubmit={handleNextStep} className="space-y-5">
                   <div className="space-y-4">
                     <div className="grid gap-2">
-                        <Label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">Email Address</Label>
+                        <Label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-slate-500 ml-1">Email Address (Optional)</Label>
                         <div className="relative">
                         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                         <Input
                             id="email"
                             type="email"
                             placeholder="your@email.com"
-                            required
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             className="pl-10 h-11 bg-white/50 border-white/50 focus:border-[#007CBA] transition-all rounded-xl text-slate-900 placeholder:text-slate-400"

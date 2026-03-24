@@ -5,15 +5,14 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase'; 
 import Link from 'next/link'; 
 import { usePathname } from 'next/navigation'; 
-import { LayoutDashboard, Users, Layers, Grid3X3, Share2, Receipt, LogOut, DollarSign, Menu, X, ArrowDownToLine, ArrowUpFromLine, Package, Bell, Settings, AlertCircle, } from 'lucide-react'; 
+import { LayoutDashboard, Users, Layers, Grid3X3, Share2, Receipt, LogOut, DollarSign, Menu, X, ArrowDownToLine, ArrowUpFromLine, Package, Bell, Settings, AlertCircle, Wallet as WalletIcon, } from 'lucide-react'; 
 import AnimatePage from '@/components/AnimatePage'; 
 import NotificationCenter from '@/components/NotificationCenter';
 
 const navItems = [ 
   { icon: LayoutDashboard, label: 'Dashboard', href: '/admin' }, 
   { icon: Users, label: 'Users', href: '/admin/users' }, 
-  { icon: ArrowDownToLine, label: 'Deposits', href: '/admin/deposits' }, 
-  { icon: ArrowUpFromLine, label: 'Withdrawals', href: '/admin/withdrawals' }, 
+  { icon: WalletIcon, label: 'Deposit Wallet', href: '/admin/deposits' }, 
   { icon: Package, label: 'Bundles', href: '/admin/bundles' }, 
   { icon: Bell, label: 'Notify Users', href: '/admin/notify' }, 
   { icon: Layers, label: 'Levels', href: '/admin/levels' }, 
@@ -110,8 +109,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <nav className="flex-1 space-y-1">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
-              const hasAlert = (item.label === 'Deposits' && pendingCounts.deposits > 0) || 
-                               (item.label === 'Withdrawals' && pendingCounts.withdrawals > 0);
+              const hasAlert = (item.label === 'Deposit Wallet' && (pendingCounts.deposits > 0 || pendingCounts.withdrawals > 0));
               return (
                 <Link 
                   key={item.href} 
@@ -128,7 +126,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   </div>
                   {hasAlert && (
                     <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
-                      {item.label === 'Deposits' ? pendingCounts.deposits : pendingCounts.withdrawals}
+                      {item.label === 'Deposit Wallet' ? (pendingCounts.deposits + pendingCounts.withdrawals) : 0}
                     </span>
                   )}
                 </Link>

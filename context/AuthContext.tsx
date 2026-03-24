@@ -37,7 +37,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             console.log("Fetching profile for ID:", userId);
             const { data, error } = await supabase
                 .from('profiles')
-                .select('*')
+                .select('*, level:levels(*)')
                 .eq('id', userId)
                 .single();
 
