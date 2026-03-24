@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuth } from '@/context/AuthContext';
+import { cn } from '@/lib/utils';
 import { useCurrency } from '@/context/CurrencyContext';
 import { Spinner } from '@/components/ui/spinner';
 import { 
@@ -65,7 +66,10 @@ export default function WalletPage() {
                                     Total Balance
                                 </p>
                                 <div className="flex items-baseline gap-2 overflow-hidden">
-                                    <h2 className="text-4xl md:text-6xl font-black text-white tracking-tighter drop-shadow-[0_10px_30px_rgba(0,0,0,0.2)] italic">
+                                    <h2 className={cn(
+                                        "text-4xl md:text-6xl font-black tracking-tighter drop-shadow-[0_10px_30px_rgba(0,0,0,0.2)] italic",
+                                        (profile?.wallet_balance || 0) < 0 ? "text-rose-500" : "text-white"
+                                    )}>
                                         {format(profile?.wallet_balance || 0).split('.')[0]}
                                         <span className="text-2xl md:text-3xl opacity-30">.{format(profile?.wallet_balance || 0).split('.')[1] || '00'}</span>
                                     </h2>

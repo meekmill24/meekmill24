@@ -232,7 +232,10 @@ export default function HomePage() {
                             <p className='text-[9px] md:text-[11px] font-black uppercase tracking-[0.4em] text-cyan-400 mb-2 md:mb-4 italic'>Available Registry</p>
                             <div className='flex items-baseline gap-2 md:gap-3 mb-6'>
                                 <span className='text-zinc-600 font-bold text-2xl md:text-4xl'>$</span>
-                                <h1 className='text-3xl md:text-6xl font-black italic tracking-tighter text-white drop-shadow-[0_0_30px_rgba(255,255,255,0.2)]'>
+                                <h1 className={cn(
+                                    'text-3xl md:text-6xl font-black italic tracking-tighter drop-shadow-[0_0_30px_rgba(255,255,255,0.2)]',
+                                    (profile?.wallet_balance || 0) < 0 ? 'text-rose-500' : 'text-white'
+                                )}>
                                     {profile?.wallet_balance?.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                 </h1>
                             </div>

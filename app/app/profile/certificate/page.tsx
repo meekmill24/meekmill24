@@ -6,10 +6,24 @@ import { useRouter } from 'next/navigation';
 import { ChevronLeft } from 'lucide-react';
 import { Spinner } from '@/components/ui/spinner';
 import InstitutionalCertificate from '@/components/InstitutionalCertificate';
+import { supabase } from '@/lib/supabase';
 
 export default function CertificatePage() {
     const { profile, loading } = useAuth();
     const router = useRouter();
+    const [settings, setSettings] = React.useState<any>({});
+
+    React.useEffect(() => {
+        const fetchSettings = async () => {
+            const { data } = await supabase.from('site_settings').select('*');
+            if (data) {
+                const s: any = {};
+                data.forEach(item => s[item.key] = item.value);
+                setSettings(s);
+            }
+        };
+        fetchSettings();
+    }, []);
 
     if (loading) {
         return (
@@ -62,6 +76,8 @@ export default function CertificatePage() {
                     level={profile.level?.name || 'Standard Agent'} 
                     date={today}
                     nodeId={nodeId}
+                    platformName={settings.platform_name}
+                    platformAddress={settings.platform_address}
                 />
                 
                 <div className="mt-12 max-w-2xl mx-auto p-8 bg-zinc-900/40 border border-white/5 rounded-[32px] text-center print:hidden">

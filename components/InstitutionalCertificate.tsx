@@ -9,9 +9,11 @@ interface CertificateProps {
     level: string;
     date: string;
     nodeId: string;
+    platformName?: string;
+    platformAddress?: string;
 }
 
-export default function InstitutionalCertificate({ username, level, date, nodeId }: CertificateProps) {
+export default function InstitutionalCertificate({ username, level, date, nodeId, platformName, platformAddress }: CertificateProps) {
     const handleDownload = () => {
         window.print();
     };
@@ -22,7 +24,7 @@ export default function InstitutionalCertificate({ username, level, date, nodeId
                 {/* Header Section */}
                 <div className="flex flex-col md:flex-row justify-between items-start border-b-2 border-slate-900 pb-8 mb-10 gap-6">
                     <div>
-                        <h1 className="text-4xl font-black tracking-tighter text-slate-950 uppercase mb-4">Ontario SIMPLE OPERATIONS</h1>
+                        <h1 className="text-4xl font-black tracking-tighter text-slate-950 uppercase mb-4">Ontario {platformName || 'SIMPLE OPERATIONS'}</h1>
                         <p className="text-sm font-bold text-slate-500 mb-1">Date Issued: {date}</p>
                         <p className="text-[10px] text-slate-400 font-medium">(yyyy-mm-dd)</p>
                     </div>
@@ -38,20 +40,20 @@ export default function InstitutionalCertificate({ username, level, date, nodeId
                 <div className="space-y-10 text-[14px] font-sans leading-relaxed relative flex-1 text-slate-700">
                     {/* Watermark */}
                     <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none rotate-[-45deg] select-none scale-[2]">
-                        <span className="text-8xl font-black uppercase tracking-[0.5em]">SIMPLE OPERATIONS</span>
+                        <span className="text-8xl font-black uppercase tracking-[0.5em]">{platformName || 'SIMPLE OPERATIONS'}</span>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-16 relative z-10">
                         <div className="space-y-8">
                             <div>
                                 <h3 className="font-bold underline uppercase mb-3 text-[11px] tracking-widest text-slate-950">Business Name and Mailing Address:</h3>
-                                <p className="font-black text-slate-900 text-xl uppercase leading-tight mb-1">Simple Operations Inc.</p>
-                                <p className="text-slate-600 font-bold leading-relaxed pr-10">250 Schoolhouse Street, Coquitlam, British Columbia, Canada</p>
+                                <p className="font-black text-slate-900 text-xl uppercase leading-tight mb-1">{platformName || "Simple Operations Inc."}</p>
+                                <p className="text-slate-600 font-bold leading-relaxed pr-10">{platformAddress || "250 Schoolhouse Street, Coquitlam, British Columbia, Canada"}</p>
                             </div>
 
                             <div>
                                 <h3 className="font-bold underline uppercase mb-3 text-[11px] tracking-widest text-slate-950">Business Address:</h3>
-                                <p className="text-slate-600 font-bold leading-relaxed pr-10">250 Schoolhouse Street, Coquitlam, British Columbia, Canada</p>
+                                <p className="text-slate-600 font-bold leading-relaxed pr-10">{platformAddress || "250 Schoolhouse Street, Coquitlam, British Columbia, Canada"}</p>
                             </div>
 
                             <div className="bg-slate-50/50 p-6 border-l-4 border-slate-200">
@@ -65,7 +67,7 @@ export default function InstitutionalCertificate({ username, level, date, nodeId
                             {/* Blue Stamp Mimic */}
                             <div className="w-48 h-48 rounded-full border-[6px] border-blue-900/10 flex flex-col items-center justify-center p-4 rotate-[15deg] relative bg-blue-50/30 backdrop-blur-sm shadow-inner group">
                                 <div className="absolute inset-2 border-2 border-dashed border-blue-900/10 rounded-full animate-spin-slow" />
-                                <span className="text-[8px] font-black text-blue-900/40 uppercase tracking-tighter text-center px-4 leading-tight mb-1">SIMPLE OPERATIONS INC.<br/>GOVERNMENT REGISTERED</span>
+                                <span className="text-[8px] font-black text-blue-900/40 uppercase tracking-tighter text-center px-4 leading-tight mb-1">{(platformName || 'SIMPLE OPERATIONS INC.').toUpperCase()}<br/>GOVERNMENT REGISTERED</span>
                                 <div className="w-20 h-20 bg-blue-900/5 rounded-full flex items-center justify-center border border-blue-900/10 my-2 shadow-sm">
                                     <ShieldCheck className="text-blue-900/30" size={40} />
                                 </div>

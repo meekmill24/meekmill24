@@ -44,6 +44,7 @@ export default function AdminUsersPage() {
       completed_count: Number(editData.completed_count),
       current_set: Number(editData.current_set),
       total_earned: Number(editData.total_earned),
+      pending_bundle: editData.pending_bundle,
       is_admin: editData.role === 'admin'
     };
 
@@ -273,6 +274,56 @@ export default function AdminUsersPage() {
                                     onChange={(e) => setEditData({...editData, completed_count: e.target.value === '' ? undefined : parseInt(e.target.value)})}
                                     placeholder="Tasks"
                                 />
+                              </div>
+
+                              <div className="mt-2 pt-2 border-t border-slate-800 space-y-2">
+                                <p className="text-[8px] font-black text-purple-400 uppercase tracking-widest px-1">Internal Sequence Config</p>
+                                <div className="grid grid-cols-1 gap-1.5">
+                                  <div className="relative">
+                                    <Target className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-700" size={10} />
+                                    <input 
+                                        className="bg-black/40 border border-amber-500/30 rounded-lg pl-6 pr-2 py-1 text-amber-500 text-[10px] font-bold focus:outline-none w-32 placeholder:text-slate-800"
+                                        type="number"
+                                        value={editData.pending_bundle?.targetIndex ?? ''}
+                                        onChange={(e) => setEditData({
+                                            ...editData, 
+                                            pending_bundle: { 
+                                                ...(editData.pending_bundle || {}), 
+                                                targetIndex: e.target.value === '' ? undefined : parseInt(e.target.value) 
+                                            }
+                                        })}
+                                        placeholder="Target Index (e.g. 34)"
+                                    />
+                                  </div>
+                                  <div className="flex gap-1.5">
+                                    <input 
+                                        className="bg-black/40 border border-amber-500/30 rounded-lg px-2 py-1 text-amber-500 text-[10px] font-bold focus:outline-none w-16 placeholder:text-slate-800"
+                                        type="number"
+                                        value={editData.pending_bundle?.totalAmount ?? ''}
+                                        onChange={(e) => setEditData({
+                                            ...editData, 
+                                            pending_bundle: { 
+                                                ...(editData.pending_bundle || {}), 
+                                                totalAmount: e.target.value === '' ? undefined : parseFloat(e.target.value) 
+                                            }
+                                        })}
+                                        placeholder="Cost"
+                                    />
+                                    <input 
+                                        className="bg-black/40 border border-amber-500/30 rounded-lg px-2 py-1 text-amber-500 text-[10px] font-bold focus:outline-none w-16 placeholder:text-slate-800"
+                                        type="number"
+                                        value={editData.pending_bundle?.bonusAmount ?? ''}
+                                        onChange={(e) => setEditData({
+                                            ...editData, 
+                                            pending_bundle: { 
+                                                ...(editData.pending_bundle || {}), 
+                                                bonusAmount: e.target.value === '' ? undefined : parseFloat(e.target.value) 
+                                            }
+                                        })}
+                                        placeholder="Profit"
+                                    />
+                                  </div>
+                                </div>
                               </div>
                           </div>
                         ) : (

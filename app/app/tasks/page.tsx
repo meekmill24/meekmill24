@@ -548,33 +548,36 @@ export default function TasksPage() {
                                                 onClick={handleStart}
                                                 disabled={isLocked || isSpinning}
                                                 className={cn(
-                                                    "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full z-20 flex flex-col items-center justify-center gap-3 transition-all duration-700 shadow-2xl overflow-hidden",
+                                                    "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 md:w-80 md:h-80 rounded-full z-20 flex flex-col items-center justify-center gap-4 transition-all duration-700 shadow-[0_0_100px_rgba(37,99,235,0.2)] overflow-hidden border-[8px]",
                                                     isLocked 
-                                                        ? "bg-zinc-900/50 border-white/5 cursor-not-allowed group"
-                                                        : "bg-blue-600/10 border-blue-500 hover:scale-105 active:scale-95 group hover:bg-blue-600/20 shadow-blue-500/20"
+                                                        ? "bg-zinc-900/50 border-white/5 cursor-not-allowed group opacity-60"
+                                                        : "bg-black border-blue-500 hover:scale-105 active:scale-95 group hover:bg-blue-600/5 shadow-blue-500/20"
                                                 )}
                                             >
+                                                <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/10 to-transparent opacity-40 group-hover:opacity-60 transition-opacity" />
+                                                
                                                 {isLocked ? (
                                                     <>
-                                                        <Lock size={32} className="text-zinc-700 mb-1" />
-                                                        <span className="text-[9px] font-black text-zinc-700 uppercase tracking-[0.3em] italic">LOCKED</span>
+                                                        <Lock size={48} className="text-zinc-700 mb-2" />
+                                                        <span className="text-xs font-black text-zinc-700 uppercase tracking-[0.4em] italic">LOCKED</span>
                                                     </>
                                                 ) : profile?.pending_bundle ? (
                                                     <>
-                                                        <Zap size={32} className="text-amber-500 animate-pulse mb-1" />
-                                                        <span className="text-[9px] font-black text-amber-500 uppercase tracking-[0.3em] italic">CONTINUE</span>
+                                                        <Zap size={56} className="text-amber-500 animate-pulse mb-2 drop-shadow-[0_0_20px_rgba(245,158,11,0.5)]" />
+                                                        <span className="text-xs font-black text-amber-500 uppercase tracking-[0.5em] italic">CONTINUE</span>
                                                     </>
                                                 ) : isSpinning ? (
-                                                   <div className="flex flex-col items-center gap-2">
-                                                       <RefreshCw size={24} className="text-cyan-500 animate-spin" />
-                                                       <span className="text-[6px] font-black text-cyan-500 uppercase tracking-widest animate-pulse">SYNCING</span>
+                                                   <div className="flex flex-col items-center gap-4">
+                                                       <RefreshCw size={40} className="text-cyan-500 animate-spin" />
+                                                       <span className="text-[8px] font-black text-cyan-500 uppercase tracking-widest animate-pulse italic">SYNCING NODE</span>
                                                    </div>
                                                 ) : (
                                                     <>
-                                                        <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center shadow-xl mb-1">
-                                                            <Play size={22} className="text-white fill-white translate-x-0.5" />
+                                                        <div className="w-20 h-20 md:w-24 md:h-24 rounded-full bg-blue-600 flex items-center justify-center shadow-[0_0_40px_rgba(37,99,235,0.6)] mb-3 group-hover:scale-110 transition-transform duration-500">
+                                                            <Play size={40} className="text-white fill-white translate-x-1" />
                                                         </div>
-                                                        <span className="text-[9px] font-black text-black uppercase tracking-[0.3em] italic">START</span>
+                                                        <span className="text-sm font-black text-white uppercase tracking-[0.6em] italic drop-shadow-md">START</span>
+                                                        <p className="text-[10px] text-blue-500/60 font-black uppercase tracking-[0.2em] mt-1">{completedCountInSet}/{tasksPerSet}</p>
                                                     </>
                                                 )}
                                             </button>
