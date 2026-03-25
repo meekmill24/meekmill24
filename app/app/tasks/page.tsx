@@ -205,11 +205,11 @@ export default function TasksPage() {
             return;
         }
 
-        if (hasActiveRecordPending) {
+        if (hasActiveRecordPending && !profile?.pending_bundle) {
             const userId = profile?.id;
             if (!userId) return;
             const { data: pendingTask } = await supabase.from('user_tasks').select('status').eq('user_id', userId).eq('status', 'pending').limit(1);
-            if (pendingTask?.length || profile?.pending_bundle) {
+            if (pendingTask?.length) {
                 toast.error("Please complete your pending allocation in the Record page first.");
                 router.push('/app/record?filter=pending');
                 return;
