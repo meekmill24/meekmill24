@@ -12,7 +12,7 @@ export default function InvitePage() {
     const { profile } = useProfile();
     const [copied, setCopied] = useState(false);
 
-    const referralCode = profile?.referral_code || "CAPTIV8_VIP";
+    const referralCode = profile?.referral_code || profile?.id?.slice(0, 4).toUpperCase() || 'N/A';
     const inviteLink = `${typeof window !== 'undefined' ? window.location.origin : ''}/auth/sign-up?ref=${referralCode}`;
 
     const copyToClipboard = (text: string) => {
