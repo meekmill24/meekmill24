@@ -55,38 +55,59 @@ export default function Page() {
     setError(null)
 
     try {
-      const authEmail = email || `${username}@captiv8.io`
-      const { data, error: signUpError } = await supabase.auth.signUp({
-        email: authEmail,
-        password,
-        options: {
-          data: {
-            username: username,
-            display_name: username,
-            phone_number: phone,
-            withdrawal_password: withdrawalPassword,
-            referral_code_used: referral
-          },
-          emailRedirectTo: `${window.location.origin}/auth/callback`,
-        },
-      })
-      
-      if (signUpError) throw signUpError
-      
-      // Update profile immediately if possible (trigger usually handles it, but let's ensure)
-      if (data.user) {
-        await fetch('/api/profile', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
+      if (!email) {
+          // Create the account via admin API to bypass email verification
+          const res = await fetch('/api/auth/register', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ username, password, phone, withdrawalPassword, referral })
+          });
+          const apiData = await res.json();
+          if (!res.ok) throw new Error(apiData.error || 'Registration failed');
+
+          // Log them in immediately
+          const { error: signInError } = await supabase.auth.signInWithPassword({
+              email: apiData.fakeEmail,
+              password
+          });
+          
+          if (signInError) throw signInError;
+          
+          router.push('/app')
+      } else {
+          // They provided a real email. Use standard strict-verification method
+          const { data, error: signUpError } = await supabase.auth.signUp({
+            email: email,
+            password,
+            options: {
+              data: {
                 username: username,
                 display_name: username,
-                phone_number: phone
-            }),
-        })
+                phone_number: phone,
+                withdrawal_password: withdrawalPassword,
+                referral_code_used: referral
+              },
+              emailRedirectTo: `${window.location.origin}/auth/callback`,
+            },
+          })
+          
+          if (signUpError) throw signUpError
+          
+          // Update profile initially
+          if (data.user) {
+            await fetch('/api/profile', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    username: username,
+                    display_name: username,
+                    phone_number: phone
+                }),
+            })
+          }
+          
+          router.push('/auth/sign-up-success')
       }
-      
-      router.push('/auth/sign-up-success')
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : 'An error occurred')
     } finally {

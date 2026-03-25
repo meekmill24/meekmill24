@@ -42,10 +42,11 @@ export default function Page() {
           .eq('username', email)
           .single() as { data: { email: string } | null, error: any };
 
-        if (profileError || !profile) {
-          throw new Error('Identity node not found. Please verify your username.');
+        if (profileError || !profile || !profile.email) {
+          loginEmail = `${email}@captiv8.io`;
+        } else {
+          loginEmail = profile.email;
         }
-        loginEmail = profile.email;
       }
 
       const { error } = await supabase.auth.signInWithPassword({

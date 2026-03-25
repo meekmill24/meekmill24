@@ -391,9 +391,9 @@ function RecordContent() {
                                                 <button
                                                     onClick={() => handleSubmitPending(task)}
                                                     disabled={isSubmitting}
-                                                    className={`px-8 py-4 rounded-2xl bg-indigo-500 text-white text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-indigo-500/20 transition-all flex items-center justify-center gap-2
+                                                    className={`px-6 py-3 rounded-xl bg-indigo-500 text-white text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-indigo-500/20 transition-all flex items-center justify-center gap-2
                                                         ${isSubmitting && submittingTaskId === task.id ? 'opacity-50 cursor-wait' : 'hover:scale-[1.03] active:scale-95 cursor-pointer'}
-                                                        whitespace-nowrap w-[180px] border-b-4 border-indigo-700
+                                                        whitespace-nowrap w-[150px] border-b-4 border-indigo-700
                                                     `}
                                                 >
                                                     {isSubmitting && submittingTaskId === task.id ? (
