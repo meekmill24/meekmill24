@@ -42,16 +42,7 @@ export default function VIPMapPage() {
     loadLevels()
   }, [])
 
-  if (loading) {
-    return (
-        <div className='flex items-center justify-center min-h-screen bg-[#0F172A]'>
-            <div className="flex flex-col items-center gap-4">
-                <div className="w-12 h-12 border-4 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin" />
-                <p className='text-cyan-500/50 text-[10px] font-black uppercase tracking-[0.4em]'>Synchronizing VIP Nodes...</p>
-            </div>
-        </div>
-    )
-  }
+
 
   return (
     <main className='min-h-screen bg-[#0F172A] text-white pb-32 pb-inset'>
@@ -175,7 +166,7 @@ export default function VIPMapPage() {
         </div>
       </div>
 
-      <BottomNav active='app' />
+      <BottomNav />
     </main>
   )
 }
