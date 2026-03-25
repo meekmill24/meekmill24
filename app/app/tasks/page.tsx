@@ -374,7 +374,7 @@ export default function TasksPage() {
             const { data, error } = await supabase.rpc('complete_user_task', {
                 p_task_item_id: Number(item.id),
                 p_cost_amount: costAmount ? Number(costAmount) : 0,
-                p_is_bundle: Boolean(costAmount && profile?.pending_bundle)
+                p_is_bundle: false // Strictly false: Bundles are handled by handleBundleAccept only
             });
 
             if (error) throw error;
