@@ -129,7 +129,7 @@ export default function HomePage() {
             loop 
             muted 
             playsInline
-            src="/hero-animation.mp4" 
+            src="https://v1.pinimg.com/videos/iht/expMp4/f0/05/e1/f005e1c89606f25040abd5f6ee080fff_720w.mp4" 
             className="w-full h-full object-cover blur-sm scale-110 mix-blend-screen"
         />
         {/* Fallback image if video is not yet uploaded */}
