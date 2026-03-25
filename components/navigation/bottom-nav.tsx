@@ -12,7 +12,7 @@ export function BottomNav() {
     { id: 'home', label: 'HOME', href: '/app', icon: Home },
     { id: 'record', label: 'RECORD', href: '/app/record', icon: History },
     { id: 'task', label: 'TASK', href: '/app/tasks', icon: Play, isCenter: true },
-    { id: 'wallet', label: 'WALLET', href: '/app/wallet', icon: CreditCard },
+    { id: 'wallet', label: 'WALLET', href: '/app/wallet', icon: Wallet },
     { id: 'profile', label: 'MINE', href: '/app/profile', icon: User },
   ]
 
