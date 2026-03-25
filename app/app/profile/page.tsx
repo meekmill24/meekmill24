@@ -311,6 +311,7 @@ export default function ProfilePage() {
 
                 {[
                     { icon: Award, label: 'Agent Certification', sub: 'Authorized proof of performance', href: '/app/profile/certificate' },
+                    { icon: Info, label: 'Mission Protocol', sub: 'About Captiv8 and our directive', href: '/app/profile/about' },
                     { icon: FileText, label: 'User Agreement', sub: 'Regulatory protocol and terms', href: '/app/terms' },
                 ].map((item, idx) => (
                     <Link key={idx} href={item.href} className='group block'>
