@@ -32,7 +32,11 @@ export default function SecurityPage() {
 
     useEffect(() => {
         if (profile?.security_settings) {
-            setToggles(profile.security_settings);
+            setToggles({
+                biometric: Boolean(profile.security_settings.biometric),
+                twoFactor: Boolean(profile.security_settings.twoFactor),
+                loginAlerts: Boolean(profile.security_settings.loginAlerts),
+            });
         }
     }, [profile]);
 

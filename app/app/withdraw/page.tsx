@@ -8,23 +8,15 @@ import {
   AlertCircle, 
   Loader2, 
   ShieldCheck, 
-  Zap, 
   Clock, 
-  Info,
-  Smartphone,
-  CheckCircle,
-  ChevronRight
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useCurrency } from '@/context/CurrencyContext';
 import { useAuth } from '@/context/AuthContext';
-import { supabase } from '@/lib/supabase';
 import { toast } from 'sonner';
 import Image from 'next/image';
 
 export default function WithdrawPage() {
     const router = useRouter();
-    const { format } = useCurrency();
     const { profile, mutate } = useAuth();
     const [amount, setAmount] = useState('');
     const [walletAddress, setWalletAddress] = useState('');
@@ -69,15 +61,23 @@ export default function WithdrawPage() {
         setLoading(true);
 
         try {
-            const { data, error } = await supabase.rpc('request_withdrawal', {
-                p_amount: withdrawAmount,
-                p_wallet_address: walletAddress,
-                p_network: network,
-                p_description: `Withdrawal to ${network}`
+            const response = await fetch('/api/withdrawals/request', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    amount: withdrawAmount,
+                    walletAddress,
+                    network,
+                    withdrawalPin,
+                }),
             });
+            const payload = await response.json();
 
-            if (error) throw error;
-            if (data && !data.success) throw new Error(data.message);
+            if (!response.ok) {
+                throw new Error(payload.error || 'Failed to initiate withdrawal');
+            }
 
             toast.success("Withdrawal request initiated!");
             mutate();

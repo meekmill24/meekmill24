@@ -40,6 +40,7 @@ import { cn } from '@/lib/utils'
 import { useAuth } from '@/context/AuthContext'
 import { useCurrency } from '@/context/CurrencyContext'
 import { getLevels } from '@/lib/actions/admin'
+import { supabase } from '@/lib/supabase'
 
 export default function HomePage() {
   const { profile, loading: profileLoading } = useAuth()
