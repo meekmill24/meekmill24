@@ -259,8 +259,9 @@ export default function TasksPage() {
         setSelectedItem(null);
         setMatchingStatus("INITIATING NEURAL LINK...");
 
-        // OPTIMIZATION: Start fetching latest profile state immediately in parallel with animation
-        const profilePromise = supabase.from('profiles').select('*, levels(*)').eq('id', profile?.id).single();
+        // OPTIMIZATION: Start fetching latest profile state immediately in parallel with animation.
+        // Simplified query to avoid join errors that could lead to infinite spinning.
+        const profilePromise = supabase.from('profiles').select('*').eq('id', profile?.id).single();
 
         const stages = [
             "ANALYZING MARKET VECTORS...",
@@ -278,29 +279,30 @@ export default function TasksPage() {
             if (stages[statusIdx]) setMatchingStatus(stages[statusIdx]);
             setHighlightedIndex(Math.floor(Math.random() * items.length));
             count++;
-            if (count >= maxSteps) {
-                clearInterval(stageInterval);
-            }
+            if (count >= maxSteps) clearInterval(stageInterval);
         }, intervalTime);
 
         // Animation sequence finishes, then reveal the results from the already-fetched data
         setTimeout(async () => {
             clearInterval(stageInterval);
             
-            // Await the profile fetch that was started at the beginning
-            const freshData = await profilePromise;
-            const pb = (freshData.data as any)?.pending_bundle;
-            
-            const currentInSetForHit = ((profile?.completed_count || 0) % (tasksPerSet || 40)) + 1;
-            const currentAbsoluteForHit = (profile?.completed_count || 0) + 1;
+            try {
+                // Await the profile fetch that was started at the beginning
+                const freshData = await profilePromise;
+                if (freshData.error) throw freshData.error;
 
-            let finalIndex = Math.floor(Math.random() * items.length);
-            let matchedItem = { ...items[finalIndex] };
+                const pb = (freshData.data as any)?.pending_bundle;
+                
+                const currentInSetForHit = ((profile?.completed_count || 0) % (tasksPerSet || 40)) + 1;
+                const currentAbsoluteForHit = (profile?.completed_count || 0) + 1;
 
-            const isHit = pb && (Number(pb.targetIndex) === currentInSetForHit || Number(pb.targetIndex) === currentAbsoluteForHit);
+                let finalIndex = Math.floor(Math.random() * items.length);
+                let matchedItem = { ...items[finalIndex] };
 
-            if (isHit) {
-                if (pb.taskItem) {
+                // Compare hitting logic precisely
+                const isHit = !!pb && (Number(pb.targetIndex) === currentInSetForHit || Number(pb.targetIndex) === currentAbsoluteForHit);
+
+                if (isHit && pb.taskItem) {
                     matchedItem = {
                         id: Number(pb.taskItemIds?.[0] || 0),
                         title: pb.taskItem.title,
@@ -316,15 +318,22 @@ export default function TasksPage() {
                     newItems[finalIndex] = matchedItem;
                     setItems(newItems);
                 }
+
+                setHighlightedIndex(finalIndex);
+                setIsSpinning(false);
+                setMatchingStatus("MATCH SECURED");
+
+                setTimeout(() => {
+                    handleTaskSelection(matchedItem, isHit ? pb : null, isHit ? (Number(pb.targetIndex) === currentInSetForHit ? currentInSetForHit : currentAbsoluteForHit) : (currentInSetForHit || currentAbsoluteForHit));
+                }, 200);
+            } catch (err: any) {
+                console.error("Match Flow Error:", err);
+                setIsSpinning(false);
+                setMatchingStatus("READY TO MATCH");
+                toast.error("Protocol Interrupted: " + (err.message || "Network Timeout"), {
+                    duration: 3000
+                });
             }
-
-            setHighlightedIndex(finalIndex);
-            setIsSpinning(false);
-            setMatchingStatus("MATCH SECURED");
-
-            setTimeout(() => {
-                handleTaskSelection(matchedItem, isHit ? pb : null, isHit ? currentInSetForHit : currentAbsoluteForHit);
-            }, 200);
         }, 850); 
     }, [isSpinning, items, isLocked, profile, currentSet, isAllSetsDone, modalSeen, tasksPerSet, hasActiveRecordPending, handleTaskSelection]);
 
