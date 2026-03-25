@@ -52,7 +52,7 @@ export default function AdminWithdrawalsPage() {
     }
   }; 
 
-  if (loading && withdrawals.length === 0) return <div className="text-center py-20 text-slate-500 italic">Scanning for payout requests...</div>;
+
 
   return ( 
     <div className="space-y-8 animate-in fade-in duration-500"> 

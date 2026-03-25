@@ -31,7 +31,7 @@ export default function AdminReferralsPage() {
     r.username?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  if (loading && referrals.length === 0) return <div className="text-center py-20 text-slate-500 italic">Scanning affiliate networks...</div>;
+
 
   return ( 
     <div className="space-y-8 animate-in fade-in duration-500"> 
