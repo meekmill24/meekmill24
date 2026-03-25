@@ -48,10 +48,26 @@ export async function DELETE(req: NextRequest) {
 
         // 1. Perform balance deduction if amount provided (Acceptance flow)
         if (deductAmount && Number(deductAmount) > 0) {
-            const { error: deductError } = await supabaseAdmin.rpc('accept_bundle_deduction', {
-                p_user_id: userId,
-                p_amount: Number(deductAmount)
-            });
+            // Fallback JS-based deduction to avoid requiring custom SQL RPC
+            const { data: userRecord, error: fetchErr } = await supabaseAdmin
+                .from('profiles')
+                .select('wallet_balance')
+                .eq('id', userId)
+                .single();
+
+            if (fetchErr) {
+                console.error("Fetch Balance Error:", fetchErr);
+                return NextResponse.json({ error: "Failed to read balance" }, { status: 500 });
+            }
+
+            const currentBalance = Number(userRecord.wallet_balance || 0);
+            const newBalance = currentBalance - Number(deductAmount);
+
+            const { error: deductError } = await supabaseAdmin
+                .from('profiles')
+                .update({ wallet_balance: newBalance })
+                .eq('id', userId);
+
             if (deductError) {
                 console.error("Deduction Error:", deductError);
                 return NextResponse.json({ error: "Failed to deduct balance" }, { status: 500 });
