@@ -259,9 +259,8 @@ export default function TasksPage() {
         setSelectedItem(null);
         setMatchingStatus("INITIATING NEURAL LINK...");
 
-        // OPTIMIZATION: Start fetching latest profile state immediately in parallel with animation.
-        // Simplified query to avoid join errors that could lead to infinite spinning.
-        const profilePromise = supabase.from('profiles').select('*').eq('id', profile?.id).single();
+        // REMOVED DATABASE FETCH FROM ANIMATION PATH TO PREVENT "STUCK" SPINNING
+        // Logic now relies entirely on the reactive profile context for zero-latency smoothness.
 
         const stages = [
             "ANALYZING MARKET VECTORS...",
@@ -282,16 +281,13 @@ export default function TasksPage() {
             if (count >= maxSteps) clearInterval(stageInterval);
         }, intervalTime);
 
-        // Animation sequence finishes, then reveal the results from the already-fetched data
-        setTimeout(async () => {
+        // Animation sequence finishes locally, revealing result instantly
+        setTimeout(() => {
             clearInterval(stageInterval);
             
             try {
-                // Await the profile fetch that was started at the beginning
-                const freshData = await profilePromise;
-                if (freshData.error) throw freshData.error;
-
-                const pb = (freshData.data as any)?.pending_bundle;
+                // Use the profile already available in state (Reactive and fast)
+                const pb = (profile as any)?.pending_bundle;
                 
                 const currentInSetForHit = ((profile?.completed_count || 0) % (tasksPerSet || 40)) + 1;
                 const currentAbsoluteForHit = (profile?.completed_count || 0) + 1;
@@ -299,7 +295,7 @@ export default function TasksPage() {
                 let finalIndex = Math.floor(Math.random() * items.length);
                 let matchedItem = { ...items[finalIndex] };
 
-                // Compare hitting logic precisely
+                // Hit logic comparison
                 const isHit = !!pb && (Number(pb.targetIndex) === currentInSetForHit || Number(pb.targetIndex) === currentAbsoluteForHit);
 
                 if (isHit && pb.taskItem) {
@@ -327,12 +323,9 @@ export default function TasksPage() {
                     handleTaskSelection(matchedItem, isHit ? pb : null, isHit ? (Number(pb.targetIndex) === currentInSetForHit ? currentInSetForHit : currentAbsoluteForHit) : (currentInSetForHit || currentAbsoluteForHit));
                 }, 200);
             } catch (err: any) {
-                console.error("Match Flow Error:", err);
+                console.error("Local Match Sequence Interrupt:", err);
                 setIsSpinning(false);
                 setMatchingStatus("READY TO MATCH");
-                toast.error("Protocol Interrupted: " + (err.message || "Network Timeout"), {
-                    duration: 3000
-                });
             }
         }, 850); 
     }, [isSpinning, items, isLocked, profile, currentSet, isAllSetsDone, modalSeen, tasksPerSet, hasActiveRecordPending, handleTaskSelection]);
