@@ -236,7 +236,7 @@ export default function AdminSettingsPage() {
                 { key: 'referral_commission_l2', label: 'L2 Referral Commission (%)', type: 'number' },
                 { key: 'referral_commission_l3', label: 'L3 Referral Commission (%)', type: 'number' },
                 { key: 'wallet_trc20', label: 'TRC20 Wallet Address', placeholder: 'T...' },
-                { key: 'wallet_erc20', label: 'ERC20 Wallet Address', placeholder: '0x...' },
+                { key: 'wallet_erc20', label: 'ETH / ERC20 Wallet Address', placeholder: '0x...' },
                 { key: 'wallet_bep20', label: 'BEP20 Wallet Address', placeholder: '0x...' },
                 { key: 'wallet_btc', label: 'BTC Wallet Address', placeholder: '1...' },
                 { key: 'currency_symbol', label: 'Display Currency', placeholder: '$' },

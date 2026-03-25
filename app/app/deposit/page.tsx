@@ -31,7 +31,7 @@ export default function DepositPage() {
     const { profile } = useProfile();
     const [amount, setAmount] = useState('');
     const [customAmount, setCustomAmount] = useState('');
-    const [network, setNetwork] = useState<'TRC20' | 'BEP20' | 'ERC20' | 'BTC'>('TRC20');
+    const [network, setNetwork] = useState<'TRC20' | 'BEP20' | 'ETH' | 'BTC'>('TRC20');
     const [proofFile, setProofFile] = useState<File | null>(null);
     const [proofPreview, setProofPreview] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
@@ -54,7 +54,12 @@ export default function DepositPage() {
         fetchWallets();
     }, []);
 
-    const depositAddress = walletAddresses[`wallet_${network.toLowerCase()}`] || "THxV7...example_address";
+    const getWalletKey = (n: string) => {
+        if (n === 'ETH') return 'wallet_erc20';
+        return `wallet_${n.toLowerCase()}`;
+    };
+
+    const depositAddress = walletAddresses[getWalletKey(network)] || "THxV7...example_address";
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -159,7 +164,7 @@ export default function DepositPage() {
                             1. Select Network
                         </h3>
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                            {['TRC20', 'BEP20', 'ERC20', 'BTC'].map((net) => (
+                            {['TRC20', 'BEP20', 'ETH', 'BTC'].map((net) => (
                                 <button
                                     key={net}
                                     onClick={() => setNetwork(net as any)}
