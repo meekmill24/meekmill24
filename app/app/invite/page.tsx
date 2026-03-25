@@ -3,16 +3,16 @@
 import { ArrowLeft, TrendingUp, Copy, CheckCircle, Share2, Users, Rocket } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { useProfile } from '@/hooks/use-profile';
+import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
 import Image from 'next/image';
 
 export default function InvitePage() {
     const router = useRouter();
-    const { profile } = useProfile();
+    const { profile, loading } = useAuth();
     const [copied, setCopied] = useState(false);
 
-    const referralCode = profile?.referral_code || profile?.id?.slice(0, 4).toUpperCase() || 'N/A';
+    const referralCode = profile?.referral_code || profile?.id?.slice(0, 4).toUpperCase() || (loading ? 'SYNCHRONIZING...' : 'N/A');
     const inviteLink = `${typeof window !== 'undefined' ? window.location.origin : ''}/auth/sign-up?ref=${referralCode}`;
 
     const copyToClipboard = (text: string) => {
