@@ -92,13 +92,7 @@ export default function HomePage() {
     }
   }, [profile?.id, profileLoading]);
 
-  if (profileLoading) {
-    return (
-      <div className='flex items-center justify-center min-h-screen bg-[#0a0a0a]'>
-        <Spinner className='h-8 w-8 text-primary' />
-      </div>
-    )
-  }
+
 
   const menuItems = [
     { label: 'DEPOSIT', icon: Zap, color: 'text-cyan-400', iconBg: 'bg-cyan-500/10', href: '/app/deposit' },
