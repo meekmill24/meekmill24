@@ -279,6 +279,16 @@ export default function AdminUsersPage() {
                                 />
                               </div>
                               <div className="relative">
+                                <Wallet className="absolute left-2 top-1/2 -translate-y-1/2 text-rose-700" size={10} />
+                                <input 
+                                    className="bg-black/40 border border-rose-500/50 rounded-lg pl-6 pr-2 py-1 text-white text-[11px] font-bold focus:outline-none w-32"
+                                    type="number"
+                                    value={editData.freeze_balance ?? ''}
+                                    onChange={(e) => setEditData({...editData, freeze_balance: e.target.value === '' ? undefined : parseFloat(e.target.value)})}
+                                    placeholder="Clearance"
+                                />
+                              </div>
+                              <div className="relative">
                                 <TrendingUp className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-700" size={10} />
                                 <input 
                                     className="bg-black/40 border border-purple-500/50 rounded-lg pl-6 pr-2 py-1 text-white text-[11px] font-bold focus:outline-none w-32"
@@ -366,6 +376,10 @@ export default function AdminUsersPage() {
                              <div className="flex items-center gap-2 font-black text-white italic tabular-nums">
                                 <Wallet size={12} className="text-green-500" />
                                 ${user.wallet_balance?.toLocaleString(undefined, { minimumFractionDigits: 2 }) || '0.00'}
+                             </div>
+                             <div className="flex items-center gap-2 font-black text-rose-500 italic tabular-nums text-[10px]">
+                                <Wallet size={11} className="text-rose-600" />
+                                ${user.freeze_balance?.toLocaleString(undefined, { minimumFractionDigits: 2 }) || '0.00'} (Clearance)
                              </div>
                              <div className="flex items-center gap-2 text-[10px] text-slate-500 font-bold uppercase tracking-tight italic">
                                 <TrendingUp size={11} className="text-purple-600" />
