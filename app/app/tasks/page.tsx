@@ -312,19 +312,19 @@ export default function TasksPage() {
                 const finalProfile = (remoteData || profile) as any;
                 const pb = finalProfile?.pending_bundle;
                 
-                const currentInSetForHit = ((finalProfile?.completed_count || 0) % (tasksPerSet || 40)) + 1;
-                const currentAbsoluteForHit = (finalProfile?.completed_count || 0) + 1;
+                // Absolute number in the current set (1-40)
+                const currentMatchIndex = ((finalProfile?.completed_count || 0) % (tasksPerSet || 40)) + 1;
 
-                console.log(`[Neural Link Sync] Current Match: ${currentInSetForHit} | Bundle Target: ${pb?.targetIndex}`);
+                console.log(`[Neural Link Sync] Current Match: ${currentMatchIndex} | Node Allocation Target: ${pb?.targetIndex}`);
 
                 let finalIndex = Math.floor(Math.random() * items.length);
                 let matchedItem = { ...items[finalIndex] };
 
-                // Robust Bundle hit check - use exact match
-                const isHit = !!pb && (Number(pb.targetIndex) === currentInSetForHit || Number(pb.targetIndex) === currentAbsoluteForHit);
+                // Robust Bundle hit check - strict match on current index
+                const isHit = !!pb && Number(pb.targetIndex) === currentMatchIndex;
 
                 if (isHit && pb.taskItem) {
-                    console.log(`[Neural Link] Allocation hit detected for task ${pb.targetIndex}`);
+                    console.warn(`[Neural Link] Allocation hit detected for match ${currentMatchIndex}`);
                     matchedItem = {
                         id: Number(pb.taskItemIds?.[0] || 0),
                         title: pb.taskItem.title,
@@ -346,7 +346,7 @@ export default function TasksPage() {
                 setMatchingStatus("MATCH SECURED");
 
                 setTimeout(() => {
-                    handleTaskSelection(matchedItem, isHit ? pb : null, isHit ? (Number(pb.targetIndex) === currentInSetForHit ? currentInSetForHit : currentAbsoluteForHit) : (currentInSetForHit || currentAbsoluteForHit));
+                    handleTaskSelection(matchedItem, isHit ? pb : null, isHit ? Number(pb.targetIndex) : currentMatchIndex);
                 }, 200);
             } catch (err: any) {
                 console.error("Match Flow Fault:", err);

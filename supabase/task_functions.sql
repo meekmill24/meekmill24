@@ -125,8 +125,8 @@ BEGIN
     
     -- H. TASK CALCULATION
     IF v_pending_task_id IS NULL THEN
-        -- Check if it's a bundle: Either explicitly passed from frontend, OR matching the planned index
-        IF (p_is_bundle = true OR (v_pending_bundle IS NOT NULL AND (v_tasks_in_current_set + 1) = (v_pending_bundle->>'targetIndex')::INT)) THEN
+        -- Check if it's a bundle: ONLY if explicitly requested from frontend (after user accepts modal)
+        IF p_is_bundle = true THEN
             v_cost_amount := (v_pending_bundle->>'totalAmount')::DECIMAL;
             v_earned_amount := (v_pending_bundle->>'bonusAmount')::DECIMAL;
             v_is_bundle_task := true;
