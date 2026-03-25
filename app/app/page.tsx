@@ -110,7 +110,7 @@ export default function HomePage() {
     { 
       label: 'WFP', 
       icon: null, 
-      image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/World_Food_Programme_logo.svg/512px-World_Food_Programme_logo.svg.png",
+      image: "/wfp-logo.svg",
       color: 'text-rose-400', 
       iconBg: 'bg-rose-500/10', 
       href: 'https://www.wfp.org/' 
