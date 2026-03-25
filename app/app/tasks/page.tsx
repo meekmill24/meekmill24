@@ -229,18 +229,7 @@ export default function TasksPage() {
             return;
         }
 
-        if (profile?.pending_bundle) {
-            setMatchingStatus("PENDING ALLOCATION DETECTED");
-            setActiveBundle(profile.pending_bundle);
-            setBundleModal(true);
-            confetti({
-                particleCount: 150,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#F59E0B', '#FFFFFF', '#3B82F6']
-            });
-            return;
-        }
+        // Remove immediate bundle trigger to respect Hit Index during the matching flow
 
         setIsSpinning(true);
         setSelectedItem(null);
@@ -272,14 +261,17 @@ export default function TasksPage() {
             const freshData = await supabase.from('profiles').select('*, levels(*)').eq('id', profile?.id).single();
             const pb = (freshData.data as any)?.pending_bundle;
             
-            // Current index is just the completed count + 1
-            const currentItemIndex = (profile?.completed_count || 0) + 1;
+            // Current index relative to the set (e.g. 1-40)
+            const currentInSet = ((profile?.completed_count || 0) % (tasksPerSet || 40)) + 1;
+            const currentAbsolute = (profile?.completed_count || 0) + 1;
 
             let finalIndex = Math.floor(Math.random() * items.length);
             let matchedItem = { ...items[finalIndex] };
 
-            // Fix the Index Match (targetIndex is 1-based)
-            if (pb && Number(pb.targetIndex) === currentItemIndex) {
+            // Trigger bundle ONLY if index matches targetIndex (relative or absolute)
+            const isHit = pb && (Number(pb.targetIndex) === currentInSet || Number(pb.targetIndex) === currentAbsolute);
+
+            if (isHit) {
                 if (pb.taskItem) {
                     matchedItem = {
                         id: Number(pb.taskItemIds?.[0] || 0),
@@ -303,9 +295,9 @@ export default function TasksPage() {
             setMatchingStatus("MATCH SECURED");
 
             setTimeout(() => {
-                handleTaskSelection(matchedItem, pb, currentItemIndex);
-            }, 500);
-        }, 2000);
+                handleTaskSelection(matchedItem, isHit ? pb : null, isHit ? currentInSet : currentAbsolute);
+            }, 300);
+        }, 1000); // Fast, natural transition
     }, [isSpinning, items, isLocked, profile, currentSet, isAllSetsDone, modalSeen, completedCountInSet]);
 
     const handleTaskSelection = async (item: TaskItem, pb?: any, currentItemIndex?: number) => {
@@ -615,8 +607,8 @@ export default function TasksPage() {
                                                     "w-full h-full rounded-[32px] md:rounded-[40px] z-20 flex flex-col items-center justify-center transition-all duration-300 shadow-2xl overflow-hidden",
                                                     isLocked
                                                         ? "bg-zinc-900 border-zinc-800 opacity-60 grayscale"
-                                                        : (profile?.pending_bundle || hasRecordPending || (profile?.wallet_balance !== undefined && profile?.wallet_balance < 0))
-                                                            ? "bg-amber-500 border-amber-400 hover:bg-amber-400/90 shadow-[0_0_30px_rgba(245,158,11,0.3)]"
+                                                        : (hasActiveRecordPending || (profile?.wallet_balance !== undefined && profile?.wallet_balance < 0))
+                                                            ? "bg-white border-white hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(255,255,255,0.1)]"
                                                             : "bg-white border-white hover:scale-105 active:scale-95"
                                                 )}
                                             >
@@ -624,11 +616,6 @@ export default function TasksPage() {
                                                     <div className="flex flex-col items-center gap-1">
                                                         <Lock size={20} className="text-zinc-600" />
                                                         <span className="text-[7px] font-black text-zinc-600 uppercase tracking-widest italic">LOCKED</span>
-                                                    </div>
-                                                ) : (profile?.pending_bundle || hasRecordPending || (profile?.wallet_balance !== undefined && profile?.wallet_balance < 0)) ? (
-                                                    <div className="flex flex-col items-center gap-1">
-                                                        <Zap size={24} className="text-white animate-pulse" />
-                                                        <span className="text-[7px] font-black text-white uppercase tracking-widest italic">CONTINUE</span>
                                                     </div>
                                                 ) : isSpinning ? (
                                                     <div className="flex flex-col items-center gap-1">
@@ -640,7 +627,9 @@ export default function TasksPage() {
                                                         <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-black flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
                                                             <Play size={18} className="text-white fill-white translate-x-0.5" />
                                                         </div>
-                                                        <span className="text-[9px] font-black text-black uppercase tracking-[0.2em] mt-2 italic">START</span>
+                                                        <span className="text-[9px] font-black text-black uppercase tracking-[0.2em] mt-2 italic">
+                                                            {(hasActiveRecordPending || (profile?.wallet_balance !== undefined && profile.wallet_balance < 0)) ? "CONTINUE" : "START"}
+                                                        </span>
                                                     </div>
                                                 )}
                                             </button>
