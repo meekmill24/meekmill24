@@ -168,10 +168,26 @@ export default function AdminLevelsPage() {
                 <div className="space-y-4"> 
                   <input className="w-full bg-slate-950 border border-purple-500/50 rounded-2xl px-4 py-2 text-white font-bold" value={editData.name || ''} onChange={(e) => setEditData({ ...editData, name: e.target.value })} /> 
                   <div className="grid grid-cols-2 gap-3"> 
-                    <input type="number" className="bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-white" value={editData.price || 0} onChange={(e) => setEditData({ ...editData, price: parseFloat(e.target.value) })} /> 
-                    <input type="number" step="0.0001" className="bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-white" value={editData.commission_rate || 0} onChange={(e) => setEditData({ ...editData, commission_rate: parseFloat(e.target.value) })} /> 
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase">Price</label>
+                      <input type="number" className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-white" value={editData.price || 0} onChange={(e) => setEditData({ ...editData, price: parseFloat(e.target.value) })} /> 
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase">Comm %</label>
+                      <input type="number" step="0.0001" className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-white" value={editData.commission_rate || 0} onChange={(e) => setEditData({ ...editData, commission_rate: parseFloat(e.target.value) })} /> 
+                    </div>
                   </div> 
-                  <textarea className="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-2 text-slate-400 text-sm h-24" value={editData.description || ''} onChange={(e) => setEditData({ ...editData, description: e.target.value })} />
+                  <div className="grid grid-cols-2 gap-3"> 
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase">Tasks/Set</label>
+                      <input type="number" className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-white" value={editData.tasks_per_set || 0} onChange={(e) => setEditData({ ...editData, tasks_per_set: parseInt(e.target.value) })} /> 
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase">Sets/Day</label>
+                      <input type="number" className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-white" value={editData.sets_per_day || 0} onChange={(e) => setEditData({ ...editData, sets_per_day: parseInt(e.target.value) })} /> 
+                    </div>
+                  </div> 
+                  <textarea className="w-full bg-slate-950 border border-slate-800 rounded-2xl px-4 py-2 text-slate-400 text-sm h-20" placeholder="Description" value={editData.description || ''} onChange={(e) => setEditData({ ...editData, description: e.target.value })} />
                   <div className="flex gap-2"> 
                     <button onClick={handleSave} className="flex-1 py-2.5 bg-green-500 text-white rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-green-900/40"><Save size={16} /> Save</button> 
                     <button onClick={() => setEditingId(null)} className="p-2.5 bg-slate-800 text-slate-400 rounded-xl hover:bg-slate-700 transition-colors"><X size={20} /></button> 

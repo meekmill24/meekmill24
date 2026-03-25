@@ -76,6 +76,9 @@ export default function TasksPage() {
     const progressInSet = Math.max(0, completedCount - (tasksPerSet * (currentSet - 1)));
     const completedCountInSet = Math.min(progressInSet, tasksPerSet);
     const totalTasks = tasksPerSet;
+    
+    // NEW: Proper pending check that looks at the database, not just the profile
+    const hasActiveRecordPending = hasRecordPending || !!profile?.pending_bundle;
 
     const fetchTasks = useCallback(async () => {
         if (!profile?.level_id || !profile?.id) return;
@@ -195,16 +198,22 @@ export default function TasksPage() {
         const walletBalance = profile?.wallet_balance || 0;
 
         if (walletBalance < 0) {
-            toast.error("Account in deficit. Please settle your balance through the recharge portal or Contact customer service to clear your negative balance to continue.", {
+            toast.error("Account in deficit. Please settle your balance through the recharge portal.", {
                 duration: 5000
             });
-            router.push('/app/record');
+            router.push('/app/record?filter=pending');
             return;
         }
 
-        if (hasRecordPending) {
-            toast.error("Please complete your pending allocation in the Record page first.");
-            return;
+        if (hasActiveRecordPending) {
+            const userId = profile?.id;
+            if (!userId) return;
+            const { data: pendingTask } = await supabase.from('user_tasks').select('status').eq('user_id', userId).eq('status', 'pending').limit(1);
+            if (pendingTask?.length || profile?.pending_bundle) {
+                toast.error("Please complete your pending allocation in the Record page first.");
+                router.push('/app/record?filter=pending');
+                return;
+            }
         }
 
         const minBalance = profile?.level?.price || 65;
@@ -254,13 +263,16 @@ export default function TasksPage() {
 
         setTimeout(async () => {
             clearInterval(stageInterval);
-            const { data: freshProfile } = await supabase.from('profiles').select('*').eq('id', profile?.id).single();
-            const pb = (freshProfile as any)?.pending_bundle;
+            const freshData = await supabase.from('profiles').select('*, levels(*)').eq('id', profile?.id).single();
+            const pb = (freshData.data as any)?.pending_bundle;
+            
+            // Fix Indexing: if target is 10, it triggers when showing 10/40 (so count is 9)
             const currentItemIndex = completedCountInSet + 1;
 
             let finalIndex = Math.floor(Math.random() * items.length);
             let matchedItem = { ...items[finalIndex] };
 
+            // Fix the Index Match (targetIndex is 1-based)
             if (pb && Number(pb.targetIndex) === currentItemIndex) {
                 if (pb.taskItem) {
                     matchedItem = {
@@ -309,7 +321,7 @@ export default function TasksPage() {
                 bonusAmount: Number(bundle.bonusAmount || 0),
                 expiresIn: Number(bundle.expiresIn || 86400),
                 taskItem: { title: item.title, image_url: item.image_url, category: item.category ?? '' },
-                taskItems: bundle.taskItems // New: pass entire array from Admin
+                taskItems: bundle.taskItems // Ensure entire array is passed for splitting
             });
             setBundleModal(true);
             confetti({
@@ -390,19 +402,35 @@ export default function TasksPage() {
                 pending_bundle: null
             }).eq('id', profile.id);
 
-            if (pendingTaskItem) {
-                await supabase.from('user_tasks').insert({
+            // CRITICAL FIX: Ensure record is created even if local state is lost (refresh)
+            let itemToRecord = pendingTaskItem;
+            if (!itemToRecord && bundle.taskItem) {
+                // Find index from DB items or use generic bundle item
+                const { data: itemsFromDB } = await supabase.from('task_items').select('*').eq('title', bundle.taskItem.title).limit(1);
+                itemToRecord = itemsFromDB?.[0] || null;
+            }
+
+            if (itemToRecord) {
+                const { error: insertErr } = await supabase.from('user_tasks').insert({
                     user_id: profile.id,
-                    task_item_id: pendingTaskItem.id,
+                    task_item_id: itemToRecord.id,
                     status: 'pending',
                     earned_amount: bundle.bonusAmount,
                     cost_amount: bundle.totalAmount,
-                    is_bundle: true
+                    is_bundle: true,
+                    created_at: new Date().toISOString()
                 });
+                
+                if (insertErr) {
+                    console.error("Insert Error:", insertErr);
+                    throw insertErr;
+                }
                 setPendingTaskItem(null);
             }
 
             setBundleModal(false);
+            setHasRecordPending(true); // Force local UI update
+            toast.success("Bundle sequence locked. Settle deficit to release funds.");
             router.push('/app/record?filter=pending');
             await refreshProfile();
         } catch (error) {
@@ -581,8 +609,8 @@ export default function TasksPage() {
                                                     "w-full h-full rounded-[32px] md:rounded-[40px] z-20 flex flex-col items-center justify-center transition-all duration-300 shadow-2xl overflow-hidden",
                                                     isLocked
                                                         ? "bg-zinc-900 border-zinc-800 opacity-60 grayscale"
-                                                        : profile?.pending_bundle
-                                                            ? "bg-amber-500 border-amber-400 hover:scale-105"
+                                                        : (profile?.pending_bundle || hasRecordPending || (profile?.wallet_balance !== undefined && profile?.wallet_balance < 0))
+                                                            ? "bg-amber-500 border-amber-400 hover:bg-amber-400/90 shadow-[0_0_30px_rgba(245,158,11,0.3)]"
                                                             : "bg-white border-white hover:scale-105 active:scale-95"
                                                 )}
                                             >
@@ -591,7 +619,7 @@ export default function TasksPage() {
                                                         <Lock size={20} className="text-zinc-600" />
                                                         <span className="text-[7px] font-black text-zinc-600 uppercase tracking-widest italic">LOCKED</span>
                                                     </div>
-                                                ) : profile?.pending_bundle ? (
+                                                ) : (profile?.pending_bundle || hasRecordPending || (profile?.wallet_balance !== undefined && profile?.wallet_balance < 0)) ? (
                                                     <div className="flex flex-col items-center gap-1">
                                                         <Zap size={24} className="text-white animate-pulse" />
                                                         <span className="text-[7px] font-black text-white uppercase tracking-widest italic">CONTINUE</span>

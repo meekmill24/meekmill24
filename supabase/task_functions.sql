@@ -144,32 +144,59 @@ BEGIN
 
     SELECT title INTO v_task_title FROM public.task_items WHERE id = p_task_item_id;
 
-    -- I. UPDATE PROFILE
+    -- I. UPDATE PROFILE (Multi-Stage Bundle Logic)
     UPDATE public.profiles 
     SET 
-        wallet_balance = wallet_balance + (CASE WHEN v_is_bundle_task OR v_pending_task_id IS NOT NULL THEN v_cost_amount ELSE 0 END) + v_earned_amount,
-        profit = profit + v_earned_amount,
-        total_earned = total_earned + v_earned_amount,
-        freeze_balance = CASE WHEN v_is_bundle_task OR v_pending_task_id IS NOT NULL THEN GREATEST(0, freeze_balance - (v_cost_amount + v_earned_amount)) ELSE freeze_balance END,
+        -- Rule 1: Always deduct cost for new bundles (Allowing Negative Balance)
+        -- Rule 2: Only add back capital if it's being completed (from pending status)
+        wallet_balance = wallet_balance 
+            - (CASE WHEN v_pending_task_id IS NULL AND v_is_bundle_task THEN v_cost_amount ELSE 0 END)
+            + (CASE WHEN v_pending_task_id IS NOT NULL THEN v_cost_amount ELSE 0 END) 
+            + (CASE WHEN v_pending_task_id IS NOT NULL OR NOT v_is_bundle_task THEN v_earned_amount ELSE 0 END),
+        
+        profit = profit + (CASE WHEN v_pending_task_id IS NOT NULL OR NOT v_is_bundle_task THEN v_earned_amount ELSE 0 END),
+        total_earned = total_earned + (CASE WHEN v_pending_task_id IS NOT NULL OR NOT v_is_bundle_task THEN v_earned_amount ELSE 0 END),
+        
+        -- Money moves to freeze only on the FIRST stage of a bundle
+        freeze_balance = freeze_balance 
+            + (CASE WHEN v_pending_task_id IS NULL AND v_is_bundle_task THEN (v_cost_amount + v_earned_amount) ELSE 0 END)
+            - (CASE WHEN v_pending_task_id IS NOT NULL THEN (v_cost_amount + v_earned_amount) ELSE 0 END),
+            
         completed_count = CASE WHEN v_pending_task_id IS NULL THEN completed_count + 1 ELSE completed_count END,
         pending_bundle = CASE WHEN v_is_bundle_task THEN NULL ELSE pending_bundle END
     WHERE id = v_user_id
     RETURNING wallet_balance INTO v_new_wallet_balance;
 
-    -- J. Log success
+    -- J. Log success with status-dependent logic
     IF v_pending_task_id IS NOT NULL THEN
         UPDATE public.user_tasks 
         SET status = 'completed', completed_at = NOW(), earned_amount = v_earned_amount, cost_amount = v_cost_amount, is_bundle = v_is_bundle_task
         WHERE id = v_pending_task_id;
     ELSE
+        -- If it's a bundle, it starts as 'pending'. If regular, it's 'completed'.
         INSERT INTO public.user_tasks (user_id, task_item_id, status, earned_amount, cost_amount, is_bundle, completed_at)
-        VALUES (v_user_id, p_task_item_id, 'completed', v_earned_amount, v_cost_amount, v_is_bundle_task, NOW());
+        VALUES (
+            v_user_id, 
+            p_task_item_id, 
+            CASE WHEN v_is_bundle_task THEN 'pending' ELSE 'completed' END, 
+            v_earned_amount, 
+            v_cost_amount, 
+            v_is_bundle_task, 
+            CASE WHEN v_is_bundle_task THEN NULL ELSE NOW() END
+        );
     END IF;
 
-    -- K. Transaction Recording
+    -- K. Transaction Recording (Complete Audit Trail)
     INSERT INTO public.transactions (user_id, type, amount, description, status)
     VALUES (v_user_id, 'commission', v_earned_amount, 'Optimization Reward: ' || COALESCE(v_task_title, 'Standard Task'), 'approved');
 
+    -- Log the "Freeze/Deduction" if it's a new bundle being processed immediately
+    IF v_pending_task_id IS NULL AND v_is_bundle_task AND v_cost_amount > 0 THEN
+        INSERT INTO public.transactions (user_id, type, amount, description, status)
+        VALUES (v_user_id, 'freeze', -v_cost_amount, 'Allocation Lock: ' || COALESCE(v_task_title, 'Bundle'), 'approved');
+    END IF;
+
+    -- Log the "Unfreeze/Return" for all bundles
     IF (v_is_bundle_task OR v_pending_task_id IS NOT NULL) AND v_cost_amount > 0 THEN
         INSERT INTO public.transactions (user_id, type, amount, description, status)
         VALUES (v_user_id, 'unfreeze', v_cost_amount, 'Capital Return: ' || COALESCE(v_task_title, 'Bundle'), 'approved');
