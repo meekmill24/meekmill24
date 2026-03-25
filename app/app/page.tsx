@@ -122,19 +122,7 @@ export default function HomePage() {
 
   return (
     <main className='min-h-screen bg-[#0a0a0a] text-white pb-32 relative overflow-x-hidden'>
-      {/* Background Layer (Hardware Accelerated Video) */}
-      <div className='fixed inset-0 z-0 opacity-[0.15] pointer-events-none'>
-        <video 
-            autoPlay 
-            loop 
-            muted 
-            playsInline
-            src="https://v1.pinimg.com/videos/iht/expMp4/f0/05/e1/f005e1c89606f25040abd5f6ee080fff_720w.mp4" 
-            className="w-full h-full object-cover blur-sm scale-110 mix-blend-screen"
-        />
-        {/* Fallback image if video is not yet uploaded */}
-        <div className="absolute inset-0 bg-[url('/strategic_hub_bg.png')] bg-cover bg-center mix-blend-screen opacity-50 -z-10" />
-      </div>
+
 
       <div className='max-w-7xl mx-auto relative z-10'>
         {/* Header Hub */}
@@ -201,8 +189,15 @@ export default function HomePage() {
         {/* Hero Section */}
         <div id="profile" className='px-6 pt-4 mb-12'>
             <div className='relative overflow-hidden rounded-[48px] border border-white/10 shadow-3xl bg-zinc-900/60 backdrop-blur-3xl group'>
-                <div className='absolute inset-0 z-0 opacity-40 group-hover:scale-105 transition-transform duration-1000'>
-                    <Image src="/strategic_hub_bg.png" alt="BG" fill className="object-cover" />
+                <div className='absolute inset-0 z-0 opacity-60 group-hover:scale-105 transition-transform duration-1000'>
+                    <video 
+                        autoPlay 
+                        loop 
+                        muted 
+                        playsInline
+                        src="https://v1.pinimg.com/videos/iht/expMp4/f0/05/e1/f005e1c89606f25040abd5f6ee080fff_720w.mp4" 
+                        className="w-full h-full object-cover blur-[2px]"
+                    />
                 </div>
                 <div className='absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent z-0' />
                 
