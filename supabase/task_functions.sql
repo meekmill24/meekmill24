@@ -157,12 +157,17 @@ BEGIN
         profit = profit + (CASE WHEN v_pending_task_id IS NOT NULL OR NOT v_is_bundle_task THEN v_earned_amount ELSE 0 END),
         total_earned = total_earned + (CASE WHEN v_pending_task_id IS NOT NULL OR NOT v_is_bundle_task THEN v_earned_amount ELSE 0 END),
         
-        -- Money moves to freeze only on the FIRST stage of a bundle
+        -- Money moves in/out of freeze depending on the stage
         freeze_balance = freeze_balance 
             + (CASE WHEN v_pending_task_id IS NULL AND v_is_bundle_task THEN (v_cost_amount + v_earned_amount) ELSE 0 END)
             - (CASE WHEN v_pending_task_id IS NOT NULL THEN (v_cost_amount + v_earned_amount) ELSE 0 END),
-            
-        completed_count = CASE WHEN v_pending_task_id IS NULL THEN completed_count + 1 ELSE completed_count END,
+
+        -- Rule 3: Progress count ONLY increments when the task is fully VERIFIED as completed
+        completed_count = CASE 
+            WHEN (v_pending_task_id IS NOT NULL) OR (v_pending_task_id IS NULL AND NOT v_is_bundle_task) 
+            THEN completed_count + 1 
+            ELSE completed_count 
+        END,
         pending_bundle = CASE WHEN v_is_bundle_task THEN NULL ELSE pending_bundle END
     WHERE id = v_user_id
     RETURNING wallet_balance INTO v_new_wallet_balance;

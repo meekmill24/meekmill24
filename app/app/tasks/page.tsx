@@ -253,21 +253,27 @@ export default function TasksPage() {
             "FINALIZING ALLOCATION..."
         ];
 
-        let stageIdx = 0;
+        let count = 0;
+        const maxSteps = 8; // Faster reveal
+        const intervalTime = 100; // 100ms per blink
+        
         const stageInterval = setInterval(() => {
-            if (stageIdx < stages.length) {
-                setMatchingStatus(stages[stageIdx]);
-                stageIdx++;
+            const statusIdx = Math.floor(count / 2);
+            if (stages[statusIdx]) setMatchingStatus(stages[statusIdx]);
+            setHighlightedIndex(Math.floor(Math.random() * items.length));
+            count++;
+            if (count >= maxSteps) {
+                clearInterval(stageInterval);
             }
-        }, 400);
+        }, intervalTime);
 
         setTimeout(async () => {
             clearInterval(stageInterval);
             const freshData = await supabase.from('profiles').select('*, levels(*)').eq('id', profile?.id).single();
             const pb = (freshData.data as any)?.pending_bundle;
             
-            // Fix Indexing: if target is 10, it triggers when showing 10/40 (so count is 9)
-            const currentItemIndex = completedCountInSet + 1;
+            // Current index is just the completed count + 1
+            const currentItemIndex = (profile?.completed_count || 0) + 1;
 
             let finalIndex = Math.floor(Math.random() * items.length);
             let matchedItem = { ...items[finalIndex] };
@@ -394,11 +400,11 @@ export default function TasksPage() {
             const newBalance = profile.wallet_balance - bundle.totalAmount;
             const newFrozen = (profile.freeze_balance || 0) + bundle.totalAmount + bundle.bonusAmount;
 
-            // Clear pending_bundle so it doesn't open the modal again
+            // DO NOT increment completed_count here anymore. 
+            // It will only happen when they SUBMIT from the Record page.
             await supabase.from('profiles').update({
                 wallet_balance: newBalance,
                 freeze_balance: newFrozen,
-                completed_count: (profile.completed_count || 0) + 1,
                 pending_bundle: null
             }).eq('id', profile.id);
 
