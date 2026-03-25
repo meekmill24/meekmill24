@@ -40,6 +40,7 @@ import { cn } from '@/lib/utils'
 import { useAuth } from '@/context/AuthContext'
 import { useCurrency } from '@/context/CurrencyContext'
 import { getLevels } from '@/lib/actions/admin'
+import { supabase } from '@/lib/supabase'
 
 export default function HomePage() {
   const { profile, loading: profileLoading } = useAuth()
@@ -121,14 +122,18 @@ export default function HomePage() {
 
   return (
     <main className='min-h-screen bg-[#0a0a0a] text-white pb-32 relative overflow-x-hidden'>
-      {/* Background Layer */}
-      <div className='fixed inset-0 z-0 opacity-20 pointer-events-none'>
-        <Image 
-            src="/strategic_hub_bg.png" 
-            alt="Background" 
-            fill 
-            className="object-cover blur-3xl scale-110"
+      {/* Background Layer (Hardware Accelerated Video) */}
+      <div className='fixed inset-0 z-0 opacity-[0.15] pointer-events-none'>
+        <video 
+            autoPlay 
+            loop 
+            muted 
+            playsInline
+            src="/hero-animation.mp4" 
+            className="w-full h-full object-cover blur-sm scale-110 mix-blend-screen"
         />
+        {/* Fallback image if video is not yet uploaded */}
+        <div className="absolute inset-0 bg-[url('/strategic_hub_bg.png')] bg-cover bg-center mix-blend-screen opacity-50 -z-10" />
       </div>
 
       <div className='max-w-7xl mx-auto relative z-10'>
@@ -240,7 +245,7 @@ export default function HomePage() {
                 {/* Sub-Metric Rows */}
                 <div className="relative z-10 px-8 py-8 grid grid-cols-2 md:grid-cols-4 gap-6 bg-white/[0.02] border-t border-white/5">
                     {[
-                        { label: 'Yield Rate', value: `${(profile?.level?.commission_rate ? (profile.level.commission_rate * 100).toFixed(1) : '0.5')}%`, color: 'text-cyan-400' },
+                        { label: 'Yield Rate', value: `${(Number(profile?.level?.commission_rate || 0.005) * 100).toFixed(1)}%`, color: 'text-cyan-400' },
                         { label: 'Execution', value: '1x NODE', color: 'text-white/40' },
                         { label: 'Capacity', value: `${profile?.level?.tasks_per_set || 40} Units`, color: 'text-white/40' },
                         { label: 'Cycles', value: '3 Daily', color: 'text-white/40' }

@@ -40,6 +40,7 @@ export default function AdminUsersPage() {
       level_id: editData.level_id,
       role: editData.role,
       wallet_balance: Number(editData.wallet_balance),
+      freeze_balance: Number(editData.freeze_balance),
       profit: Number(editData.profit),
       completed_count: Number(editData.completed_count),
       current_set: Number(editData.current_set),

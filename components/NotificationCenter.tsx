@@ -34,6 +34,7 @@ export default function NotificationCenter() {
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -181,7 +182,10 @@ export default function NotificationCenter() {
                         "p-6 hover:bg-white/[0.02] transition-all cursor-pointer group relative",
                         !notification.is_read && "bg-cyan-500/[0.03]"
                       )}
-                      onClick={() => !notification.is_read && markAsRead(notification.id)}
+                      onClick={() => {
+                          if (!notification.is_read) markAsRead(notification.id);
+                          setExpandedId(expandedId === notification.id ? null : notification.id);
+                      }}
                     >
                       <div className="flex gap-4">
                         <div className={cn(
@@ -209,7 +213,10 @@ export default function NotificationCenter() {
                               {new Date(notification.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </span>
                           </div>
-                          <p className="text-[11px] text-zinc-500 font-medium leading-relaxed italic line-clamp-2">
+                          <p className={cn(
+                              "text-[11px] text-zinc-500 font-medium leading-relaxed italic transition-all",
+                              expandedId !== notification.id && "line-clamp-2"
+                          )}>
                             {notification.message}
                           </p>
                         </div>

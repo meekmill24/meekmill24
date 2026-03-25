@@ -38,9 +38,20 @@ export default function InstitutionalCertificate({ username, level, date, nodeId
 
                 {/* Body Content */}
                 <div className="space-y-10 text-[14px] font-sans leading-relaxed relative flex-1 text-slate-700">
-                    {/* Watermark */}
-                    <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none rotate-[-45deg] select-none scale-[2]">
-                        <span className="text-8xl font-black uppercase tracking-[0.5em]">{platformName || 'SIMPLE OPERATIONS'}</span>
+                    {/* Authentic Watermark Overlay */}
+                    <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-[0.04] mix-blend-multiply flex flex-col justify-center items-center select-none">
+                        <div className="rotate-[-35deg] scale-[1.5] w-[200%] h-[200%] flex flex-col gap-12 whitespace-nowrap items-center justify-center">
+                            {Array.from({ length: 20 }).map((_, i) => (
+                                <div key={i} className={`flex gap-12 text-5xl font-black uppercase tracking-[0.8em] ${i % 2 === 0 ? '-ml-24' : 'ml-24'}`}>
+                                    {Array.from({ length: 8 }).map((_, j) => (
+                                        <span key={j} className="flex items-center gap-4">
+                                            <ShieldCheck size={40} />
+                                            OFFICIAL CERTIFIED
+                                        </span>
+                                    ))}
+                                </div>
+                            ))}
+                        </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-16 relative z-10">
