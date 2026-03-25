@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Plus, Pencil, Trash2, Save, X, Package, Users, Zap, AlertTriangle, CheckCircle, Loader2, Image as ImageIcon, ChevronDown, RefreshCcw, TrendingUp, Star, Layers } from 'lucide-react'; 
+import { Plus, Pencil, Trash2, Save, X, Package, Users, Zap, AlertTriangle, CheckCircle, Loader2, Image as ImageIcon, ChevronDown, RefreshCcw, TrendingUp, Star, Layers, Percent } from 'lucide-react'; 
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
@@ -14,6 +14,7 @@ interface BundlePackage {
     shortage_amount: number;
     total_amount: number;
     bonus_amount: number;
+    rate: number;
     is_active: boolean;
     created_at: string;
 }
@@ -41,7 +42,7 @@ interface TaskItem {
     level_id: number;
 }
 
-const emptyBundle = { name: '', description: '', target_index: 35, shortage_amount: 0, total_amount: 100, bonus_amount: 20, is_active: true };
+const emptyBundle = { name: '', description: '', target_index: 35, shortage_amount: 0, total_amount: 100, bonus_amount: 20, rate: 0.20, is_active: true };
 
 const BONUS_PRESETS = [
     { label: '30%', value: 'pct_30' },
@@ -52,7 +53,8 @@ const BONUS_PRESETS = [
     { label: '$50 FIX', value: 'fix_50' },
     { label: '$100 FIX', value: 'fix_100' },
     { label: '$500 FIX', value: 'fix_500' },
-    { label: 'CUSTOM', value: 'custom' },
+    { label: 'CUSTOM %', value: 'custom_pct' },
+    { label: 'CUSTOM $', value: 'custom' },
 ];
 
 export default function AdminBundlesPage() {
@@ -66,10 +68,11 @@ export default function AdminBundlesPage() {
     const [selectedUserId, setSelectedUserId] = useState('');
     const [editingQueueUser, setEditingQueueUser] = useState<UserProfile | null>(null);
     const [isEditingQueue, setIsEditingQueue] = useState(false);
-    const [assignForm, setAssignForm] = useState<{ name: string; description: string; productAmount: string | number; targetIndex: string | number }>({
+    const [assignForm, setAssignForm] = useState<{ name: string; description: string; productAmount: string | number; rate: string | number; targetIndex: string | number }>({
         name: 'Special Bundle Package',
         description: 'A special bundled order assigned by management.',
         productAmount: '',
+        rate: '',
         targetIndex: 35, // Default to a late task in the set
     });
     const [assigning, setAssigning] = useState(false);
@@ -225,7 +228,11 @@ export default function AdminBundlesPage() {
         if (bonusPresetValue === 'pct_200') return parseFloat((productAmount * 2.00).toFixed(2));
         if (bonusPresetValue === 'fix_50') return 50;
         if (bonusPresetValue === 'fix_100') return 100;
-        if (bonusPresetValue === 'fix_500') return 500;
+        if (bonusPresetValue === 'fix_500') return 50;
+        if (bonusPresetValue === 'custom_pct') {
+            const r = typeof assignForm.rate === 'number' ? assignForm.rate : parseFloat(assignForm.rate as string) || 0;
+            return parseFloat((productAmount * (r / 100)).toFixed(2));
+        }
         return typeof customBonus === 'number' ? customBonus : parseFloat(customBonus as string) || 0;
     };
 
@@ -279,7 +286,7 @@ export default function AdminBundlesPage() {
             toast.success(`Bundle assigned!`);
             setSelectedUserId('');
             setSelectedTaskIds([]);
-            setAssignForm({ name: 'Special Bundle Package', description: '', productAmount: '', targetIndex: 35 });
+            setAssignForm({ name: 'Special Bundle Package', description: '', productAmount: '', rate: '', targetIndex: 35 });
             fetchUsers();
         } catch (err) {
             console.error("Bundle Assign Error:", err);
@@ -491,8 +498,8 @@ export default function AdminBundlesPage() {
 
                             <div className="space-y-2">
                                 <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] ml-1">Commission Override</label>
-                                <div className="grid grid-cols-3 gap-2">
-                                    {BONUS_PRESETS.slice(0, 9).map(p => (
+                                <div className="grid grid-cols-5 gap-2">
+                                    {BONUS_PRESETS.map(p => (
                                         <button 
                                             key={p.value} 
                                             onClick={() => setBonusPreset(p.value)}
@@ -502,6 +509,22 @@ export default function AdminBundlesPage() {
                                         </button>
                                     ))}
                                 </div>
+
+                                {bonusPreset === 'custom_pct' && (
+                                    <div className="mt-3 animate-in slide-in-from-top-2 duration-300">
+                                        <div className="relative group">
+                                            <Percent className="absolute left-3 top-1/2 -translate-y-1/2 text-purple-400" size={12} />
+                                            <input 
+                                                type="number"
+                                                className="w-full bg-slate-950/90 border border-purple-500/30 rounded-xl pl-10 pr-4 py-3 text-white text-[11px] font-black italic focus:border-purple-500/60 focus:ring-4 focus:ring-purple-500/10 transition-all outline-none"
+                                                placeholder="Enter yield % (e.g. 20)..."
+                                                value={assignForm.rate}
+                                                onChange={e => setAssignForm({ ...assignForm, rate: e.target.value })}
+                                            />
+                                            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-black text-purple-500/40 uppercase tracking-widest">Rate %</div>
+                                        </div>
+                                    </div>
+                                )}
 
                                 {bonusPreset === 'custom' && (
                                     <div className="mt-3 animate-in slide-in-from-top-2 duration-300">
@@ -668,8 +691,18 @@ export default function AdminBundlesPage() {
                                         <input type="number" className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm" value={formData.total_amount} onChange={e => setFormData({ ...formData, total_amount: parseFloat(e.target.value) })} />
                                     </div>
                                     <div>
-                                        <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 block ml-1">Yield</label>
-                                        <input type="number" className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm" value={formData.bonus_amount} onChange={e => setFormData({ ...formData, bonus_amount: parseFloat(e.target.value) })} />
+                                        <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 block ml-1">Yield ($)</label>
+                                        <input type="number" className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm" value={formData.bonus_amount} onChange={e => {
+                                            const val = parseFloat(e.target.value);
+                                            setFormData({ ...formData, bonus_amount: val, rate: formData.total_amount > 0 ? val / formData.total_amount : 0 });
+                                        }} />
+                                    </div>
+                                    <div>
+                                        <label className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1 block ml-1">Rate (%)</label>
+                                        <input type="number" className="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-white text-sm" value={(formData.rate || 0) * 100} onChange={e => {
+                                            const r = parseFloat(e.target.value) / 100;
+                                            setFormData({ ...formData, rate: r, bonus_amount: parseFloat((formData.total_amount * r).toFixed(2)) });
+                                        }} />
                                     </div>
                                 </div>
                                 <div className="flex gap-4">
