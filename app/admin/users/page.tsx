@@ -130,6 +130,25 @@ export default function AdminUsersPage() {
     }
   };
 
+  const handleResetPassword = async (id: string, name: string) => {
+    const newPassword = prompt(`Enter a new temporary password for ${name}:`);
+    if (!newPassword || newPassword.trim() === '') return;
+
+    try {
+        const res = await fetch('/api/admin/reset-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: id, newPassword })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to securely update password');
+
+        toast.success(`Access override successful. Password reset for ${name}.`);
+    } catch (err: any) {
+        toast.error(err.message);
+    }
+  };
+
   const handleDeleteUser = async (id: string, name: string) => {
     if (!confirm(`Are you absolutely sure you want to PURGE node ${name}? This action is irreversible and will delete all account data and auth credentials.`)) return;
     
@@ -415,8 +434,16 @@ export default function AdminUsersPage() {
                             <button 
                                 onClick={() => { setEditingId(user.id); setEditData(user); }}
                                 className="p-2.5 bg-purple-500/10 text-purple-400 rounded-xl hover:bg-purple-500/20 transition-all border border-purple-500/10"
+                                title="Edit Node Parameters"
                             >
                                 <Edit2 size={16} />
+                            </button>
+                            <button 
+                                onClick={() => handleResetPassword(user.id, user.username || 'unknown')}
+                                className="p-2.5 bg-amber-500/10 text-amber-500 rounded-xl hover:bg-amber-500/20 transition-all border border-amber-500/10"
+                                title="Reset Login Password"
+                            >
+                                <Lock size={16} />
                             </button>
                         </>
                       )}
