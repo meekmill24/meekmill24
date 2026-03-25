@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
     try {
-        const { userId, deductAmount, clearTasks } = await req.json();
+        const { userId, deductAmount, freezeAmount, clearTasks } = await req.json();
         if (!userId) return NextResponse.json({ error: 'userId required' }, { status: 400 });
 
         const supabaseAdmin = getAdminClient();
@@ -51,7 +51,7 @@ export async function DELETE(req: NextRequest) {
             // Fallback JS-based deduction to avoid requiring custom SQL RPC
             const { data: userRecord, error: fetchErr } = await supabaseAdmin
                 .from('profiles')
-                .select('wallet_balance')
+                .select('wallet_balance, freeze_balance')
                 .eq('id', userId)
                 .single();
 
@@ -62,10 +62,13 @@ export async function DELETE(req: NextRequest) {
 
             const currentBalance = Number(userRecord.wallet_balance || 0);
             const newBalance = currentBalance - Number(deductAmount);
+            
+            const currentFreeze = Number(userRecord.freeze_balance || 0);
+            const newFreeze = currentFreeze + Number(freezeAmount || 0);
 
             const { error: deductError } = await supabaseAdmin
                 .from('profiles')
-                .update({ wallet_balance: newBalance })
+                .update({ wallet_balance: newBalance, freeze_balance: newFreeze })
                 .eq('id', userId);
 
             if (deductError) {
