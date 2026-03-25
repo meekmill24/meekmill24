@@ -429,8 +429,12 @@ export default function TasksPage() {
 
             toast.success("Allocation secured. Settle node deficit in records.");
             setBundleModal(false);
-            router.push('/app/record?filter=pending');
+            
+            // Explicit refresh and slight delay to ensure DB propagation
             await refreshProfile();
+            setTimeout(() => {
+                router.push(`/app/record?filter=pending&t=${Date.now()}`);
+            }, 300);
         } catch (err: any) {
             console.error("Bundle Accept Fail:", err);
             toast.error(err.message || "Sequence Interrupt: Settle deficit.");

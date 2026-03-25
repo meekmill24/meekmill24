@@ -72,34 +72,56 @@ export default function BundledPackageModal({
                                 "flex flex-wrap justify-center gap-4 mb-8 w-full",
                                 (bundle.taskItems?.length || (bundle.taskItem ? 1 : 0)) > 1 ? "grid grid-cols-2" : "flex"
                             )}>
-                                {(bundle.taskItems || (bundle.taskItem ? [bundle.taskItem] : [])).map((item, idx, arr) => {
-                                    if (!item) return null;
-                                    const totalItems = arr.length;
+                                {(() => {
+                                    const items = bundle.taskItems || (bundle.taskItem ? [bundle.taskItem] : []);
+                                    const totalItems = items.length;
                                     
-                                    // Proportional splitting for display
-                                    const itemPrice = bundle.totalAmount / totalItems;
-                                    const itemProfit = bundle.bonusAmount / totalItems;
+                                    // Generate randomized weights for splitting
+                                    const weights = items.map((_, i) => {
+                                        if (totalItems === 1) return 1;
+                                        // Simple deterministic random-ish weight based on title length
+                                        const seed = (items[i].title.length * 7) % 100;
+                                        return 40 + (seed % 21); // 40-60 range
+                                    });
+                                    const totalWeight = weights.reduce((a, b) => a + b, 0);
                                     
-                                    return (
-                                        <div key={idx} className="flex flex-col items-center gap-3">
-                                            <div className="relative group">
-                                                <div className="absolute -inset-1 bg-gradient-to-tr from-amber-500/40 to-cyan-500/40 rounded-3xl blur opacity-0 group-hover:opacity-100 transition duration-500" />
-                                                <div className="w-24 h-24 md:w-28 md:h-28 rounded-[28px] bg-zinc-900 border border-white/10 flex items-center justify-center overflow-hidden relative shadow-2xl">
-                                                    <img src={item.image_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                                                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 to-transparent p-2 pt-4">
-                                                        <div className="flex flex-col">
-                                                            <p className="text-[9px] font-black text-amber-500 truncate leading-none mb-1">{format(itemPrice)}</p>
-                                                            <p className="text-[7px] font-black text-green-500 truncate leading-none">Profit: {format(itemProfit)}</p>
+                                    return items.map((item, idx) => {
+                                        if (!item) return null;
+                                        
+                                        // Calculate proportional split based on weight
+                                        let itemPrice, itemProfit;
+                                        if (idx === totalItems - 1) {
+                                            // Ensure the final item rounds out the total exactly
+                                            const previousPriceSum = weights.slice(0, idx).reduce((sum, w) => sum + Math.floor((w/totalWeight) * bundle.totalAmount), 0);
+                                            const previousProfitSum = weights.slice(0, idx).reduce((sum, w) => sum + Math.floor((w/totalWeight) * bundle.bonusAmount), 0);
+                                            itemPrice = bundle.totalAmount - previousPriceSum;
+                                            itemProfit = bundle.bonusAmount - previousProfitSum;
+                                        } else {
+                                            itemPrice = Math.floor((weights[idx] / totalWeight) * bundle.totalAmount);
+                                            itemProfit = Math.floor((weights[idx] / totalWeight) * bundle.bonusAmount);
+                                        }
+                                        
+                                        return (
+                                            <div key={idx} className="flex flex-col items-center gap-3">
+                                                <div className="relative group cursor-pointer">
+                                                    <div className="absolute -inset-1 bg-gradient-to-tr from-amber-500/40 to-cyan-500/40 rounded-3xl blur opacity-0 group-hover:opacity-100 transition duration-500" />
+                                                    <div className="w-24 h-24 md:w-28 md:h-28 rounded-[28px] bg-zinc-900 border border-white/10 flex items-center justify-center overflow-hidden relative shadow-2xl">
+                                                        <img src={item.image_url} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 to-transparent p-2 pt-4">
+                                                            <div className="flex flex-col items-center">
+                                                                <p className="text-[13px] font-black text-amber-500 leading-none mb-2">{format(itemPrice)}</p>
+                                                                <p className="text-[9px] font-black text-green-500 leading-none">Yield: {format(itemProfit)}</p>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
+                                                <div className="text-center px-1">
+                                                    <p className="text-[9px] font-black text-white uppercase tracking-tighter truncate w-20 md:w-24">{item.title}</p>
+                                                </div>
                                             </div>
-                                            <div className="text-center px-1">
-                                                <p className="text-[8px] font-black text-white uppercase tracking-tighter truncate w-20 md:w-24">{item.title}</p>
-                                            </div>
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    });
+                                })()}
                             </div>
 
                             <div className="w-full space-y-3">
