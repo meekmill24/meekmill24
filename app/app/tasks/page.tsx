@@ -274,11 +274,11 @@ export default function TasksPage() {
         ];
 
         let count = 0;
-        const maxSteps = 12; 
-        const intervalTime = 50; 
+        const maxSteps = 10; // Accelerated for tighter feel
+        const intervalTime = 40; // Sharper intervals
         
         const stageInterval = setInterval(() => {
-            const statusIdx = Math.floor(count / 3);
+            const statusIdx = Math.floor(count / 2.5); // Adjusted for fewer steps
             if (stages[statusIdx]) setMatchingStatus(stages[statusIdx]);
             setHighlightedIndex(Math.floor(Math.random() * items.length));
             count++;
@@ -293,13 +293,13 @@ export default function TasksPage() {
                 // Await real-time profile check (failsafe)
                 let remoteData = null;
                 try {
+                    // Optimized check: ONLY fetch bundle-related columns
                     const syncRes = await profileSyncPromise;
                     if (!syncRes.error) remoteData = syncRes.data;
                 } catch (syncErr) {
-                    console.warn("Sync fetch failed, falling back to local context:", syncErr);
+                    console.warn("Sync fetch interrupted, using stable state:", syncErr);
                 }
 
-                // Determine final hit using synced data (preferred) or local context (fallback)
                 const finalProfile = (remoteData || profile) as any;
                 const pb = finalProfile?.pending_bundle;
                 
@@ -309,7 +309,7 @@ export default function TasksPage() {
                 let finalIndex = Math.floor(Math.random() * items.length);
                 let matchedItem = { ...items[finalIndex] };
 
-                // Hit logic comparison
+                // Robust Bundle hit check
                 const isHit = !!pb && (Number(pb.targetIndex) === currentInSetForHit || Number(pb.targetIndex) === currentAbsoluteForHit);
 
                 if (isHit && pb.taskItem) {
@@ -341,7 +341,7 @@ export default function TasksPage() {
                 setIsSpinning(false);
                 setMatchingStatus("READY TO MATCH");
             }
-        }, 850); 
+        }, 650); // Speed boosted from 850ms for natural smoothness
     }, [isSpinning, items, isLocked, profile, currentSet, isAllSetsDone, modalSeen, tasksPerSet, hasActiveRecordPending, handleTaskSelection]);
 
     const handleSubmitTask = async (item: TaskItem, costAmount?: number) => {
@@ -441,14 +441,17 @@ export default function TasksPage() {
                 throw new Error(errData.error || "Failed to synchronize node allocation.");
             }
 
-            toast.success("Allocation secured. Settle node deficit in records.");
+            toast.success("Securing Allocation node...");
+            setMatchingStatus("OPTIMIZING ASSETS...");
+            setIsSpinning(true);
             setBundleModal(false);
             
-            // Explicit refresh and slight delay to ensure DB propagation
+            // Explicit refresh and delay for smooth cinematic transition
             await refreshProfile();
             setTimeout(() => {
+                setIsSpinning(false);
                 router.push(`/app/record?filter=pending&t=${Date.now()}`);
-            }, 300);
+            }, 1000); // 1s cinematic pause for smoothness
         } catch (err: any) {
             console.error("Bundle Accept Fail:", err);
             toast.error(err.message || "Sequence Interrupt: Settle deficit.");
@@ -540,7 +543,7 @@ export default function TasksPage() {
                         <div className="p-6 bg-zinc-950/40 rounded-[32px] border border-white/5 backdrop-blur-md hover:bg-zinc-950/60 transition-colors">
                             <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.3em] block mb-2 italic">Available Balance</span>
                             <div className="flex items-baseline gap-2">
-                                <h2 className="text-3xl font-black tracking-tighter text-white tabular-nums">{format(profile?.wallet_balance || 0)}</h2>
+                                <h2 className="text-4xl font-black tracking-tighter text-white tabular-nums">{format(profile?.wallet_balance || 0)}</h2>
                             </div>
                             <div className="mt-4 flex items-center gap-2">
                                 <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
