@@ -13,6 +13,7 @@ export interface Profile {
     total_earned: number;
     freeze_balance: number;
     referral_earned: number;
+    referred_users_count: number;
     avatar_url: string | null;
     total_earnings?: number;
     email: string;

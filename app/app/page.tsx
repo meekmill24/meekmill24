@@ -298,18 +298,32 @@ export default function HomePage() {
                         </div>
                     </div>
 
-                    {/* Network Profit */}
-                    <div className='col-span-1 lg:col-span-1 bg-black/40 backdrop-blur-md rounded-[24px] p-5 md:p-8 border border-white/5 hover:bg-black/60 transition-all duration-500 group/card shadow-2xl relative overflow-hidden flex flex-col justify-between h-48'>
+                    {/* Referral Protocol Node (Live Tracking) */}
+                    <div className='col-span-1 lg:col-span-1 bg-gradient-to-br from-indigo-900/40 to-black/60 backdrop-blur-md rounded-[24px] p-5 md:p-8 border border-indigo-500/20 hover:border-indigo-500/40 transition-all duration-500 group/card shadow-2xl relative overflow-hidden flex flex-col justify-between h-48'>
+                        <div className="absolute -right-4 -top-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                             <TrendingUp size={100} className="text-indigo-400" />
+                        </div>
                         <div>
-                            <p className='text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-2'>Network</p>
-                            <div className='flex items-baseline gap-1 md:gap-2 mb-4'>
-                                <span className='text-purple-900 font-bold text-lg md:text-2xl'>$</span>
+                            <div className="flex items-center justify-between mb-2">
+                                <p className='text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] text-indigo-400 italic'>Referral Node</p>
+                                <div className="flex gap-1">
+                                    <div className="w-1 h-1 rounded-full bg-indigo-500 animate-ping" />
+                                    <div className="w-1 h-1 rounded-full bg-indigo-500/50" />
+                                </div>
+                            </div>
+                            <div className='flex items-baseline gap-1 md:gap-2 mb-1'>
+                                <span className='text-indigo-900 font-bold text-lg md:text-2xl'>$</span>
                                 <h1 className='text-xl md:text-3xl font-black italic tracking-tighter text-white'>
                                     {(profile?.referral_earned || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                 </h1>
                             </div>
+                            <p className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest">{profile?.referred_users_count || 0} Synchronized Peers</p>
                         </div>
-                        <span className='text-[7px] md:text-[8px] font-black uppercase tracking-widest text-white/20 animate-pulse tracking-[0.5em]'>READY</span>
+                        <div className="flex items-center gap-2">
+                             <div className="px-3 py-1 bg-indigo-500/10 border border-indigo-500/20 rounded-full">
+                                <span className='text-[7px] font-black uppercase tracking-widest text-indigo-400 animate-pulse'>Live Audit Active</span>
+                             </div>
+                        </div>
                     </div>
 
                     {/* Task Progress */}
