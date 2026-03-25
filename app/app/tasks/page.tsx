@@ -417,7 +417,13 @@ export default function TasksPage() {
     };
 
     const handleBundleAccept = async (bundle: BundlePackage) => {
-        if (!profile) return;
+        if (!profile || isSubmitting) return;
+
+        setIsSubmitting(true);
+        setBundleModal(false);
+        setIsSpinning(true);
+        setMatchingStatus("FINALIZING PROTOCOL...");
+
         try {
             // Identify the task item definitively
             let itemToRecord = pendingTaskItem;
@@ -462,20 +468,22 @@ export default function TasksPage() {
                 throw new Error(errData.error || "Failed to synchronize node allocation.");
             }
 
-            toast.success("Securing Allocation node...");
+            toast.success("Allocation node secured.");
             setMatchingStatus("OPTIMIZING ASSETS...");
-            setIsSpinning(true);
-            setBundleModal(false);
             
             // Explicit refresh and delay for smooth cinematic transition
             await refreshProfile();
             setTimeout(() => {
                 setIsSpinning(false);
+                setIsSubmitting(false);
                 router.push(`/app/record?filter=pending&t=${Date.now()}`);
             }, 1000); // 1s cinematic pause for smoothness
         } catch (err: any) {
             console.error("Bundle Accept Fail:", err);
             toast.error(err.message || "Sequence Interrupt: Settle deficit.");
+            setIsSpinning(false);
+            setIsSubmitting(false);
+            setBundleModal(true); // Bring it back if they need to retry
         }
     };
 
