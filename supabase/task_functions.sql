@@ -238,3 +238,31 @@ BEGIN
     );
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- G. NEW ATOMIC DEDUCTION FUNCTION FOR BUNDLES
+-- This is called when a user clicks "Start Bundle Sequence"
+CREATE OR REPLACE FUNCTION public.accept_bundle_deduction(
+    p_user_id UUID,
+    p_amount DECIMAL(12,2)
+)
+RETURNS JSON AS $$
+DECLARE
+    v_new_balance DECIMAL(12,2);
+BEGIN
+    UPDATE public.profiles
+    SET wallet_balance = wallet_balance - p_amount
+    WHERE id = p_user_id
+    RETURNING wallet_balance INTO v_new_balance;
+
+    RETURN json_build_object(
+        'success', TRUE,
+        'new_balance', v_new_balance
+    );
+EXCEPTION
+    WHEN OTHERS THEN
+        RETURN json_build_object(
+            'success', FALSE,
+            'error', SQLERRM
+        );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;

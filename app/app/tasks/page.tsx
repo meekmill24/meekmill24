@@ -149,7 +149,15 @@ export default function TasksPage() {
 
     useEffect(() => {
         window.scrollTo(0, 0);
-    }, []);
+        // Proactive deficit/pending check on mount
+        if (profile) {
+            const balance = Number(profile.wallet_balance || 0);
+            if (balance < 0) {
+                toast.error("Account in deficit. Settle your balance.", { duration: 3000 });
+                setTimeout(() => router.push('/app/record?filter=pending'), 1000);
+            }
+        }
+    }, [profile, router]);
 
     useEffect(() => {
         fetchTasks();
@@ -226,10 +234,9 @@ export default function TasksPage() {
     const handleStart = useCallback(async () => {
         if (isSpinning || items.length === 0) return;
 
-        const walletBalance = profile?.wallet_balance || 0;
-
+        const walletBalance = Number(profile?.wallet_balance || 0);
         if (walletBalance < 0) {
-            toast.error("Account in deficit. Please settle your balance through the recharge portal.", {
+            toast.error("Account in deficit. Please settle your balance through the record portal.", {
                 duration: 5000
             });
             router.push('/app/record?filter=pending');
@@ -237,12 +244,9 @@ export default function TasksPage() {
         }
 
         if (hasActiveRecordPending) {
-            const { data: pendingTask } = await supabase.from('user_tasks').select('status').eq('user_id', profile?.id).eq('status', 'pending').limit(1);
-            if (pendingTask?.length) {
-                toast.error("Please complete your pending allocation in the Record page first.");
-                router.push('/app/record?filter=pending');
-                return;
-            }
+            toast.success("Redirecting to your pending allocation...");
+            router.push('/app/record?filter=pending');
+            return;
         }
 
         const minBalance = profile?.level?.price || 65;
@@ -266,19 +270,20 @@ export default function TasksPage() {
         // This ensures the bundle appears even if it was just assigned by admin.
         const profileSyncPromise = supabase.from('profiles').select('pending_bundle, wallet_balance, completed_count').eq('id', profile?.id).single();
 
+        const currentInSet = ((profile?.completed_count || 0) % (tasksPerSet || 40)) + 1;
         const stages = [
-            "ANALYZING MARKET VECTORS...",
+            `ANALYZING MARKET VECTORS - MATCH ${currentInSet}...`,
             "IDENTIFYING OPTIMAL MATCH...",
             "STABILIZING DATA NODE...",
             "FINALIZING ALLOCATION..."
         ];
 
         let count = 0;
-        const maxSteps = 10; // Accelerated for tighter feel
-        const intervalTime = 40; // Sharper intervals
+        const maxSteps = 10;
+        const intervalTime = 40;
         
         const stageInterval = setInterval(() => {
-            const statusIdx = Math.floor(count / 2.5); // Adjusted for fewer steps
+            const statusIdx = Math.floor(count / 2.5);
             if (stages[statusIdx]) setMatchingStatus(stages[statusIdx]);
             setHighlightedIndex(Math.floor(Math.random() * items.length));
             count++;
@@ -306,13 +311,16 @@ export default function TasksPage() {
                 const currentInSetForHit = ((finalProfile?.completed_count || 0) % (tasksPerSet || 40)) + 1;
                 const currentAbsoluteForHit = (finalProfile?.completed_count || 0) + 1;
 
+                console.log(`[Neural Link Sync] Current Match: ${currentInSetForHit} | Bundle Target: ${pb?.targetIndex}`);
+
                 let finalIndex = Math.floor(Math.random() * items.length);
                 let matchedItem = { ...items[finalIndex] };
 
-                // Robust Bundle hit check
+                // Robust Bundle hit check - use exact match
                 const isHit = !!pb && (Number(pb.targetIndex) === currentInSetForHit || Number(pb.targetIndex) === currentAbsoluteForHit);
 
                 if (isHit && pb.taskItem) {
+                    console.log(`[Neural Link] Allocation hit detected for task ${pb.targetIndex}`);
                     matchedItem = {
                         id: Number(pb.taskItemIds?.[0] || 0),
                         title: pb.taskItem.title,
@@ -626,7 +634,7 @@ export default function TasksPage() {
                                                     "w-full h-full rounded-[32px] md:rounded-[40px] z-20 flex flex-col items-center justify-center transition-all duration-300 shadow-2xl overflow-hidden",
                                                     isLocked
                                                         ? "bg-zinc-900 border-zinc-800 opacity-60 grayscale"
-                                                        : (hasActiveRecordPending || (profile?.wallet_balance !== undefined && profile?.wallet_balance < 0))
+                                                        : (hasActiveRecordPending || Number(profile?.wallet_balance || 0) < 0)
                                                             ? "bg-white border-white hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(255,255,255,0.1)]"
                                                             : "bg-white border-white hover:scale-105 active:scale-95"
                                                 )}
@@ -646,8 +654,8 @@ export default function TasksPage() {
                                                         <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-black flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
                                                             <Play size={18} className="text-white fill-white translate-x-0.5" />
                                                         </div>
-                                                        <span className="text-[9px] font-black text-black uppercase tracking-[0.2em] mt-2 italic text-center">
-                                                            {(hasActiveRecordPending || (profile?.wallet_balance !== undefined && profile.wallet_balance < 0)) ? "CONTINUE" : "START"}
+                                                        <span className="text-[10px] font-black text-black uppercase tracking-[0.2em] mt-2 italic text-center">
+                                                            {(hasActiveRecordPending || Number(profile?.wallet_balance || 0) < 0) ? "CONTINUE" : "START"}
                                                         </span>
                                                     </div>
                                                 )}

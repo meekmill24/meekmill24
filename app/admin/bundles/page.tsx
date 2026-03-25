@@ -29,6 +29,8 @@ interface UserProfile {
     pending_bundle: Record<string, unknown> | null;
     has_pending_task?: boolean;
     has_pending_bundle_task?: boolean;
+    pending_cost_amount?: number;
+    pending_earned_amount?: number;
 }
 
 interface TaskItem {
@@ -119,15 +121,20 @@ export default function AdminBundlesPage() {
 
     const fetchUsers = useCallback(async () => {
         const { data: profiles } = await supabase.from('profiles').select('id, username, wallet_balance, profit, level_id, pending_bundle, email, completed_count').order('username');
-        const { data: pendingTasks } = await supabase.from('user_tasks').select('user_id, is_bundle').eq('status', 'pending');
+        const { data: pendingTasks } = await supabase.from('user_tasks').select('user_id, is_bundle, cost_amount, earned_amount').eq('status', 'pending');
         
         if (profiles) {
-            const usersWithPending = profiles.map(u => ({
-                ...u,
-                has_pending_task: (pendingTasks || []).some(t => t.user_id === u.id),
-                has_pending_bundle_task: (pendingTasks || []).some(t => t.user_id === u.id && t.is_bundle)
-            }));
-            setUsers(usersWithPending as UserProfile[]);
+            const usersWithPending = profiles.map(u => {
+                const pt = (pendingTasks || []).find(t => t.user_id === u.id);
+                return {
+                    ...u,
+                    has_pending_task: !!pt,
+                    has_pending_bundle_task: pt?.is_bundle || false,
+                    pending_cost_amount: pt?.cost_amount || 0,
+                    pending_earned_amount: pt?.earned_amount || 0
+                };
+            });
+            setUsers(usersWithPending as any[]);
         }
     }, []);
 
@@ -285,7 +292,7 @@ export default function AdminBundlesPage() {
             const res = await fetch('/api/admin/assign-bundle', {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId }),
+                body: JSON.stringify({ userId, clearTasks: true }),
             });
             if (res.ok) {
                 toast.success("Bundle removed");
@@ -600,10 +607,10 @@ export default function AdminBundlesPage() {
                                                     )}
                                                 </td>
                                                 <td className="px-8 py-5 text-center font-bold text-slate-300">
-                                                    ${Number(b?.totalAmount || 0).toLocaleString()}
+                                                    ${Number(isAccepted ? u.pending_cost_amount : (b?.totalAmount || 0)).toLocaleString()}
                                                 </td>
                                                 <td className="px-8 py-5 text-center font-black text-green-500 italic">
-                                                    +${Number(b?.bonusAmount || 0).toLocaleString()}
+                                                    +${Number(isAccepted ? u.pending_earned_amount : (b?.bonusAmount || 0)).toLocaleString()}
                                                 </td>
                                                 <td className="px-8 py-5 text-right">
                                                     <div className="flex justify-end gap-2">

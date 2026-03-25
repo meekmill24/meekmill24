@@ -41,22 +41,37 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
     try {
-        const { userId } = await req.json();
+        const { userId, deductAmount, clearTasks } = await req.json();
         if (!userId) return NextResponse.json({ error: 'userId required' }, { status: 400 });
 
         const supabaseAdmin = getAdminClient();
 
-        // Clear bundle and remove any pending tasks for this user
+        // 1. Perform balance deduction if amount provided (Acceptance flow)
+        if (deductAmount && Number(deductAmount) > 0) {
+            const { error: deductError } = await supabaseAdmin.rpc('accept_bundle_deduction', {
+                p_user_id: userId,
+                p_amount: Number(deductAmount)
+            });
+            if (deductError) {
+                console.error("Deduction Error:", deductError);
+                return NextResponse.json({ error: "Failed to deduct balance" }, { status: 500 });
+            }
+        }
+
+        // 2. Clear the profile flag (The "Meeting" hit is finished)
         await supabaseAdmin
             .from('profiles')
             .update({ pending_bundle: null })
             .eq('id', userId);
 
-        await supabaseAdmin
-            .from('user_tasks')
-            .delete()
-            .eq('user_id', userId)
-            .eq('status', 'pending');
+        // 3. ONLY delete pending tasks if explicitly requested (Admin cancel)
+        if (clearTasks) {
+            await supabaseAdmin
+                .from('user_tasks')
+                .delete()
+                .eq('user_id', userId)
+                .eq('status', 'pending');
+        }
 
         return NextResponse.json({ success: true });
     } catch (err: unknown) {
