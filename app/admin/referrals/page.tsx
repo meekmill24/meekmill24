@@ -12,9 +12,9 @@ export default function AdminReferralsPage() {
   const fetchReferrals = async () => { 
     setLoading(true);
     const { data } = await supabase
-      .from('referral_codes')
-      .select('*, owner:profiles(username, phone)')
-      .order('uses_count', { ascending: false }); 
+      .from('profiles')
+      .select('id, username, phone, referral_code, referred_users_count, referral_earned')
+      .order('referred_users_count', { ascending: false }); 
     if (data) setReferrals(data); 
     setLoading(false); 
   }; 
@@ -27,8 +27,8 @@ export default function AdminReferralsPage() {
   };
 
   const filteredReferrals = referrals.filter(r => 
-    r.code?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    r.owner?.username?.toLowerCase().includes(searchQuery.toLowerCase())
+    r.referral_code?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    r.username?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   if (loading && referrals.length === 0) return <div className="text-center py-20 text-slate-500 italic">Scanning affiliate networks...</div>;
@@ -48,7 +48,7 @@ export default function AdminReferralsPage() {
               <div>
                  <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">Total Yield</div>
                  <div className="text-lg font-black text-white italic leading-tight mt-0.5">
-                    {referrals.reduce((sum, r) => sum + (r.uses_count || 0), 0)} Leads
+                    {referrals.reduce((sum, r) => sum + (Number(r.referred_users_count) || 0), 0)} Leads
                  </div>
               </div>
            </div>
@@ -89,29 +89,29 @@ export default function AdminReferralsPage() {
                         <UserIcon size={18} />
                       </div>
                       <div>
-                        <div className="font-bold text-slate-200">{ref.owner?.username || 'GHOST_USER'}</div>
-                        <div className="text-[10px] text-slate-500 font-medium">{ref.owner?.phone}</div>
+                        <div className="font-bold text-slate-200">{ref.username || 'GHOST_USER'}</div>
+                        <div className="text-[10px] text-slate-500 font-medium">{ref.phone}</div>
                       </div>
                     </div>
                   </td> 
                   <td className="px-8 py-6">
                     <button 
-                      onClick={() => copyCode(ref.code)}
+                      onClick={() => copyCode(ref.referral_code)}
                       className="group flex items-center gap-3 bg-slate-950 border border-slate-800 px-4 py-2 rounded-2xl hover:border-purple-500/50 transition-all active:scale-95"
                     >
-                       <span className="font-mono font-black text-purple-400 italic tracking-widest text-lg">{ref.code}</span>
+                       <span className="font-mono font-black text-purple-400 italic tracking-widest text-lg">{ref.referral_code}</span>
                        <Copy size={14} className="text-slate-700 group-hover:text-purple-500 transition-colors" />
                     </button>
                   </td> 
                   <td className="px-8 py-6 text-center">
-                    <div className="text-2xl font-black text-white italic tracking-tighter">{ref.uses_count || 0}</div>
+                    <div className="text-2xl font-black text-white italic tracking-tighter">{ref.referred_users_count || 0}</div>
                     <div className="text-[10px] text-slate-600 font-bold uppercase tracking-widest">Successful Matches</div>
                   </td>
                   <td className="px-8 py-6">
                     <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${
-                      ref.is_active ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-red-500/10 text-red-500 border-red-500/20'
+                      (ref.referred_users_count || 0) > 0 ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-slate-500/10 text-slate-500 border-slate-500/20'
                     }`}>
-                      {ref.is_active ? 'ENABLED' : 'TERMINATED'}
+                      {(ref.referred_users_count || 0) > 0 ? 'ACTIVE YIELD' : 'DORMANT'}
                     </span>
                   </td>
                   <td className="px-8 py-6 text-right"> 

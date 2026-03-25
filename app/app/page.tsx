@@ -245,7 +245,7 @@ export default function HomePage() {
                 {/* Sub-Metric Rows */}
                 <div className="relative z-10 px-8 py-8 grid grid-cols-2 md:grid-cols-4 gap-6 bg-white/[0.02] border-t border-white/5">
                     {[
-                        { label: 'Yield Rate', value: `${(Number(profile?.level?.commission_rate || 0.005) * 100).toFixed(1)}%`, color: 'text-cyan-400' },
+                        { label: 'Yield Rate', value: `${(Number(profile?.level?.commission_rate || 0.005) * 100).toFixed(2)}%`, color: 'text-cyan-400' },
                         { label: 'Execution', value: '1x NODE', color: 'text-white/40' },
                         { label: 'Capacity', value: `${profile?.level?.tasks_per_set || 40} Units`, color: 'text-white/40' },
                         { label: 'Cycles', value: '3 Daily', color: 'text-white/40' }
