@@ -376,26 +376,18 @@ function RecordContent() {
                                                 <div className="flex flex-col gap-2 w-[180px]">
                                                     <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="w-full">
                                                         <button 
-                                                            className="w-full px-6 py-3 rounded-2xl bg-gradient-to-r from-rose-500 to-rose-600 text-white text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-rose-500/30 transition-all flex items-center justify-center gap-2 hover:scale-[1.03] active:scale-95 whitespace-nowrap border-b-4 border-rose-800"
+                                                            className="w-full px-6 py-4 rounded-2xl bg-gradient-to-r from-rose-500 to-rose-600 text-white text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-rose-500/30 transition-all flex items-center justify-center gap-2 hover:scale-[1.03] active:scale-95 whitespace-nowrap border-b-4 border-rose-800"
                                                         >
                                                             <Headset size={16} className="opacity-80" />
                                                             CONTACT SUPPORT
                                                         </button>
                                                     </a>
-                                                    <Link href="/app/support" className="w-full">
-                                                        <button 
-                                                            className="w-full px-6 py-3 rounded-2xl bg-white/5 border border-white/10 text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-2 hover:bg-white/10"
-                                                        >
-                                                            <HelpCircle size={16} className="opacity-60" />
-                                                            HELP CENTER
-                                                        </button>
-                                                    </Link>
                                                 </div>
                                             ) : (
                                                 <button
                                                     onClick={() => handleSubmitPending(task)}
                                                     disabled={isSubmitting}
-                                                    className={`px-8 py-3 rounded-2xl bg-indigo-500 text-white text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-indigo-500/20 transition-all flex items-center justify-center gap-2
+                                                    className={`px-8 py-4 rounded-2xl bg-indigo-500 text-white text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-indigo-500/20 transition-all flex items-center justify-center gap-2
                                                         ${isSubmitting && submittingTaskId === task.id ? 'opacity-50 cursor-wait' : 'hover:scale-[1.03] active:scale-95 cursor-pointer'}
                                                         whitespace-nowrap w-[180px] border-b-4 border-indigo-700
                                                     `}
@@ -405,7 +397,7 @@ function RecordContent() {
                                                     ) : (
                                                         <CheckCircle size={14} fill="currentColor" />
                                                     )}
-                                                    {isSubmitting && submittingTaskId === task.id ? 'PROCESSING...' : 'SUBMIT NODE'}
+                                                    {isSubmitting && submittingTaskId === task.id ? 'PROCESSING...' : 'SUBMIT ORDER'}
                                                 </button>
                                             )
                                         )}
