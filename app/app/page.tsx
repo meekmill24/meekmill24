@@ -110,7 +110,7 @@ export default function HomePage() {
     { 
       label: 'WFP', 
       icon: null, 
-      image: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTYwIj4KICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgxMCwgMTApIj4KICAgIDxwYXRoIGQ9Ik00MCwwIEM2MCwwIDgwLDIwIDgwLDQwIEM4MCw2MCA2MCw4MCA0MCw4MCBDMjAsODAgMCw2MCAwLDQwIEMwLDIwIDIwLDAgNDAsMCBaIiBmaWxsPSIjMDZCODkyIi8+CiAgICA8cGF0aCBkPSJNNDAsNjAgTDUwLDUwIEw0MCw0MCBMMzAsNTAgTDQwLDYwIFoiIGZpbGw9IndoaXRlIi8+CiAgICA8dGV4dCB4PSI0MCIgeT0iMTMwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjQiIGZvbnQtd2VpZ2h0PSJib2xkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjMDZCODkyIj5XRlA8L3RleHQ+CiAgPC9nPgo8L3N2Zz4=",
+      image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/World_Food_Programme_logo.svg/512px-World_Food_Programme_logo.svg.png",
       color: 'text-rose-400', 
       iconBg: 'bg-rose-500/10', 
       href: 'https://www.wfp.org/' 
@@ -342,7 +342,7 @@ export default function HomePage() {
             </div>
             <div className='grid grid-cols-5 gap-x-4 gap-y-10'>
             {menuItems.map((item, idx) => (
-                <Link key={idx} href={item.href || '#'} className='flex flex-col items-center gap-3 group'>
+                <Link key={idx} href={item.href || '#'} target={item.href?.startsWith('http') ? '_blank' : '_self'} rel={item.href?.startsWith('http') ? "noopener noreferrer" : ""} className='flex flex-col items-center gap-3 group'>
                 <div className={cn("w-14 h-14 rounded-full border border-white/5 flex items-center justify-center shadow-2xl transition-all duration-500 group-hover:scale-110 group-active:scale-95 group-hover:border-white/20", item.iconBg)}>
                   {item.image ? (
                     <img src={item.image} alt="" className="w-8 h-8 object-contain" />
