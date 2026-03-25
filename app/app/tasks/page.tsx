@@ -26,7 +26,16 @@ import {
     RefreshCcw,
     ShieldCheck,
     Loader2,
-    Lock
+    Lock,
+    Play,
+    Pointer,
+    MessageCircle,
+    ChevronLeft,
+    Clock,
+    RefreshCw,
+    AlertCircle,
+    ChevronRight,
+    ArrowRight
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
