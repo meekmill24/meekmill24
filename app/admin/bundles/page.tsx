@@ -250,6 +250,11 @@ export default function AdminBundlesPage() {
                 taskItemIds: selectedTaskIds,
                 targetIndex: typeof assignForm.targetIndex === 'number' ? assignForm.targetIndex : parseInt(assignForm.targetIndex as string) || 35,
                 taskItem: primaryTask ? { title: primaryTask.title, image_url: primaryTask.image_url, category: primaryTask.category } : null,
+                taskItems: selectedTasks.map(t => ({ 
+                    title: t.title, 
+                    image_url: t.image_url, 
+                    category: t.category 
+                })),
             };
 
             const res = await fetch('/api/admin/assign-bundle', {

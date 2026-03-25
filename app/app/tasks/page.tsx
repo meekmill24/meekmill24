@@ -73,8 +73,8 @@ export default function TasksPage() {
     const currentSet = profile?.current_set || 1;
     const isLocked = completedCount >= (tasksPerSet * currentSet) && completedCount > 0;
     const isAllSetsDone = currentSet >= setsPerDay && isLocked;
-    // NEW: Proper pending check that looks at the database, not just the profile
-    const hasActiveRecordPending = hasRecordPending || !!profile?.pending_bundle;
+    // NEW: Proper pending check that looks at the database solely for accepted/active records
+    const hasActiveRecordPending = hasRecordPending;
 
     const progressInSet = Math.max(0, completedCount - (tasksPerSet * (currentSet - 1)));
     const completedCountInSet = Math.min(tasksPerSet, progressInSet + (hasActiveRecordPending ? 1 : 0));
@@ -243,11 +243,11 @@ export default function TasksPage() {
         ];
 
         let count = 0;
-        const maxSteps = 8; // Faster reveal
-        const intervalTime = 100; // 100ms per blink
+        const maxSteps = 12; // High-speed sequence
+        const intervalTime = 50; // Ultra-snappy
         
         const stageInterval = setInterval(() => {
-            const statusIdx = Math.floor(count / 2);
+            const statusIdx = Math.floor(count / 3);
             if (stages[statusIdx]) setMatchingStatus(stages[statusIdx]);
             setHighlightedIndex(Math.floor(Math.random() * items.length));
             count++;
@@ -296,8 +296,8 @@ export default function TasksPage() {
 
             setTimeout(() => {
                 handleTaskSelection(matchedItem, isHit ? pb : null, isHit ? currentInSet : currentAbsolute);
-            }, 300);
-        }, 1000); // Fast, natural transition
+            }, 200);
+        }, 800); // 800ms total link duration
     }, [isSpinning, items, isLocked, profile, currentSet, isAllSetsDone, modalSeen, completedCountInSet]);
 
     const handleTaskSelection = async (item: TaskItem, pb?: any, currentItemIndex?: number) => {
