@@ -299,15 +299,18 @@ export default function TasksPage() {
             clearInterval(stageInterval);
             
             try {
-                // Await real-time profile check (failsafe)
+                // Await real-time profile check (failsafe) with a 2.5s Timeout to prevent hanging
                 let remoteData = null;
                 try {
-                    // Optimized check: ONLY fetch bundle-related columns
-                    const syncRes = await profileSyncPromise;
+                    const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Sync Timeout')), 2500));
+                    const syncRes = await Promise.race([profileSyncPromise, timeoutPromise]) as any;
+                    
                     if (!syncRes.error) remoteData = syncRes.data;
                 } catch (syncErr) {
                     console.warn("Sync fetch interrupted, using stable state:", syncErr);
                 }
+
+                setIsSpinning(false); // Immediate visual stop for resilience
 
                 const finalProfile = (remoteData || profile) as any;
                 const pb = finalProfile?.pending_bundle;
@@ -342,7 +345,6 @@ export default function TasksPage() {
                 }
 
                 setHighlightedIndex(finalIndex);
-                setIsSpinning(false);
                 setMatchingStatus("MATCH SECURED");
 
                 setTimeout(() => {
