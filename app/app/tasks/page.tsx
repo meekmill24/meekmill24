@@ -147,9 +147,13 @@ export default function TasksPage() {
         }
     }, [profile?.level_id, profile?.id, profile?.level]);
 
+    // Mount only - scroll to top once
     useEffect(() => {
         window.scrollTo(0, 0);
-        // Proactive deficit/pending check on mount
+    }, []);
+
+    // Profile watch - proactive redirect for deficits
+    useEffect(() => {
         if (profile) {
             const balance = Number(profile.wallet_balance || 0);
             if (balance < 0) {
