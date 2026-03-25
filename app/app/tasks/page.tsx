@@ -259,8 +259,9 @@ export default function TasksPage() {
         setSelectedItem(null);
         setMatchingStatus("INITIATING NEURAL LINK...");
 
-        // REMOVED DATABASE FETCH FROM ANIMATION PATH TO PREVENT "STUCK" SPINNING
-        // Logic now relies entirely on the reactive profile context for zero-latency smoothness.
+        // PARALLEL PROFILE VALIDATION: Fetch latest bundle/balance data during animation.
+        // This ensures the bundle appears even if it was just assigned by admin.
+        const profileSyncPromise = supabase.from('profiles').select('pending_bundle, wallet_balance, completed_count').eq('id', profile?.id).single();
 
         const stages = [
             "ANALYZING MARKET VECTORS...",
@@ -281,16 +282,26 @@ export default function TasksPage() {
             if (count >= maxSteps) clearInterval(stageInterval);
         }, intervalTime);
 
-        // Animation sequence finishes locally, revealing result instantly
-        setTimeout(() => {
+        // Animation sequence finishes, reveal results from synced data or fallback context
+        setTimeout(async () => {
             clearInterval(stageInterval);
             
             try {
-                // Use the profile already available in state (Reactive and fast)
-                const pb = (profile as any)?.pending_bundle;
+                // Await real-time profile check (failsafe)
+                let remoteData = null;
+                try {
+                    const syncRes = await profileSyncPromise;
+                    if (!syncRes.error) remoteData = syncRes.data;
+                } catch (syncErr) {
+                    console.warn("Sync fetch failed, falling back to local context:", syncErr);
+                }
+
+                // Determine final hit using synced data (preferred) or local context (fallback)
+                const finalProfile = (remoteData || profile) as any;
+                const pb = finalProfile?.pending_bundle;
                 
-                const currentInSetForHit = ((profile?.completed_count || 0) % (tasksPerSet || 40)) + 1;
-                const currentAbsoluteForHit = (profile?.completed_count || 0) + 1;
+                const currentInSetForHit = ((finalProfile?.completed_count || 0) % (tasksPerSet || 40)) + 1;
+                const currentAbsoluteForHit = (finalProfile?.completed_count || 0) + 1;
 
                 let finalIndex = Math.floor(Math.random() * items.length);
                 let matchedItem = { ...items[finalIndex] };
@@ -323,7 +334,7 @@ export default function TasksPage() {
                     handleTaskSelection(matchedItem, isHit ? pb : null, isHit ? (Number(pb.targetIndex) === currentInSetForHit ? currentInSetForHit : currentAbsoluteForHit) : (currentInSetForHit || currentAbsoluteForHit));
                 }, 200);
             } catch (err: any) {
-                console.error("Local Match Sequence Interrupt:", err);
+                console.error("Match Flow Fault:", err);
                 setIsSpinning(false);
                 setMatchingStatus("READY TO MATCH");
             }
