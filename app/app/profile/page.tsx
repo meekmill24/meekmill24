@@ -25,6 +25,7 @@ import {
   Award,
 } from 'lucide-react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { BottomNav } from '@/components/navigation/bottom-nav'
 import { Button } from '@/components/ui/button'
 import { logout } from '@/lib/actions/index'
@@ -169,8 +170,8 @@ export default function ProfilePage() {
       <div className='px-6 space-y-8 mt-6'>
         {/* User Profile Header Card */}
         <div className='relative rounded-[48px] bg-zinc-900/60 p-10 border border-white/10 shadow-2xl relative overflow-hidden'>
-            <div className="absolute top-0 right-0 p-10 opacity-5">
-                <AtSign className="w-32 h-32" />
+            <div className="absolute inset-0 z-0 opacity-20">
+                <Image src="/profile-card-bg.png" alt="BG" fill className="object-cover" />
             </div>
             
             <div className='flex flex-col items-center gap-6 mb-10 relative z-10'>
