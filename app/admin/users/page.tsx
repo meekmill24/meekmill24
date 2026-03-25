@@ -130,6 +130,26 @@ export default function AdminUsersPage() {
     }
   };
 
+  const handleDeleteUser = async (id: string, name: string) => {
+    if (!confirm(`Are you absolutely sure you want to PURGE node ${name}? This action is irreversible and will delete all account data and auth credentials.`)) return;
+    
+    try {
+        const res = await fetch('/api/admin/delete-user', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: id })
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to terminate node');
+
+        toast.success(`Node ${name} terminated from matrix.`);
+        fetchUsers();
+    } catch (err: any) {
+        toast.error(err.message);
+    }
+  };
+
   const filteredUsers = users.filter(u => 
     u.username?.toLowerCase().includes(searchQuery.toLowerCase()) || 
     u.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -386,7 +406,10 @@ export default function AdminUsersPage() {
                             </button>
                         </>
                       )}
-                      <button className="p-2.5 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500/20 transition-all border border-red-500/10">
+                      <button 
+                        onClick={() => handleDeleteUser(user.id, user.username || 'unknown')}
+                        className="p-2.5 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500/20 transition-all border border-red-500/10"
+                      >
                         <Trash2 size={16} />
                       </button>
                     </div>

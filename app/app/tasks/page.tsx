@@ -68,13 +68,15 @@ export default function TasksPage() {
     const [setsPerDay, setSetsPerDay] = useState(3);
     const [commissionRate, setCommissionRate] = useState(0.005);
     const [isLoadingData, setIsLoadingData] = useState(true);
-    
+
     const completedCount = profile?.completed_count || 0;
     const currentSet = profile?.current_set || 1;
     const isLocked = completedCount >= (tasksPerSet * currentSet) && completedCount > 0;
     const isAllSetsDone = currentSet >= setsPerDay && isLocked;
+    const hasActiveRecordPending = hasRecordPending;
+
     const progressInSet = Math.max(0, completedCount - (tasksPerSet * (currentSet - 1)));
-    const completedCountInSet = Math.min(progressInSet, tasksPerSet);
+    const completedCountInSet = Math.min(tasksPerSet, progressInSet + (hasActiveRecordPending ? 1 : 0));
     const totalTasks = tasksPerSet;
 
     const fetchTasks = useCallback(async () => {
@@ -82,8 +84,6 @@ export default function TasksPage() {
         setIsLoadingData(true);
 
         try {
-            const filterDate = profile.last_reset_at ? new Date(profile.last_reset_at).toISOString() : new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-
             const [levelsRes, pastTasksRes, itemsRes] = await Promise.all([
                 supabase.from('levels').select('*').order('price', { ascending: true }),
                 supabase.from('user_tasks')
@@ -96,13 +96,10 @@ export default function TasksPage() {
             const tasksFromDb = (pastTasksRes.data || []) as any[];
             setHasRecordPending(tasksFromDb.some(t => t.status === 'pending'));
 
-            if (levelsRes.data) {
-                const currentLevel = levelsRes.data.find(l => Number(l.id) === Number(profile.level_id));
-                if (profile?.level) {
-                    setTasksPerSet(profile.tasks_per_set_override || profile.level.tasks_per_set || 40);
-                    setSetsPerDay(profile.sets_per_day_override || profile.level.sets_per_day || 3);
-                    setCommissionRate(profile.level.commission_rate || 0.005);
-                }
+            if (profile?.level) {
+                setTasksPerSet(profile.tasks_per_set_override || profile.level.tasks_per_set || 40);
+                setSetsPerDay(profile.sets_per_day_override || profile.level.sets_per_day || 3);
+                setCommissionRate(profile.level.commission_rate || 0.005);
             }
 
             const lastResetDate = profile.last_reset_at ? new Date(profile.last_reset_at) : new Date(Date.now() - 24 * 60 * 60 * 1000);
@@ -137,7 +134,7 @@ export default function TasksPage() {
 
             const shuffled = [...availableItems].sort(() => 0.5 - Math.random());
             setItems(shuffled.slice(0, 24));
-            
+
             if (itemsRes.data) {
                 (window as any)._allPoolItems = itemsRes.data;
             }
@@ -148,7 +145,7 @@ export default function TasksPage() {
         } finally {
             setIsLoadingData(false);
         }
-    }, [profile?.level_id, profile?.id, profile?.last_reset_at]);
+    }, [profile?.level_id, profile?.id, profile?.level]);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -187,112 +184,11 @@ export default function TasksPage() {
         }
     }, [showCompletionModal]);
 
-    const hasPendingTask = !!profile?.pending_bundle;
-
-    const handleStart = useCallback(async () => {
-        if (isSpinning || items.length === 0) return;
-
-        const walletBalance = profile?.wallet_balance || 0;
-        
-        if (walletBalance < 0) {
-            toast.error("Account in deficit. Please settle your balance through the recharge portal or Contact customer service to clear your negative balance to continue.", {
-                duration: 5000
-            });
-            router.push('/app/record');
-            return;
-        }
-
-        if (hasRecordPending) {
-            toast.error("Please complete your pending allocation in the Record page first.");
-            return;
-        }
-
-        const minBalance = profile?.level?.price || 65;
-        if (walletBalance < minBalance) {
-            setShowMinBalanceModal(true);
-            return;
-        }
-
-        if (isLocked) {
-            const msg = isAllSetsDone ? "DAILY THRESHOLD REACHED" : `SEQUENCE ${currentSet} CONCLUDED. CONTACT SUPPORT.`;
-            setMatchingStatus(msg);
-            if (!modalSeen) setShowCompletionModal(true);
-            return;
-        }
-
-        if (profile?.pending_bundle) {
-            setMatchingStatus("PENDING ALLOCATION DETECTED");
-            setActiveBundle(profile.pending_bundle);
-            setBundleModal(true);
-            confetti({
-                particleCount: 150,
-                spread: 70,
-                origin: { y: 0.6 },
-                colors: ['#F59E0B', '#FFFFFF', '#3B82F6']
-            });
-            return;
-        }
-
-        setIsSpinning(true);
-        setSelectedItem(null);
-        setMatchingStatus("INITIATING NEURAL LINK...");
-
-        const stages = [
-            "ANALYZING MARKET VECTORS...",
-            "IDENTIFYING OPTIMAL MATCH...",
-            "STABILIZING DATA NODE...",
-            "FINALIZING ALLOCATION..."
-        ];
-
-        let stageIdx = 0;
-        const stageInterval = setInterval(() => {
-            if (stageIdx < stages.length) {
-                setMatchingStatus(stages[stageIdx]);
-                stageIdx++;
-            }
-        }, 400);
-
-        setTimeout(async () => {
-            clearInterval(stageInterval);
-            const { data: freshProfile } = await supabase.from('profiles').select('*').eq('id', profile?.id).single();
-            const pb = (freshProfile as any)?.pending_bundle;
-            const currentItemIndex = completedCountInSet + 1;
-
-            let finalIndex = Math.floor(Math.random() * items.length);
-            let matchedItem = { ...items[finalIndex] };
-
-            if (pb && Number(pb.targetIndex) === currentItemIndex) {
-                if (pb.taskItem) {
-                    matchedItem = {
-                        id: Number(pb.taskItemIds?.[0] || 0),
-                        title: pb.taskItem.title,
-                        image_url: pb.taskItem.image_url,
-                        category: pb.taskItem.category,
-                        description: pb.taskItem.description || '',
-                        is_active: true,
-                        created_at: new Date().toISOString(),
-                        level_id: Number(profile?.level_id || 1)
-                    } as TaskItem;
-
-                    const newItems = [...items];
-                    newItems[finalIndex] = matchedItem;
-                    setItems(newItems);
-                }
-            }
-            
-            setHighlightedIndex(finalIndex);
-            setIsSpinning(false);
-            setMatchingStatus("MATCH SECURED");
-            
-            setTimeout(() => {
-                handleTaskSelection(matchedItem, pb, currentItemIndex);
-            }, 500);
-        }, 2000);
-    }, [isSpinning, items, isLocked, profile, currentSet, isAllSetsDone, modalSeen, completedCountInSet]);
-
-    const handleTaskSelection = async (item: TaskItem, pb?: any, currentItemIndex?: number) => {
+    const handleTaskSelection = useCallback(async (item: TaskItem, pb?: any, currentItemIndex?: number) => {
         if (!profile || isLocked) return;
         let bundle = pb;
+        
+        // Use provided bundle to avoid re-fetching, only fallback if really necessary
         if (!bundle) {
             const { data: freshProfile } = await supabase.from('profiles').select('*').eq('id', profile.id).single();
             bundle = (freshProfile as any)?.pending_bundle;
@@ -309,7 +205,7 @@ export default function TasksPage() {
                 bonusAmount: Number(bundle.bonusAmount || 0),
                 expiresIn: Number(bundle.expiresIn || 86400),
                 taskItem: { title: item.title, image_url: item.image_url, category: item.category ?? '' },
-                taskItems: bundle.taskItems // New: pass entire array from Admin
+                taskItems: bundle.taskItems || [{ title: item.title, image_url: item.image_url, category: item.category ?? '' }]
             });
             setBundleModal(true);
             confetti({
@@ -318,17 +214,133 @@ export default function TasksPage() {
                 origin: { y: 0.6 },
                 colors: ['#F59E0B', '#FFFFFF', '#3B82F6']
             });
+        } else {
+            setSelectedItem(item);
+            setModalOpen(true);
+        }
+    }, [isLocked, profile, setSelectedItem, setModalOpen, setBundleModal]);
+
+    const handleStart = useCallback(async () => {
+        if (isSpinning || items.length === 0) return;
+
+        const walletBalance = profile?.wallet_balance || 0;
+
+        if (walletBalance < 0) {
+            toast.error("Account in deficit. Please settle your balance through the recharge portal.", {
+                duration: 5000
+            });
+            router.push('/app/record?filter=pending');
             return;
         }
 
-        setSelectedItem({ ...item });
-        setModalOpen(true);
-    };
+        if (hasActiveRecordPending) {
+            const { data: pendingTask } = await supabase.from('user_tasks').select('status').eq('user_id', profile?.id).eq('status', 'pending').limit(1);
+            if (pendingTask?.length) {
+                toast.error("Please complete your pending allocation in the Record page first.");
+                router.push('/app/record?filter=pending');
+                return;
+            }
+        }
+
+        const minBalance = profile?.level?.price || 65;
+        if (walletBalance < minBalance) {
+            setShowMinBalanceModal(true);
+            return;
+        }
+
+        if (isLocked) {
+            const msg = isAllSetsDone ? "DAILY THRESHOLD REACHED" : `SEQUENCE ${currentSet} CONCLUDED. CONTACT SUPPORT.`;
+            setMatchingStatus(msg);
+            if (!modalSeen) setShowCompletionModal(true);
+            return;
+        }
+
+        setIsSpinning(true);
+        setSelectedItem(null);
+        setMatchingStatus("INITIATING NEURAL LINK...");
+
+        // OPTIMIZATION: Start fetching latest profile state immediately in parallel with animation.
+        // Simplified query to avoid join errors that could lead to infinite spinning.
+        const profilePromise = supabase.from('profiles').select('*').eq('id', profile?.id).single();
+
+        const stages = [
+            "ANALYZING MARKET VECTORS...",
+            "IDENTIFYING OPTIMAL MATCH...",
+            "STABILIZING DATA NODE...",
+            "FINALIZING ALLOCATION..."
+        ];
+
+        let count = 0;
+        const maxSteps = 12; 
+        const intervalTime = 50; 
+        
+        const stageInterval = setInterval(() => {
+            const statusIdx = Math.floor(count / 3);
+            if (stages[statusIdx]) setMatchingStatus(stages[statusIdx]);
+            setHighlightedIndex(Math.floor(Math.random() * items.length));
+            count++;
+            if (count >= maxSteps) clearInterval(stageInterval);
+        }, intervalTime);
+
+        // Animation sequence finishes, then reveal the results from the already-fetched data
+        setTimeout(async () => {
+            clearInterval(stageInterval);
+            
+            try {
+                // Await the profile fetch that was started at the beginning
+                const freshData = await profilePromise;
+                if (freshData.error) throw freshData.error;
+
+                const pb = (freshData.data as any)?.pending_bundle;
+                
+                const currentInSetForHit = ((profile?.completed_count || 0) % (tasksPerSet || 40)) + 1;
+                const currentAbsoluteForHit = (profile?.completed_count || 0) + 1;
+
+                let finalIndex = Math.floor(Math.random() * items.length);
+                let matchedItem = { ...items[finalIndex] };
+
+                // Compare hitting logic precisely
+                const isHit = !!pb && (Number(pb.targetIndex) === currentInSetForHit || Number(pb.targetIndex) === currentAbsoluteForHit);
+
+                if (isHit && pb.taskItem) {
+                    matchedItem = {
+                        id: Number(pb.taskItemIds?.[0] || 0),
+                        title: pb.taskItem.title,
+                        image_url: pb.taskItem.image_url,
+                        category: pb.taskItem.category,
+                        description: pb.taskItem.description || '',
+                        is_active: true,
+                        created_at: new Date().toISOString(),
+                        level_id: Number(profile?.level_id || 1)
+                    } as TaskItem;
+
+                    const newItems = [...items];
+                    newItems[finalIndex] = matchedItem;
+                    setItems(newItems);
+                }
+
+                setHighlightedIndex(finalIndex);
+                setIsSpinning(false);
+                setMatchingStatus("MATCH SECURED");
+
+                setTimeout(() => {
+                    handleTaskSelection(matchedItem, isHit ? pb : null, isHit ? (Number(pb.targetIndex) === currentInSetForHit ? currentInSetForHit : currentAbsoluteForHit) : (currentInSetForHit || currentAbsoluteForHit));
+                }, 200);
+            } catch (err: any) {
+                console.error("Match Flow Error:", err);
+                setIsSpinning(false);
+                setMatchingStatus("READY TO MATCH");
+                toast.error("Protocol Interrupted: " + (err.message || "Network Timeout"), {
+                    duration: 3000
+                });
+            }
+        }, 850); 
+    }, [isSpinning, items, isLocked, profile, currentSet, isAllSetsDone, modalSeen, tasksPerSet, hasActiveRecordPending, handleTaskSelection]);
 
     const handleSubmitTask = async (item: TaskItem, costAmount?: number) => {
         if (isSubmitting) return;
         if (!profile) { router.push('/login'); return; }
-        
+
         setIsSubmitting(true);
         try {
             const { data, error } = await supabase.rpc('complete_user_task', {
@@ -343,7 +355,7 @@ export default function TasksPage() {
             setModalOpen(false);
             setSelectedItem(null);
             toast.success(`Succesfully optimized. Profit: ${format(earnedAmount)}`);
-            
+
             setIsRefreshing(true);
             setTimeout(() => {
                 const pool = (window as any)._allPoolItems || [];
@@ -357,7 +369,7 @@ export default function TasksPage() {
                         if (!poolByImage.has(p.image_url) && !updatedRecent.has(p.id)) poolByImage.set(p.image_url, p);
                     });
                     let freshPool = Array.from(poolByImage.values());
-                    if (freshPool.length < 24) freshPool = pool; 
+                    if (freshPool.length < 24) freshPool = pool;
                     setItems([...freshPool].sort(() => 0.5 - Math.random()).slice(0, 24));
                 }
                 setIsRefreshing(false);
@@ -379,34 +391,56 @@ export default function TasksPage() {
     const handleBundleAccept = async (bundle: BundlePackage) => {
         if (!profile) return;
         try {
-            const newBalance = profile.wallet_balance - bundle.totalAmount;
-            const newFrozen = (profile.freeze_balance || 0) + bundle.totalAmount + bundle.bonusAmount;
-            
-            // Clear pending_bundle so it doesn't open the modal again
-            await supabase.from('profiles').update({ 
-                wallet_balance: newBalance, 
-                freeze_balance: newFrozen, 
-                completed_count: (profile.completed_count || 0) + 1,
-                pending_bundle: null 
-            }).eq('id', profile.id);
-            
-            if (pendingTaskItem) {
-                await supabase.from('user_tasks').insert({ 
-                    user_id: profile.id, 
-                    task_item_id: pendingTaskItem.id, 
-                    status: 'pending', 
-                    earned_amount: bundle.bonusAmount, 
-                    cost_amount: bundle.totalAmount, 
-                    is_bundle: true 
-                });
-                setPendingTaskItem(null);
+            // Identify the task item definitively
+            let itemToRecord = pendingTaskItem;
+            if (!itemToRecord && bundle.taskItem) {
+                const { data: itemsFromDB } = await supabase.from('task_items').select('*').eq('title', bundle.taskItem.title).limit(1);
+                itemToRecord = itemsFromDB?.[0] || null;
             }
-            
+
+            if (!itemToRecord) {
+                const { data: fallbackItems } = await supabase.from('task_items').select('*').eq('level_id', profile.level_id).eq('is_active', true).limit(1);
+                itemToRecord = fallbackItems?.[0] || null;
+            }
+
+            if (!itemToRecord) throw new Error("Could not verify matrix node for allocation.");
+
+            // 1. Create the pending task record
+            const { error: insertErr } = await supabase.from('user_tasks').insert({
+                user_id: profile.id,
+                task_item_id: itemToRecord.id,
+                status: 'pending',
+                earned_amount: bundle.bonusAmount,
+                cost_amount: bundle.totalAmount,
+                is_bundle: true,
+                created_at: new Date().toISOString()
+            });
+
+            if (insertErr) throw insertErr;
+
+            // 2. Perform balance deduction via privileged Admin API
+            const res = await fetch('/api/admin/assign-bundle', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    userId: profile.id,
+                    deductAmount: bundle.totalAmount,
+                    freezeAmount: bundle.totalAmount + bundle.bonusAmount
+                })
+            });
+
+            if (!res.ok) {
+                const errData = await res.json();
+                throw new Error(errData.error || "Failed to synchronize node allocation.");
+            }
+
+            toast.success("Allocation secured. Settle node deficit in records.");
             setBundleModal(false);
             router.push('/app/record?filter=pending');
             await refreshProfile();
-        } catch (error) {
-            toast.error("Failed to accept bundle package.");
+        } catch (err: any) {
+            console.error("Bundle Accept Fail:", err);
+            toast.error(err.message || "Sequence Interrupt: Settle deficit.");
         }
     };
 
@@ -443,111 +477,108 @@ export default function TasksPage() {
                                         <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-[0_0_8px_rgba(74,222,128,0.5)]" />
                                     </div>
                                 </div>
-                                
-                                 <div className="space-y-1">
-                                     <div className="flex items-center gap-2">
-                                         <h1 className="text-2xl md:text-3xl font-black italic tracking-tighter uppercase text-white">
-                                             {profile?.username}
-                                         </h1>
-                                         <ShieldCheck className="text-cyan-400" size={18} />
-                                     </div>
-                                     <div className="flex flex-col md:flex-row md:items-center gap-3">
-                                         <span className="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-[9px] font-black text-cyan-400 uppercase tracking-widest italic">
-                                             Level {profile?.level_id || 1}: Junior Level
-                                         </span>
-                                         <div className="flex items-center gap-2">
-                                             <div className="w-1 h-1 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                                             <span className="text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em] italic">
-                                                 Yield Node: {(commissionRate * 100).toFixed(2)}%
-                                             </span>
-                                         </div>
-                                         <div className="hidden md:block w-1 h-1 rounded-full bg-white/20" />
-                                         <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest italic leading-none">
-                                             Node Terminal: 042-ALPHA
-                                         </span>
-                                     </div>
-                                 </div>
+
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-2">
+                                        <h1 className="text-2xl md:text-3xl font-black italic tracking-tighter uppercase text-white">
+                                            {profile?.username}
+                                        </h1>
+                                        <ShieldCheck className="text-cyan-400" size={18} />
+                                    </div>
+                                    <div className="flex flex-col md:flex-row md:items-center gap-3">
+                                        <span className="px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-[9px] font-black text-cyan-400 uppercase tracking-widest italic">
+                                            Level {profile?.level_id || 1}: {profile?.level?.name || 'Junior Level'}
+                                        </span>
+                                        <div className="flex items-center gap-2">
+                                            <div className="w-1 h-1 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                                            <span className="text-[9px] font-black text-emerald-400 uppercase tracking-[0.2em] italic">
+                                                Yield Node: {(commissionRate * 100).toFixed(2)}%
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-
-                            <Link href="/app/wallet" className="flex items-center gap-4 bg-white/5 hover:bg-white/10 px-8 py-5 rounded-[28px] border border-white/5 transition-all group/wallet">
-                                <div className="flex flex-col">
-                                    <div className="flex items-center gap-2">
-                                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest opacity-60 italic">{t('available_balance')}</p>
-                                        <button 
-                                            onClick={() => {
-                                                refreshProfile();
-                                                toast.info('Refreshing node assets...');
-                                            }}
-                                            className="p-1 hover:bg-white/5 rounded-full transition-colors"
-                                            title="Sync Assets"
-                                        >
-                                            <RefreshCcw size={10} className="text-indigo-400" />
-                                        </button>
-                                    </div>
-                                    <span className="text-xl font-black tabular-nums tracking-tighter">{format(profile?.wallet_balance || 0)}</span>
-                                </div>
-                                <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform shadow-inner">
-                                    <Wallet size={20} />
-                                </div>
-                            </Link>
                         </div>
 
-                        {/* Professional Stats Grid */}
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                            <div className="p-6 bg-zinc-950/40 rounded-[32px] border border-white/5 backdrop-blur-md hover:bg-zinc-950/60 transition-colors">
-                                <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.3em] block mb-2 italic">Available Balance</span>
-                                <div className="flex items-baseline gap-2">
-                                    <h2 className="text-3xl font-black tracking-tighter text-white tabular-nums">{format(profile?.wallet_balance || 0)}</h2>
-                                </div>
-                                <div className="mt-4 flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
-                                    <span className="text-[7.5px] md:text-[9px] font-black text-cyan-500 uppercase tracking-widest italic leading-none">Node Active</span>
-                                </div>
-                            </div>
-
-                            <div className="p-6 bg-zinc-950/40 rounded-[32px] border border-white/5 backdrop-blur-md">
-                                <p className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em] italic mb-1">Clearance</p>
-                                <h2 className="text-3xl font-black tracking-tighter text-zinc-400 tabular-nums">{format(profile?.freeze_balance || 0)}</h2>
-                                <div className="mt-4 flex items-center gap-2 text-zinc-600">
-                                    <Clock size={12} />
-                                    <span className="text-[7.5px] md:text-[9px] font-black uppercase tracking-widest italic leading-none">In Clearance</span>
-                                </div>
-                            </div>
-
-                            <div className="p-6 bg-zinc-950/40 rounded-[32px] border border-white/5 backdrop-blur-md">
-                                <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.3em] block mb-2 italic">Today's Profit</span>
-                                <h2 className="text-3xl font-black tracking-tighter text-green-400 tabular-nums">+{format(profile?.profit || 0)}</h2>
-                                <div className="mt-4 flex items-center gap-2 text-green-500/60">
-                                    <TrendingUp size={12} />
-                                    <span className="text-[9px] font-black uppercase tracking-widest italic">Performance High</span>
-                                </div>
-                            </div>
-
-                            <div className="p-6 bg-cyan-500/5 rounded-[32px] border border-cyan-500/10 backdrop-blur-md relative overflow-hidden group/progress">
-                                <div className="absolute bottom-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl -mr-16 -mb-16 group-hover/progress:scale-150 transition-transform duration-1000" />
-                                <div className="flex items-center justify-between mb-2">
-                                    <span className="text-[10px] font-black text-cyan-400 uppercase tracking-[0.3em] italic">Task Progress</span>
-                                    <span className="text-[11px] font-black italic tracking-tighter text-white">{completedCountInSet} / {tasksPerSet}</span>
-                                </div>
-                                <div className="h-3 w-full bg-zinc-950 rounded-full overflow-hidden border border-white/5 p-[1.5px]">
-                                    <div 
-                                        className="h-full bg-gradient-to-r from-cyan-600 to-cyan-400 rounded-full transition-all duration-1000 shadow-[0_0_15px_rgba(6,182,212,0.4)] relative"
-                                        style={{ width: `${Math.min(100, (completedCountInSet / tasksPerSet) * 100)}%` }}
+                        <Link href="/app/wallet" className="flex items-center gap-4 bg-white/5 hover:bg-white/10 px-8 py-5 rounded-[28px] border border-white/5 transition-all group/wallet">
+                            <div className="flex flex-col">
+                                <div className="flex items-center gap-2">
+                                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest opacity-60 italic">{t('available_balance')}</p>
+                                    <button
+                                        onClick={(e) => {
+                                            e.preventDefault(); e.stopPropagation();
+                                            refreshProfile();
+                                            toast.info('Refreshing node assets...');
+                                        }}
+                                        className="p-1 hover:bg-white/5 rounded-full transition-colors"
+                                        title="Sync Assets"
                                     >
-                                        <div className="absolute inset-0 bg-white/20 animate-shimmer" />
-                                    </div>
+                                        <RefreshCcw size={10} className="text-indigo-400" />
+                                    </button>
                                 </div>
-                                <div className="mt-3 flex items-center justify-between">
-                                    <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest italic">Batch Sequence {profile?.current_set || 1}</span>
-                                    <span className="text-[8px] font-black text-cyan-400 uppercase tracking-widest italic">
-                                        {Math.round((completedCountInSet / tasksPerSet) * 100)}% Optimized
-                                    </span>
+                                <span className="text-xl font-black tabular-nums tracking-tighter">{format(profile?.wallet_balance || 0)}</span>
+                            </div>
+                            <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform shadow-inner ml-auto">
+                                <Wallet size={20} />
+                            </div>
+                        </Link>
+                    </div>
+
+                    {/* Professional Stats Grid */}
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div className="p-6 bg-zinc-950/40 rounded-[32px] border border-white/5 backdrop-blur-md hover:bg-zinc-950/60 transition-colors">
+                            <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.3em] block mb-2 italic">Available Balance</span>
+                            <div className="flex items-baseline gap-2">
+                                <h2 className="text-3xl font-black tracking-tighter text-white tabular-nums">{format(profile?.wallet_balance || 0)}</h2>
+                            </div>
+                            <div className="mt-4 flex items-center gap-2">
+                                <div className="w-2 h-2 rounded-full bg-cyan-500 animate-pulse" />
+                                <span className="text-[7.5px] md:text-[9px] font-black text-cyan-500 uppercase tracking-widest italic leading-none">Node Active</span>
+                            </div>
+                        </div>
+
+                        <div className="p-6 bg-zinc-950/40 rounded-[32px] border border-white/5 backdrop-blur-md">
+                            <p className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.4em] italic mb-1">Clearance</p>
+                            <h2 className="text-3xl font-black tracking-tighter text-zinc-400 tabular-nums">{format(profile?.freeze_balance || 0)}</h2>
+                            <div className="mt-4 flex items-center gap-2 text-zinc-600">
+                                <Clock size={12} />
+                                <span className="text-[7.5px] md:text-[9px] font-black uppercase tracking-widest italic leading-none">In Clearance</span>
+                            </div>
+                        </div>
+
+                        <div className="p-6 bg-zinc-950/40 rounded-[32px] border border-white/5 backdrop-blur-md">
+                            <span className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.3em] block mb-2 italic">Today's Profit</span>
+                            <h2 className="text-3xl font-black tracking-tighter text-green-400 tabular-nums">+{format(profile?.profit || 0)}</h2>
+                            <div className="mt-4 flex items-center gap-2 text-green-500/60">
+                                <TrendingUp size={12} />
+                                <span className="text-[9px] font-black uppercase tracking-widest italic">Performance High</span>
+                            </div>
+                        </div>
+
+                        <div className="p-6 bg-cyan-500/5 rounded-[32px] border border-cyan-500/10 backdrop-blur-md relative overflow-hidden group/progress">
+                            <div className="absolute bottom-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl -mr-16 -mb-16 group-hover/progress:scale-150 transition-transform duration-1000" />
+                            <div className="flex items-center justify-between mb-2">
+                                <span className="text-[10px] font-black text-cyan-400 uppercase tracking-[0.3em] italic">Task Progress</span>
+                                <span className="text-[11px] font-black italic tracking-tighter text-white">{completedCountInSet} / {tasksPerSet}</span>
+                            </div>
+                            <div className="h-3 w-full bg-zinc-950 rounded-full overflow-hidden border border-white/5 p-[1.5px]">
+                                <div
+                                    className="h-full bg-gradient-to-r from-cyan-600 to-cyan-400 rounded-full transition-all duration-1000 shadow-[0_0_15px_rgba(6,182,212,0.4)] relative"
+                                    style={{ width: `${Math.min(100, (completedCountInSet / tasksPerSet) * 100)}%` }}
+                                >
+                                    <div className="absolute inset-0 bg-white/20 animate-shimmer" />
                                 </div>
+                            </div>
+                            <div className="mt-3 flex items-center justify-between">
+                                <span className="text-[8px] font-black text-zinc-600 uppercase tracking-widest italic">Batch Sequence {profile?.current_set || 1}</span>
+                                <span className="text-[8px] font-black text-cyan-400 uppercase tracking-widest italic">
+                                    {Math.round((completedCountInSet / tasksPerSet) * 100)}% Optimized
+                                </span>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
             {/* Matrix Grid Distribution */}
             <div className="max-w-7xl mx-auto px-6 space-y-20">
@@ -568,21 +599,21 @@ export default function TasksPage() {
                     <div className="w-full max-w-2xl relative">
                         {/* Matrix Hub Pattern */}
                         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(6,182,212,0.05),transparent_70%)] pointer-events-none" />
-                        
+
                         <div className="grid grid-cols-5 gap-3 md:gap-5 relative z-10 p-4">
                             {Array.from({ length: 25 }).map((_, idx) => {
                                 if (idx === 12) {
                                     return (
                                         <div key="start-btn" className="aspect-square flex items-center justify-center relative p-1">
-                                            <button 
+                                            <button
                                                 onClick={handleStart}
                                                 disabled={isLocked || isSpinning}
                                                 className={cn(
                                                     "w-full h-full rounded-[32px] md:rounded-[40px] z-20 flex flex-col items-center justify-center transition-all duration-300 shadow-2xl overflow-hidden",
-                                                    isLocked 
+                                                    isLocked
                                                         ? "bg-zinc-900 border-zinc-800 opacity-60 grayscale"
-                                                        : profile?.pending_bundle
-                                                            ? "bg-amber-500 border-amber-400 hover:scale-105"
+                                                        : (hasActiveRecordPending || (profile?.wallet_balance !== undefined && profile?.wallet_balance < 0))
+                                                            ? "bg-white border-white hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(255,255,255,0.1)]"
                                                             : "bg-white border-white hover:scale-105 active:scale-95"
                                                 )}
                                             >
@@ -591,22 +622,19 @@ export default function TasksPage() {
                                                         <Lock size={20} className="text-zinc-600" />
                                                         <span className="text-[7px] font-black text-zinc-600 uppercase tracking-widest italic">LOCKED</span>
                                                     </div>
-                                                ) : profile?.pending_bundle ? (
-                                                    <div className="flex flex-col items-center gap-1">
-                                                        <Zap size={24} className="text-white animate-pulse" />
-                                                        <span className="text-[7px] font-black text-white uppercase tracking-widest italic">CONTINUE</span>
-                                                    </div>
                                                 ) : isSpinning ? (
-                                                   <div className="flex flex-col items-center gap-1">
-                                                       <RefreshCw size={24} className="text-black animate-spin" />
-                                                       <span className="text-[6px] font-black text-black uppercase tracking-widest animate-pulse">MATCHING</span>
-                                                   </div>
+                                                    <div className="flex flex-col items-center gap-1">
+                                                        <RefreshCw size={24} className="text-black animate-spin" />
+                                                        <span className="text-[6px] font-black text-black uppercase tracking-widest animate-pulse">MATCHING</span>
+                                                    </div>
                                                 ) : (
                                                     <div className="flex flex-col items-center justify-center w-full h-full pt-1">
                                                         <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-black flex items-center justify-center shadow-lg transform group-hover:scale-110 transition-transform">
                                                             <Play size={18} className="text-white fill-white translate-x-0.5" />
                                                         </div>
-                                                        <span className="text-[9px] font-black text-black uppercase tracking-[0.2em] mt-2 italic">START</span>
+                                                        <span className="text-[9px] font-black text-black uppercase tracking-[0.2em] mt-2 italic text-center">
+                                                            {(hasActiveRecordPending || (profile?.wallet_balance !== undefined && profile.wallet_balance < 0)) ? "CONTINUE" : "START"}
+                                                        </span>
                                                     </div>
                                                 )}
                                             </button>
@@ -619,8 +647,8 @@ export default function TasksPage() {
                                 const item = items[itemIdx];
 
                                 return (
-                                    <div 
-                                        key={idx} 
+                                    <div
+                                        key={idx}
                                         className={`aspect-square rounded-[18px] bg-zinc-900 border border-white/10 overflow-hidden relative transition-all duration-500
                                             ${isCurrentHighlighted ? 'ring-4 ring-cyan-500 scale-125 shadow-[0_0_40px_rgba(6,182,212,0.4)] z-50' : 'opacity-100'}
                                             ${isRefreshing ? 'scale-0' : 'scale-100'}
@@ -655,8 +683,8 @@ export default function TasksPage() {
                             </p>
                         </div>
                     </div>
-                    </div>
                 </div>
+            </div>
 
 
             {/* Modals */}
@@ -704,6 +732,7 @@ export default function TasksPage() {
                                         Contact Support to Advance
                                     </button>
                                 </Link>
+                                <button onClick={() => setShowCompletionModal(false)} className="w-full py-3 text-[10px] font-black text-zinc-500 uppercase tracking-widest">Acknowledge</button>
                             </div>
                         </div>
                     </div>
@@ -719,7 +748,7 @@ export default function TasksPage() {
                             </div>
                             <div className="space-y-4">
                                 <h3 className="text-3xl font-black italic uppercase tracking-tighter italic">Low Allocation</h3>
-                                <p className="text-[10px] font-black text-rose-500/60 uppercase tracking-widest leading-relaxed">
+                                <p className="text-[10px] font-black text-rose-500/60 uppercase tracking-widest leading-relaxed text-center">
                                     Your institutional node requires a minimum liquidity of {format(profile?.level?.price || 65)} to process this sequence.
                                 </p>
                             </div>
@@ -733,8 +762,6 @@ export default function TasksPage() {
                     </div>
                 </Portal>
             )}
-
-
         </main>
     );
 }
