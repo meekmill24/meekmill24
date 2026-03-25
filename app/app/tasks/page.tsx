@@ -394,45 +394,57 @@ export default function TasksPage() {
 
             // DO NOT increment completed_count here anymore. 
             // It will only happen when they SUBMIT from the Record page.
-            await supabase.from('profiles').update({
+            // 1. Identify the task item definitively
+            let itemToRecord = pendingTaskItem;
+            if (!itemToRecord && bundle.taskItem) {
+                const { data: itemsFromDB } = await supabase.from('task_items').select('*').eq('title', bundle.taskItem.title).limit(1);
+                itemToRecord = itemsFromDB?.[0] || null;
+            }
+
+            // Fallback: If still null, pick any active item for the user's level
+            if (!itemToRecord) {
+                const { data: fallbackItems } = await supabase.from('task_items').select('*').eq('level_id', profile.level_id).eq('is_active', true).limit(1);
+                itemToRecord = fallbackItems?.[0] || null;
+            }
+
+            if (!itemToRecord) throw new Error("Could not verify matrix node for allocation.");
+
+            // 2. Create the pending task record FIRST
+            const { data: insertedTask, error: insertErr } = await supabase.from('user_tasks').insert({
+                user_id: profile.id,
+                task_item_id: itemToRecord.id,
+                status: 'pending',
+                earned_amount: bundle.bonusAmount,
+                cost_amount: bundle.totalAmount,
+                is_bundle: true,
+                created_at: new Date().toISOString()
+            }).select().single();
+            
+            if (insertErr) throw insertErr;
+
+            // 3. ONLY THEN update profile and clear the pending_bundle
+            const { error: profileError } = await supabase.from('profiles').update({
                 wallet_balance: newBalance,
                 freeze_balance: newFrozen,
                 pending_bundle: null
             }).eq('id', profile.id);
 
-            // CRITICAL FIX: Ensure record is created even if local state is lost (refresh)
-            let itemToRecord = pendingTaskItem;
-            if (!itemToRecord && bundle.taskItem) {
-                // Find index from DB items or use generic bundle item
-                const { data: itemsFromDB } = await supabase.from('task_items').select('*').eq('title', bundle.taskItem.title).limit(1);
-                itemToRecord = itemsFromDB?.[0] || null;
+            if (profileError) {
+                // Rollback task record if profile update fails to keep state consistent
+                await supabase.from('user_tasks').delete().eq('id', (insertedTask as any).id);
+                throw profileError;
             }
 
-            if (itemToRecord) {
-                const { error: insertErr } = await supabase.from('user_tasks').insert({
-                    user_id: profile.id,
-                    task_item_id: itemToRecord.id,
-                    status: 'pending',
-                    earned_amount: bundle.bonusAmount,
-                    cost_amount: bundle.totalAmount,
-                    is_bundle: true,
-                    created_at: new Date().toISOString()
-                });
-                
-                if (insertErr) {
-                    console.error("Insert Error:", insertErr);
-                    throw insertErr;
-                }
-                setPendingTaskItem(null);
-            }
-
+            setPendingTaskItem(null);
             setBundleModal(false);
-            setHasRecordPending(true); // Force local UI update
+            setHasRecordPending(true); 
+
             toast.success("Bundle sequence locked. Settle deficit to release funds.");
             router.push('/app/record?filter=pending');
             await refreshProfile();
-        } catch (error) {
-            toast.error("Failed to accept bundle package.");
+        } catch (error: any) {
+            console.error("Bundle Acceptance Error:", error);
+            toast.error(error.message || "Failed to accept bundle package.");
         }
     };
 

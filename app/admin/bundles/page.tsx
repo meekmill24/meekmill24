@@ -20,9 +20,11 @@ interface BundlePackage {
 interface UserProfile {
     id: string;
     username: string;
+    email?: string;
     wallet_balance: number;
     profit: number;
     level_id: number | null;
+    completed_count: number;
     pending_bundle: Record<string, unknown> | null;
 }
 
@@ -552,8 +554,11 @@ export default function AdminBundlesPage() {
                                         return (
                                             <tr key={u.id} className="hover:bg-slate-800/20 transition-colors">
                                                 <td className="px-8 py-5">
-                                                    <span className="font-bold text-white">{u.username}</span>
-                                                    <div className="text-[9px] text-slate-500 uppercase font-black">VIP {u.level_id}</div>
+                                                    <span className="font-bold text-white tracking-widest uppercase italic">{u.username}</span>
+                                                    <div className="flex flex-col gap-0.5 mt-1 border-l border-blue-500/30 pl-2">
+                                                        <div className="text-[9px] text-slate-500 uppercase font-black opacity-60">VIP {u.level_id} PROTOCOL</div>
+                                                        <div className="text-[8px] text-blue-400 font-black uppercase tracking-widest">{u.completed_count % 40}/40 UNITS COMPLETED</div>
+                                                    </div>
                                                 </td>
                                                 <td className="px-8 py-5 text-center">
                                                     <span className="px-2 py-1 bg-amber-500/10 text-amber-500 rounded text-[10px] font-black italic">
