@@ -147,9 +147,21 @@ export default function AdminTasksPage() {
     };
 
     const handleDelete = async (id: number) => {
-        if (!confirm('Delete this task item?')) return;
-        await supabase.from('task_items').delete().eq('id', id);
-        fetchItems();
+        if (!confirm('Permanently purge this unit from the catalog?')) return;
+        try {
+            const res = await fetch('/api/admin/delete-item', {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, type: 'task' })
+            });
+
+            if (!res.ok) throw new Error('Dismantle sequence failed');
+            
+            toast.success('Matrix entry neutralized.');
+            fetchItems();
+        } catch (err: any) {
+            toast.error(err.message);
+        }
     };
 
     const toggleActive = async (id: number, current: boolean) => {

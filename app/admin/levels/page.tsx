@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase'; 
 import type { Level } from '@/lib/types'; 
 import { Plus, Edit2, Trash2, Save, X, Layers, Percent, CreditCard, ClipboardList, Palette } from 'lucide-react'; 
+import { toast } from 'sonner';
 
 export default function AdminLevelsPage() { 
   const [levels, setLevels] = useState<Level[]>([]); 
@@ -56,9 +57,19 @@ export default function AdminLevelsPage() {
   }; 
 
   const handleDelete = async (id: number) => { 
-    if (!confirm('Delete this level?')) return; 
-    await supabase.from('levels').delete().eq('id', id); 
-    fetchLevels(); 
+    if (!confirm('Permanently delete this VIP tier?')) return; 
+    try {
+        const res = await fetch('/api/admin/delete-item', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, type: 'level' })
+        });
+        if (!res.ok) throw new Error('Delete failed');
+        toast.success('VIP tier purged.');
+        fetchLevels(); 
+    } catch (err: any) {
+        toast.error(err.message);
+    }
   }; 
 
   if (loading && levels.length === 0) return <div className="text-center py-20 text-slate-500">Loading VIP tiers...</div>;
