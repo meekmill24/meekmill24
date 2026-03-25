@@ -205,8 +205,15 @@ export default function TasksPage() {
         
         // Use provided bundle to avoid re-fetching, only fallback if really necessary
         if (!bundle) {
-            const { data: freshProfile } = await supabase.from('profiles').select('*').eq('id', profile.id).single();
-            bundle = (freshProfile as any)?.pending_bundle;
+            try {
+                const fetchPromise = supabase.from('profiles').select('pending_bundle').eq('id', profile.id).single();
+                const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Modal Sync Timeout')), 1500));
+                
+                const { data: freshProfile } = await Promise.race([fetchPromise, timeoutPromise]) as any;
+                bundle = freshProfile?.pending_bundle;
+            } catch (err) {
+                console.warn("Modal sync interrupted. Using pre-existing state.");
+            }
         }
 
         if (bundle && Number(bundle.targetIndex) === currentItemIndex) {

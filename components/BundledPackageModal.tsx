@@ -80,7 +80,7 @@ export default function BundledPackageModal({
                                     const weights = items.map((_, i) => {
                                         if (totalItems === 1) return 1;
                                         // Simple deterministic random-ish weight based on title length
-                                        const seed = (items[i].title.length * 7) % 100;
+                                        const seed = ((items[i]?.title || "").length * 7) % 100;
                                         return 40 + (seed % 21); // 40-60 range
                                     });
                                     const totalWeight = weights.reduce((a, b) => a + b, 0);
