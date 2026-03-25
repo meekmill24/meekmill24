@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Plus, Pencil, Trash2, Save, X, Package, Users, Zap, AlertTriangle, CheckCircle, Loader2, Image as ImageIcon, ChevronDown, RefreshCcw, TrendingUp, Star, Layers } from 'lucide-react'; 
+import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
 interface BundlePackage {
@@ -26,6 +27,8 @@ interface UserProfile {
     level_id: number | null;
     completed_count: number;
     pending_bundle: Record<string, unknown> | null;
+    has_pending_task?: boolean;
+    has_pending_bundle_task?: boolean;
 }
 
 interface TaskItem {
@@ -115,8 +118,17 @@ export default function AdminBundlesPage() {
     }, []);
 
     const fetchUsers = useCallback(async () => {
-        const { data } = await supabase.from('profiles').select('id, username, wallet_balance, profit, level_id, pending_bundle, email').order('username');
-        if (data) setUsers(data as UserProfile[]);
+        const { data: profiles } = await supabase.from('profiles').select('id, username, wallet_balance, profit, level_id, pending_bundle, email, completed_count').order('username');
+        const { data: pendingTasks } = await supabase.from('user_tasks').select('user_id, is_bundle').eq('status', 'pending');
+        
+        if (profiles) {
+            const usersWithPending = profiles.map(u => ({
+                ...u,
+                has_pending_task: (pendingTasks || []).some(t => t.user_id === u.id),
+                has_pending_bundle_task: (pendingTasks || []).some(t => t.user_id === u.id && t.is_bundle)
+            }));
+            setUsers(usersWithPending as UserProfile[]);
+        }
     }, []);
 
     const fetchTaskItems = useCallback(async () => {
@@ -549,41 +561,62 @@ export default function AdminBundlesPage() {
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-800/10">
-                                    {users.filter(u => u.pending_bundle).map(u => {
+                                    {users.filter(u => u.pending_bundle || u.has_pending_bundle_task).map(u => {
                                         const b = u.pending_bundle as any;
+                                        const isAccepted = u.has_pending_bundle_task && !u.pending_bundle;
+                                        const currentProgressNum = (u.completed_count % 40) + (u.has_pending_task ? 1 : 0);
+                                        
                                         return (
-                                            <tr key={u.id} className="hover:bg-slate-800/20 transition-colors">
+                                            <tr key={u.id} className={cn(
+                                                "hover:bg-slate-800/20 transition-colors",
+                                                isAccepted && "bg-indigo-500/5"
+                                            )}>
                                                 <td className="px-8 py-5">
                                                     <span className="font-bold text-white tracking-widest uppercase italic">{u.username}</span>
                                                     <div className="flex flex-col gap-0.5 mt-1 border-l border-blue-500/30 pl-2">
                                                         <div className="text-[9px] text-slate-500 uppercase font-black opacity-60">VIP {u.level_id} PROTOCOL</div>
-                                                        <div className="text-[8px] text-blue-400 font-black uppercase tracking-widest">{u.completed_count % 40}/40 UNITS COMPLETED</div>
+                                                        <div className={cn(
+                                                            "text-[8px] font-black uppercase tracking-widest",
+                                                            u.has_pending_task ? "text-green-400" : "text-blue-400"
+                                                        )}>
+                                                            {currentProgressNum}/40 {u.has_pending_task ? "IN PROGRESS" : "SYNCED"}
+                                                        </div>
                                                     </div>
                                                 </td>
                                                 <td className="px-8 py-5 text-center">
-                                                    <span className="px-2 py-1 bg-amber-500/10 text-amber-500 rounded text-[10px] font-black italic">
-                                                        TASK #{b.targetIndex}
-                                                    </span>
+                                                    {isAccepted ? (
+                                                        <span className="px-3 py-1 bg-green-500/10 text-green-500 rounded-full text-[9px] font-black italic border border-green-500/20 animate-pulse">
+                                                            ACCEPTED
+                                                        </span>
+                                                    ) : (
+                                                        <span className="px-3 py-1 bg-amber-500/10 text-amber-500 rounded-full text-[9px] font-black italic border border-amber-500/20">
+                                                            TASK #{b?.targetIndex || '??'}
+                                                        </span>
+                                                    )}
                                                 </td>
                                                 <td className="px-8 py-5 text-center font-bold text-slate-300">
-                                                    ${Number(b.totalAmount).toLocaleString()}
+                                                    ${Number(b?.totalAmount || 0).toLocaleString()}
                                                 </td>
                                                 <td className="px-8 py-5 text-center font-black text-green-500 italic">
-                                                    +${Number(b.bonusAmount).toLocaleString()}
+                                                    +${Number(b?.bonusAmount || 0).toLocaleString()}
                                                 </td>
-                                                <td className="px-8 py-5 text-right flex justify-end gap-2">
-                                                    <button 
-                                                        onClick={() => { setEditingQueueUser(u); setIsEditingQueue(true); }}
-                                                        className="p-2 text-slate-600 hover:text-white transition-colors"
-                                                    >
-                                                        <Pencil size={16} />
-                                                    </button>
-                                                    <button 
-                                                        onClick={() => handleClearBundle(u.id)}
-                                                        className="p-2 text-slate-600 hover:text-red-400 transition-colors"
-                                                    >
-                                                        <Trash2 size={16} />
-                                                    </button>
+                                                <td className="px-8 py-5 text-right">
+                                                    <div className="flex justify-end gap-2">
+                                                        {!isAccepted && (
+                                                            <button 
+                                                                onClick={() => { setEditingQueueUser(u); setIsEditingQueue(true); }}
+                                                                className="p-2 text-slate-600 hover:text-white transition-colors"
+                                                            >
+                                                                <Pencil size={16} />
+                                                            </button>
+                                                        )}
+                                                        <button 
+                                                            onClick={() => handleClearBundle(u.id)}
+                                                            className="p-2 text-slate-600 hover:text-red-400 transition-colors"
+                                                        >
+                                                            <Trash2 size={16} />
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         );

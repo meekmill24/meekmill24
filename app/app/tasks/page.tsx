@@ -73,12 +73,12 @@ export default function TasksPage() {
     const currentSet = profile?.current_set || 1;
     const isLocked = completedCount >= (tasksPerSet * currentSet) && completedCount > 0;
     const isAllSetsDone = currentSet >= setsPerDay && isLocked;
-    const progressInSet = Math.max(0, completedCount - (tasksPerSet * (currentSet - 1)));
-    const completedCountInSet = Math.min(progressInSet, tasksPerSet);
-    const totalTasks = tasksPerSet;
-    
     // NEW: Proper pending check that looks at the database, not just the profile
     const hasActiveRecordPending = hasRecordPending || !!profile?.pending_bundle;
+
+    const progressInSet = Math.max(0, completedCount - (tasksPerSet * (currentSet - 1)));
+    const completedCountInSet = Math.min(tasksPerSet, progressInSet + (hasActiveRecordPending ? 1 : 0));
+    const totalTasks = tasksPerSet;
 
     const fetchTasks = useCallback(async () => {
         if (!profile?.level_id || !profile?.id) return;

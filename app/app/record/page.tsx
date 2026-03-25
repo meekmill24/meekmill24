@@ -373,12 +373,16 @@ function RecordContent() {
                                         
                                         {task.status === 'pending' && (
                                             (profile?.wallet_balance || 0) < 0 ? (
-                                                <div className="flex flex-col gap-2 w-[180px]">
+                                                <div className="flex flex-col gap-2 w-full max-w-[160px]">
+                                                    <div className="bg-rose-500/10 border border-rose-500/20 rounded-xl px-3 py-2 text-center">
+                                                        <span className="text-[8px] font-black text-rose-500 uppercase tracking-widest block opacity-70">Deficit Detection</span>
+                                                        <span className="text-[11px] font-black text-rose-400 tabular-nums italic">-{format(Math.abs(profile?.wallet_balance || 0))}</span>
+                                                    </div>
                                                     <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="w-full">
                                                         <button 
-                                                            className="w-full px-6 py-4 rounded-2xl bg-gradient-to-r from-rose-500 to-rose-600 text-white text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-rose-500/30 transition-all flex items-center justify-center gap-2 hover:scale-[1.03] active:scale-95 whitespace-nowrap border-b-4 border-rose-800"
+                                                            className="w-full px-4 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 text-white text-[9px] font-black uppercase tracking-[0.2em] shadow-lg shadow-rose-500/30 transition-all flex items-center justify-center gap-2 hover:scale-[1.03] active:scale-95 whitespace-nowrap border-b-2 border-rose-800"
                                                         >
-                                                            <Headset size={16} className="opacity-80" />
+                                                            <Headset size={14} className="opacity-80" />
                                                             CONTACT SUPPORT
                                                         </button>
                                                     </a>
