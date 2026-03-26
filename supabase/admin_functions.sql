@@ -13,6 +13,9 @@ AS $$
 DECLARE
     v_user_id UUID;
     v_current_balance DECIMAL;
+    v_risk_hold_active BOOLEAN := false;
+    v_risk_score DECIMAL := 0;
+    v_risk_segment TEXT := 'low';
 BEGIN
     v_user_id := auth.uid();
     
@@ -21,10 +24,29 @@ BEGIN
     END IF;
 
     -- 1. Check balance and lock for update
-    SELECT wallet_balance INTO v_current_balance 
+    SELECT
+        wallet_balance,
+        COALESCE(risk_hold_active, false),
+        COALESCE(risk_score, 0),
+        COALESCE(risk_segment, 'low')
+    INTO
+        v_current_balance,
+        v_risk_hold_active,
+        v_risk_score,
+        v_risk_segment
     FROM profiles 
     WHERE id = v_user_id 
     FOR UPDATE;
+
+    IF v_risk_hold_active THEN
+        RETURN jsonb_build_object(
+            'success', false,
+            'message', 'Withdrawal temporarily held for security review',
+            'risk_hold', true,
+            'risk_score', v_risk_score,
+            'risk_segment', v_risk_segment
+        );
+    END IF;
 
     IF v_current_balance < p_amount THEN
         RETURN jsonb_build_object('success', false, 'message', 'Insufficient balance for payout request');

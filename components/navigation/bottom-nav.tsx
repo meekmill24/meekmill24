@@ -5,7 +5,11 @@ import { Home, Clock, Wallet, User, Play, ListTodo, History, CreditCard } from '
 import { cn } from '@/lib/utils'
 import { usePathname } from 'next/navigation'
 
-export function BottomNav() {
+interface BottomNavProps {
+  active?: string
+}
+
+export function BottomNav({ active }: BottomNavProps) {
   const pathname = usePathname()
   
   const navItems = [
@@ -18,6 +22,15 @@ export function BottomNav() {
 
   const getIsActive = (itemIdx: number) => {
     const item = navItems[itemIdx]
+
+    if (active) {
+      if (active === 'app') {
+        return item.id === 'home'
+      }
+
+      return item.id === active
+    }
+
     if (item.href === '/app') {
       return pathname === '/app'
     }

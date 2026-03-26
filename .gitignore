@@ -16,5 +16,11 @@ node_modules/
 .next/
 .DS_Store
 *.zip
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
 simple-money-unzipped/
 simple-money-temp-*/
+tmp/

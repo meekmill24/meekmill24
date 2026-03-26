@@ -35,18 +35,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const fetchProfile = useCallback(async (userId: string) => {
         try {
             console.log("Fetching profile for ID:", userId);
-            const { data, error } = await supabase
-                .from('profiles')
-                .select('*, level:levels(*)')
-                .eq('id', userId)
-                .single();
+            const response = await fetch('/api/profile', {
+                credentials: 'include',
+                cache: 'no-store',
+            });
+            const payload = await response.json();
 
-            if (error) {
-                console.error(`DB Error (${error.code}):`, error.message, "| Details:", error.details);
+            if (!response.ok) {
+                console.error('Profile API error:', payload);
                 setProfile(null);
             } else {
-                console.log("Profile data fetched successfully:", data);
-                setProfile(data);
+                console.log("Profile data fetched successfully:", payload.profile);
+                setProfile(payload.profile);
             }
         } catch (err) {
             console.error('Unexpected error fetching profile:', err);

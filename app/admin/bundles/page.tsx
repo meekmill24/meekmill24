@@ -22,7 +22,7 @@ interface BundlePackage {
 interface UserProfile {
     id: string;
     username: string;
-    email?: string;
+    email?: string | null;
     wallet_balance: number;
     profit: number;
     level_id: number | null;
@@ -821,4 +821,3 @@ export default function AdminBundlesPage() {
         </div>
     );
 }
-
