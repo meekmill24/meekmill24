@@ -13,6 +13,7 @@ export const supabase: SupabaseClient = globalForSupabase.supabase || (() => {
         persistSession: true,
         autoRefreshToken: true,
         detectSessionInUrl: true,
+        storageKey: 'sb-auth-token-money',
         // bypass the often-buggy Navigator LockManager
         lock: (name: string, acquireTimeout: number, fn: () => Promise<any>) => fn(),
     };
