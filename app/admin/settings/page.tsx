@@ -230,11 +230,11 @@ export default function AdminSettingsPage() {
             </div>
             <div className="space-y-6">
               {[
-                { key: 'min_withdrawal', label: 'Minimum Withdrawal Amount ($)', type: 'number' },
-                { key: 'min_deposit', label: 'Minimum Deposit Amount ($)', type: 'number' },
-                { key: 'referral_commission_l1', label: 'L1 Referral Commission (%)', type: 'number' },
-                { key: 'referral_commission_l2', label: 'L2 Referral Commission (%)', type: 'number' },
-                { key: 'referral_commission_l3', label: 'L3 Referral Commission (%)', type: 'number' },
+                { key: 'min_withdrawal', label: 'Minimum Withdrawal Amount ($)', type: 'number', placeholder: '30' },
+                { key: 'min_deposit', label: 'Minimum Deposit Amount ($)', type: 'number', placeholder: '10' },
+                { key: 'referral_commission_l1', label: 'L1 Referral Commission (%)', type: 'number', placeholder: '16' },
+                { key: 'referral_commission_l2', label: 'L2 Referral Commission (%)', type: 'number', placeholder: '8' },
+                { key: 'referral_commission_l3', label: 'L3 Referral Commission (%)', type: 'number', placeholder: '4' },
                 { key: 'wallet_trc20', label: 'TRC20 Wallet Address', placeholder: 'T...' },
                 { key: 'wallet_erc20', label: 'ETH / ERC20 Wallet Address', placeholder: '0x...' },
                 { key: 'wallet_bep20', label: 'USDC Wallet Address', placeholder: '0x...' },
@@ -242,7 +242,42 @@ export default function AdminSettingsPage() {
                 { key: 'currency_symbol', label: 'Display Currency', placeholder: '$' },
               ].map((cfg) => {
                 const item = settings.find(s => s.key === cfg.key);
-                if (!item) return null;
+                if (!item) {
+                    return (
+                        <div key={cfg.key} className="p-6 bg-rose-500/10 border border-rose-500/20 rounded-3xl flex items-center justify-between group">
+                            <div className="flex flex-col">
+                                <span className="text-[10px] font-black text-rose-500 uppercase tracking-[0.2em]">{cfg.label} MISSING</span>
+                                <span className="text-[10px] text-rose-500/60 font-medium italic mt-0.5 tracking-tight italic">Node Connection Not Established</span>
+                            </div>
+                            <button 
+                                onClick={async () => {
+                                    setProvisioningKeys(prev => ({ ...prev, [cfg.key]: true }));
+                                    try {
+                                        const res = await fetch('/api/admin/site-settings', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ key: cfg.key, value: cfg.placeholder })
+                                        });
+
+                                        const data = await res.json();
+                                        if (!res.ok) throw new Error(data.error || 'Identity Rejected');
+
+                                        toast.success(`${cfg.label} PROVISIONED`);
+                                        await fetchSettings();
+                                    } catch (err: any) {
+                                        toast.error(err.message || 'Provisioning Sequence Failed');
+                                    } finally {
+                                        setProvisioningKeys(prev => ({ ...prev, [cfg.key]: false }));
+                                    }
+                                }}
+                                disabled={provisioningKeys[cfg.key]}
+                                className="px-6 py-2.5 bg-rose-500 text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-lg shadow-rose-500/20 disabled:opacity-50"
+                            >
+                                {provisioningKeys[cfg.key] ? 'LINKING...' : 'PROVISION'}
+                            </button>
+                        </div>
+                    );
+                }
                 return (
                   <div key={cfg.key} className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 pl-1">{cfg.label}</label>
