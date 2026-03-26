@@ -1,7 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
 
+import { verifyAdmin } from '../utils';
+
 export async function POST(req: NextRequest) {
+    const { error: adminError } = await verifyAdmin(req);
+    if (adminError) return adminError;
+
     try {
         const { userId, newPassword } = await req.json();
 

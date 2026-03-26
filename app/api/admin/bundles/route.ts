@@ -9,8 +9,13 @@ const getAdminClient = () => {
     return createClient(url, key);
 };
 
+import { verifyAdmin } from '../utils';
+
 // GET all bundle packages
-export async function GET() {
+export async function GET(req: NextRequest) {
+    const { error: adminError } = await verifyAdmin(req);
+    if (adminError) return adminError;
+
     try {
         const supabaseAdmin = getAdminClient();
         const { data, error } = await supabaseAdmin
@@ -27,6 +32,9 @@ export async function GET() {
 
 // POST: Add new bundle package
 export async function POST(req: NextRequest) {
+    const { error: adminError } = await verifyAdmin(req);
+    if (adminError) return adminError;
+
     try {
         const bundle = await req.json();
         const supabaseAdmin = getAdminClient();
@@ -46,6 +54,9 @@ export async function POST(req: NextRequest) {
 
 // PATCH: Update existing bundle package
 export async function PATCH(req: NextRequest) {
+    const { error: adminError } = await verifyAdmin(req);
+    if (adminError) return adminError;
+
     try {
         const { id, ...updates } = await req.json();
         if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 });
@@ -67,6 +78,9 @@ export async function PATCH(req: NextRequest) {
 
 // DELETE: Remove bundle package
 export async function DELETE(req: NextRequest) {
+    const { error: adminError } = await verifyAdmin(req);
+    if (adminError) return adminError;
+
     try {
         const { id } = await req.json();
         if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 });

@@ -1,4 +1,13 @@
-# v0 sandbox internal files
+# Internal Blueprints & Private Intelligence
+.blueprints/
+supabase/
+*.sql
+*.patch
+*.ts.temp
+internal-docs/
+scripts/
+
+# Sandbox Internal Files
 __v0_runtime_loader.js
 __v0_devtools.tsx
 __v0_jsx-dev-runtime.ts
