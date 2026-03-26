@@ -306,9 +306,6 @@ export default function AdminSettingsPage() {
               {[
                 { key: 'whatsapp_link', label: 'Priority WhatsApp Link', placeholder: 'https://wa.me/...' },
                 { key: 'support_email', label: 'Support Email Address', placeholder: 'support@...' },
-                { key: 'referral_commission_l1', label: 'Team Commission L1', placeholder: '16' },
-                { key: 'referral_commission_l2', label: 'Team Commission L2', placeholder: '8' },
-                { key: 'referral_commission_l3', label: 'Team Commission L3', placeholder: '4' },
                 { key: 'platform_name', label: 'Company Name (Certificate)', placeholder: 'Captiv8 Operations Inc.' },
                 { key: 'platform_address', label: 'Company Address (Certificate)', placeholder: '250 Schoolhouse Street, Coquitlam, BC, Canada' },
               ].map((cfg) => {
