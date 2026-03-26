@@ -12,12 +12,15 @@ import {
   Zap,
   TrendingUp,
   Filter,
-  AlertCircle
+  AlertCircle,
+  ChevronRight,
+  History
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/context/AuthContext';
+import Link from 'next/link';
 
 export type Notification = {
   id: string;
@@ -237,18 +240,20 @@ export default function NotificationCenter() {
               )}
             </div>
 
-            {/* Footer Actions */}
-            {notifications.some(n => !n.is_read) && (
-              <div className="p-4 bg-white/[0.02] border-t border-white/5">
-                <button 
-                  onClick={markAllAsRead}
-                  className="w-full py-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[10px] font-black uppercase tracking-widest hover:bg-cyan-500/20 transition-all flex items-center justify-center gap-2"
+            {/* View All Utility */}
+            <div className="p-4 bg-white/[0.04] border-t border-white/5">
+                <Link 
+                  href="/app/notifications" 
+                  onClick={() => setIsOpen(false)}
+                  className="group flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/10 transition-all font-black text-[10px] uppercase tracking-widest text-zinc-400 hover:text-white"
                 >
-                  <Check size={14} />
-                  Mark All as Read
-                </button>
-              </div>
-            )}
+                  <div className="flex items-center gap-3">
+                    <History size={16} className="text-cyan-500" />
+                    <span>View Audit Trail</span>
+                  </div>
+                  <ChevronRight size={16} className="transition-transform group-hover:translate-x-1" />
+                </Link>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
