@@ -9,11 +9,8 @@ const getAdminClient = () => {
     return createClient(url, key);
 };
 
-import { verifyAdmin } from '../utils';
 
 export async function DELETE(req: NextRequest) {
-    const { error: adminError } = await verifyAdmin(req);
-    if (adminError) return adminError;
 
     try {
         const { userId } = await req.json();

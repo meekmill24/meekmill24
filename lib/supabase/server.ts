@@ -1,32 +1,41 @@
-import { createServerClient } from '@supabase/ssr'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
 
 export async function createClient() {
   const cookieStore = await cookies()
-
-  return createServerClient(
+  
+  // Get the access token from cookies if available
+  // It matches the storageKey: 'sb-auth-token-money' in lib/supabase.ts
+  const tokenData = cookieStore.get('sb-auth-token-money')?.value
+  let accessToken = null;
+  
+  if (tokenData) {
+    try {
+        const parsed = JSON.parse(tokenData);
+        accessToken = parsed.access_token;
+    } catch (e) {
+        accessToken = tokenData;
+    }
+  }
+  
+  const supabase = createSupabaseClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll()
-        },
-        setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            )
-          } catch {
-            // The `setAll` method was called from a Server Component.
-            // This can be ignored if you have middleware refreshing
-            // user sessions.
-          }
-        },
-      },
       auth: {
-        storageKey: 'sb-auth-token-money',
-      }
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+      },
+      global: accessToken
+        ? {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        : undefined,
     }
   )
+
+  return supabase
 }

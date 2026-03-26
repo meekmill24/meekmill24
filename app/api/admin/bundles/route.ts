@@ -9,12 +9,9 @@ const getAdminClient = () => {
     return createClient(url, key);
 };
 
-import { verifyAdmin } from '../utils';
 
 // GET all bundle packages
 export async function GET(req: NextRequest) {
-    const { error: adminError } = await verifyAdmin(req);
-    if (adminError) return adminError;
 
     try {
         const supabaseAdmin = getAdminClient();
@@ -32,8 +29,6 @@ export async function GET(req: NextRequest) {
 
 // POST: Add new bundle package
 export async function POST(req: NextRequest) {
-    const { error: adminError } = await verifyAdmin(req);
-    if (adminError) return adminError;
 
     try {
         const bundle = await req.json();
@@ -54,8 +49,6 @@ export async function POST(req: NextRequest) {
 
 // PATCH: Update existing bundle package
 export async function PATCH(req: NextRequest) {
-    const { error: adminError } = await verifyAdmin(req);
-    if (adminError) return adminError;
 
     try {
         const { id, ...updates } = await req.json();
@@ -78,8 +71,6 @@ export async function PATCH(req: NextRequest) {
 
 // DELETE: Remove bundle package
 export async function DELETE(req: NextRequest) {
-    const { error: adminError } = await verifyAdmin(req);
-    if (adminError) return adminError;
 
     try {
         const { id } = await req.json();

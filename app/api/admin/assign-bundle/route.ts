@@ -9,11 +9,8 @@ const getAdminClient = () => {
     return createClient(url, key);
 };
 
-import { verifyAdmin } from '../utils';
 
 export async function POST(req: NextRequest) {
-    const { error: adminError } = await verifyAdmin(req);
-    if (adminError) return adminError;
 
     try {
         const { userId, bundle } = await req.json();
@@ -45,8 +42,6 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-    const { error: adminError } = await verifyAdmin(req);
-    if (adminError) return adminError;
 
     try {
         const { userId, deductAmount, freezeAmount, clearTasks } = await req.json();
