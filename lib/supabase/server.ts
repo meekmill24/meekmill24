@@ -24,6 +24,9 @@ export async function createClient() {
           }
         },
       },
+      auth: {
+        storageKey: 'sb-auth-token-money',
+      }
     }
   )
 }
