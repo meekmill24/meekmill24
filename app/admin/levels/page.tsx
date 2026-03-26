@@ -72,7 +72,6 @@ export default function AdminLevelsPage() {
     }
   }; 
 
-  if (loading && levels.length === 0) return <div className="text-center py-20 text-slate-500">Loading VIP tiers...</div>;
 
   return ( 
     <div className="space-y-8 animate-in fade-in duration-500"> 

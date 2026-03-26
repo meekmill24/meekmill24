@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabase';
 import Link from 'next/link'; 
 import { usePathname } from 'next/navigation'; 
 import { 
-  LayoutDashboard, Users, Layers, Grid3X3, Share2, Receipt, LogOut, DollarSign, Menu, X, ArrowDownToLine, ArrowUpFromLine, Package, Bell, Settings, AlertCircle, Wallet as WalletIcon, ArrowUpRight, Wallet
+  LayoutDashboard, Users, Layers, Grid3X3, Share2, Receipt, LogOut, DollarSign, Menu, X, ArrowDownToLine, ArrowUpFromLine, Package, Bell, Settings, AlertCircle, Wallet as WalletIcon, ArrowUpRight, Wallet, ShieldCheck
 } from 'lucide-react'; 
 import AnimatePage from '@/components/AnimatePage'; 
 import NotificationCenter from '@/components/NotificationCenter';
@@ -69,11 +69,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return <>{children}</>;
   }
 
-  if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0F172A]">
-      <div className="w-12 h-12 border-4 border-purple-500/20 border-t-purple-500 rounded-full animate-spin" />
-    </div>
-  );
+  // Non-blocking loading state: Show the shell if we have a user, otherwise wait for auth
+  if (loading && !user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0F172A]">
+        <div className="flex flex-col items-center gap-4 animate-pulse">
+           <div className="w-16 h-16 rounded-3xl bg-purple-600/20 flex items-center justify-center text-purple-500">
+              <ShieldCheck size={32} />
+           </div>
+           <span className="text-[10px] font-black uppercase tracking-[0.4em] text-purple-500/60">Establishing Secure Node...</span>
+        </div>
+      </div>
+    );
+  }
   
   if (!user || !profile || profile.role !== 'admin') return null; 
 

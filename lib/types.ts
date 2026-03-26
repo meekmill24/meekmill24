@@ -92,5 +92,6 @@ export interface Transaction {
     amount: number;
     description: string;
     status?: 'pending' | 'approved' | 'rejected';
+    proof_url?: string | null;
     created_at: string;
 }

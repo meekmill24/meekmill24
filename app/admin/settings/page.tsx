@@ -47,12 +47,6 @@ export default function AdminSettingsPage() {
     } 
   }; 
 
-  if (loading && settings.length === 0) return (
-    <div className="flex flex-col items-center justify-center min-h-[400px] text-slate-500">
-      <Loader2 className="animate-spin mb-4" size={40} />
-      <p className="font-bold tracking-widest uppercase text-xs">Loading core preferences...</p>
-    </div>
-  );
 
   return ( 
     <div className="space-y-8 animate-in fade-in duration-500 pb-10"> 

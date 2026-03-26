@@ -35,7 +35,6 @@ export default function AdminTransactionsPage() {
      t.profile?.username?.toLowerCase().includes(search.toLowerCase()))
   );
 
-  if (loading && transactions.length === 0) return <div className="text-center py-20 text-slate-500 italic">Accessing ledger records...</div>;
 
   return ( 
     <div className="space-y-8 animate-in fade-in duration-500"> 
