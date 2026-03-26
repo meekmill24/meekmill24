@@ -56,6 +56,7 @@ export default function DepositPage() {
 
     const getWalletKey = (n: string) => {
         if (n === 'ETH') return 'wallet_erc20';
+        if (n === 'USDC') return 'wallet_bep20';
         return `wallet_${n.toLowerCase()}`;
     };
 
