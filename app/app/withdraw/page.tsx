@@ -36,7 +36,7 @@ export default function WithdrawPage() {
         }
     }, [profile]);
 
-    const [network, setNetwork] = useState<'TRC20' | 'BEP20' | 'ETH' | 'BTC'>('TRC20');
+    const [network, setNetwork] = useState<'TRC20' | 'USDC' | 'ETH' | 'BTC'>('TRC20');
     const [loading, setLoading] = useState(false);
 
     const minWithdrawal = 30;
@@ -147,7 +147,7 @@ export default function WithdrawPage() {
                         <div className="space-y-4">
                             <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] block ml-2">Settlement Network</label>
                             <div className="grid grid-cols-2 gap-3">
-                                {['TRC20', 'BEP20', 'ETH', 'BTC'].map((net) => (
+                                {['TRC20', 'USDC', 'ETH', 'BTC'].map((net) => (
                                     <button
                                         key={net}
                                         type="button"

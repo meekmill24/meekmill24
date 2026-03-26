@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 export default function BindWalletPage() {
     const { profile, refreshProfile } = useAuth();
     const router = useRouter();
-    const [network, setNetwork] = useState<'USDT-TRC20' | 'USDT-BEP20' | 'ETH' | 'BTC'>('USDT-TRC20');
+    const [network, setNetwork] = useState<'USDT-TRC20' | 'USDC' | 'ETH' | 'BTC'>('USDT-TRC20');
     const [walletAddress, setWalletAddress] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
@@ -38,7 +38,7 @@ export default function BindWalletPage() {
                 setMessage({ type: 'error', text: 'Invalid TRC20 address format' });
                 return;
             }
-        } else if (network === 'USDT-BEP20' || network === 'ETH') {
+        } else if (network === 'USDC' || network === 'ETH') {
             if (!walletAddress.startsWith('0x') || walletAddress.length !== 42) {
                 setMessage({ type: 'error', text: `Invalid ${network} address format` });
                 return;
@@ -95,8 +95,8 @@ export default function BindWalletPage() {
                     <div className="flex border-b border-white/5 overflow-x-auto no-scrollbar bg-white/[0.02]">
                         {[
                             { id: 'USDT-TRC20', label: 'TRC20', color: 'bg-red-500', initial: 'T' },
-                            { id: 'USDT-BEP20', label: 'BEP20', color: 'bg-yellow-500', initial: 'B' },
-                            { id: 'ETH', label: 'ERC20', color: 'bg-blue-500', initial: 'E' },
+                            { id: 'USDC', label: 'USDC', color: 'bg-blue-500', initial: 'U' },
+                            { id: 'ETH', label: 'ERC20', color: 'bg-purple-500', initial: 'E' },
                             { id: 'BTC', label: 'BTC', color: 'bg-orange-500', initial: '₿' }
                         ].map((net) => (
                             <button 

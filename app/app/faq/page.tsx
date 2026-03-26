@@ -12,7 +12,7 @@ const FAQS = [
     },
     {
         q: "How to bind my corporate wallet?",
-        a: "Navigate to Financial Hub -> Payment Node. Select your network (USDT-TRC20, BEP20, etc.) and paste your destination address. This is a one-time secure binding."
+        a: "Navigate to Financial Hub -> Payment Node. Select your network (USDT-TRC20, USDC, etc.) and paste your destination address. This is a one-time secure binding."
     },
     {
         q: "What are 'Lucky Bundles'?",

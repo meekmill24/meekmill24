@@ -31,7 +31,7 @@ export default function DepositPage() {
     const { profile } = useProfile();
     const [amount, setAmount] = useState('');
     const [customAmount, setCustomAmount] = useState('');
-    const [network, setNetwork] = useState<'TRC20' | 'BEP20' | 'ETH' | 'BTC'>('TRC20');
+    const [network, setNetwork] = useState<'TRC20' | 'USDC' | 'ETH' | 'BTC'>('TRC20');
     const [proofFile, setProofFile] = useState<File | null>(null);
     const [proofPreview, setProofPreview] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
@@ -164,7 +164,7 @@ export default function DepositPage() {
                             1. Select Network
                         </h3>
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                            {['TRC20', 'BEP20', 'ETH', 'BTC'].map((net) => (
+                            {['TRC20', 'USDC', 'ETH', 'BTC'].map((net) => (
                                 <button
                                     key={net}
                                     onClick={() => setNetwork(net as any)}
