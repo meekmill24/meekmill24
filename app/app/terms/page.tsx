@@ -35,7 +35,7 @@ export default function TermsPage() {
                     <section className="bg-white/5 p-6 rounded-3xl border border-white/5 space-y-4">
                         <div className="flex items-center gap-3 text-white uppercase font-black text-xs tracking-widest">
                             <ShieldCheck size={16} className="text-cyan-400" />
-                            Welcome to NodeFlow
+                            Welcome to Captiv8
                         </div>
                         <p>
                             To protect the security of personal information between the website and merchants, you must carefully read the "Terms and Conditions" of the platform. It is very important to fully understand the Terms and Conditions, especially the Terms of Service and any related restrictions.
@@ -106,7 +106,7 @@ export default function TermsPage() {
                 </div>
 
                 <div className="pt-10 border-t border-white/5 text-center">
-                    <p className="text-[10px] text-zinc-600 font-black uppercase tracking-[0.4em]">© 2024 NodeFlow Institutional Compliance Hub</p>
+                    <p className="text-[10px] text-zinc-600 font-black uppercase tracking-[0.4em]">© 2024 Captiv8 Institutional Compliance Hub</p>
                 </div>
             </div>
         </div>

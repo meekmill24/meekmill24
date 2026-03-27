@@ -41,7 +41,7 @@ export default function AboutPage() {
                 <h3 className='text-lg font-black italic tracking-tight uppercase'>Our Directive</h3>
             </div>
             <p className='text-zinc-500 text-sm font-bold uppercase tracking-widest leading-relaxed'>
-                NodeFlow is a global leader in AI-driven task synchronization and institutional data processing. We specialize in high-frequency node verification, bridging the gap between decentralized algorithms and human-verified datasets.
+                Captiv8 is a global leader in AI-driven task synchronization and institutional data processing. We specialize in high-frequency node verification, bridging the gap between decentralized algorithms and human-verified datasets.
             </p>
             <p className='text-zinc-500 text-sm font-bold uppercase tracking-widest leading-relaxed'>
                 Our mission is to provide an elite, encrypted infrastructure for agents seeking to contribute to the global digital economy through seamless, secure, and incentivized node operations.

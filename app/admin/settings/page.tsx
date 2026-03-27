@@ -175,7 +175,7 @@ export default function AdminSettingsPage() {
             </div>
             <div className="space-y-6">
               {[
-                { key: 'site_name', label: 'Platform Headline', placeholder: 'NodeFlow' },
+                { key: 'site_name', label: 'Platform Headline', placeholder: 'Captiv8' },
                 { key: 'primary_color', label: 'Primary Brand Color', type: 'color' },
                 { key: 'support_link', label: 'Support Telegram/URL', placeholder: 'https://t.me/...' },
               ].map((cfg) => {
@@ -300,7 +300,7 @@ export default function AdminSettingsPage() {
               {[
                 { key: 'whatsapp_link', label: 'Priority WhatsApp Link', placeholder: 'https://wa.me/...' },
                 { key: 'support_email', label: 'Support Email Address', placeholder: 'support@...' },
-                { key: 'platform_name', label: 'Company Name (Certificate)', placeholder: 'NodeFlow Operations Inc.' },
+                { key: 'platform_name', label: 'Company Name (Certificate)', placeholder: 'Captiv8 Operations Inc.' },
                 { key: 'platform_address', label: 'Company Address (Certificate)', placeholder: '250 Schoolhouse Street, Coquitlam, BC, Canada' },
               ].map((cfg) => {
                 const item = settings.find(s => s.key === cfg.key);

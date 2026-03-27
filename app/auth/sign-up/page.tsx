@@ -15,7 +15,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import NextImage from 'next/image'
-import { ArrowRight, Sparkles, User, Mail, Lock, UserCheck, ShieldCheck, Share2, Phone, AtSign, Zap } from 'lucide-react'
+import { ArrowRight, Sparkles, User, Mail, Lock, UserCheck, ShieldCheck, Share2, Phone, AtSign } from 'lucide-react'
 
 export default function Page() {
   const [step, setStep] = useState(1)
@@ -125,11 +125,11 @@ export default function Page() {
         <div className="flex flex-col gap-8">
           {/* Logo Section */}
           <div className="flex flex-col items-center gap-2">
-            <div className="w-16 h-16 bg-gradient-to-tr from-cyan-600 via-emerald-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/20 mb-2 overflow-hidden">
-               <NextImage src="/logo.png" alt="NodeFlow Logo" width={64} height={64} className="object-cover" />
+            <div className="w-16 h-16 premium-gradient rounded-2xl flex items-center justify-center shadow-2xl shadow-blue-500/20 mb-2 overflow-hidden">
+               <NextImage src="/logo.png" alt="Logo" width={64} height={64} className="object-cover" />
             </div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-[#003d5c]">NodeFlow</h1>
-            <p className="text-muted-foreground text-sm font-bold uppercase tracking-widest opacity-60">Elevating your institutional impact</p>
+            <h1 className="text-3xl font-extrabold tracking-tight text-[#003d5c]">Captiv8</h1>
+            <p className="text-muted-foreground text-sm font-medium">Elevating your strategic impact</p>
           </div>
 
           <Card className="glass border-white/40 shadow-2xl rounded-3xl overflow-hidden">
@@ -342,7 +342,7 @@ export default function Page() {
           </Card>
           
           <div className="text-center pt-4">
-             <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]">© 2026 NodeFlow Network • v2.4.0</p>
+             <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]">© 2024 Captiv8  Platform</p>
           </div>
         </div>
       </div>

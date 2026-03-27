@@ -76,7 +76,7 @@ export default function HomePage() {
                     {
                         user_id: profile.id,
                         title: 'System Activation Successful',
-                        message: 'Welcome to NodeFlow. Your institutional node access has been verified. You received a startup allocation bonus.',
+                        message: 'Welcome to Captiv8. Your institutional node access has been verified. You received a startup allocation bonus.',
                         type: 'success'
                     },
                     {
@@ -122,12 +122,8 @@ export default function HomePage() {
         {/* Header Hub */}
         <div className='flex items-center justify-between px-6 py-4 bg-black/40 backdrop-blur-xl sticky top-0 z-50 border-b border-white/5'>
             <div className='flex items-center gap-3'>
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-600 via-emerald-500 to-indigo-600 p-[1px]">
-                    <div className="w-full h-full bg-black rounded-[9px] flex items-center justify-center overflow-hidden">
-                        <Image src="/logo.png" alt="NodeFlow Logo" width={32} height={32} className="object-cover" />
-                    </div>
-                </div>
-                <h1 className='text-3xl font-black italic tracking-tighter bg-gradient-to-r from-white to-white/40 bg-clip-text text-transparent underline decoration-emerald-500/30 decoration-4 underline-offset-8'>NodeFlow</h1>
+                <Image src="/logo.png" alt="Logo" width={40} height={40} className="rounded-2xl shadow-2xl border border-white/10" />
+                <h1 className='text-3xl font-black italic tracking-tighter bg-gradient-to-r from-white to-white/40 bg-clip-text text-transparent underline decoration-cyan-500/30 decoration-4 underline-offset-8'>Captiv8</h1>
             </div>
             <div className='flex items-center gap-4'>
                 <Link href="/app/profile" className='w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 shadow-inner hover:bg-white/10 transition-all'>

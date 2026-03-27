@@ -126,7 +126,7 @@ export default function AdminLogin() {
             </form>
 
             <div className="mt-10 pt-8 border-t border-white/5 text-center">
-                <p className="text-[9px] font-black text-slate-700 uppercase tracking-[0.4em]">NodeFlow Operating System v4.0</p>
+                <p className="text-[9px] font-black text-slate-700 uppercase tracking-[0.4em]">Captiv8 Operating System v4.0</p>
             </div>
         </div>
       </div>

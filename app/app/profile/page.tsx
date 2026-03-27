@@ -306,7 +306,7 @@ export default function ProfilePage() {
 
                 {[
                     { icon: Award, label: 'Agent Certification', sub: 'Authorized proof of performance', href: '/app/profile/certificate' },
-                    { icon: Info, label: 'Mission Protocol', sub: 'About NodeFlow and our directive', href: '/app/profile/about' },
+                    { icon: Info, label: 'Mission Protocol', sub: 'About Captiv8 and our directive', href: '/app/profile/about' },
                     { icon: FileText, label: 'User Agreement', sub: 'Regulatory protocol and terms', href: '/app/terms' },
                 ].map((item, idx) => (
                     <Link key={idx} href={item.href} className='group block'>
@@ -368,7 +368,7 @@ export default function ProfilePage() {
             </Button>
 
             <div className='text-center pt-12 opacity-15'>
-                <p className='text-[10px] font-black tracking-[0.5em] uppercase mb-1'>NodeFlow Protocol v2.4</p>
+                <p className='text-[10px] font-black tracking-[0.5em] uppercase mb-1'>Captiv8 Protocol v4.0</p>
                 <p className='text-[8px] font-bold uppercase tracking-[0.2em]'>Neural Encryption 512-Bit</p>
             </div>
         </div>
