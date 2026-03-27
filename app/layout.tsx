@@ -14,8 +14,8 @@ import { LanguageProvider } from '@/context/LanguageContext'
 import { Toaster } from 'sonner'
 
 export const metadata: Metadata = {
-  title: 'Captiv8 | Strategic Node Optimization & Yield Protocol',
-  description: 'Institutional-grade task optimization and strategic liquidity verification.',
+  title: 'NodeFlow | Institutional Liquidity Hub & Yield Protocol',
+  description: 'Decentralized flow node optimization and strategic institutional liquidity verification.',
   generator: 'v0.app',
 }
 

@@ -98,7 +98,7 @@ export default function CustomerServicePage() {
                         <div className="space-y-4">
                             <h2 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tighter leading-none italic">Node Assistance <br/> Required?</h2>
                             <p className="text-slate-400 text-xs md:text-sm uppercase font-bold tracking-[0.2em] opacity-80 max-w-lg leading-relaxed">
-                                {settings.site_name || 'Captiv8'} technicians are monitoring neural optimization processes in real-time. Select a dedicated priority node below.
+                                {settings.site_name || 'NodeFlow'} technicians are monitoring neural optimization processes in real-time. Select a dedicated priority node below.
                             </p>
                         </div>
                     </div>

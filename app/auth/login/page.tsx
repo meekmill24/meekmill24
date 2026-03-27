@@ -15,7 +15,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import NextImage from 'next/image'
-import { ArrowRight, ShieldCheck, Mail, Lock, Sparkles, Loader2 } from 'lucide-react'
+import { ArrowRight, ShieldCheck, Mail, Lock, Sparkles, Loader2, Zap } from 'lucide-react'
 
 export default function Page() {
   const [email, setEmail] = useState('');
@@ -43,7 +43,7 @@ export default function Page() {
           .single() as { data: { email: string } | null, error: any };
 
         if (profileError || !profile || !profile.email) {
-          loginEmail = `${email}@captiv8.io`;
+          loginEmail = `${email}@nodeflow.io`;
         } else {
           loginEmail = profile.email;
         }
@@ -90,10 +90,10 @@ export default function Page() {
           {/* Logo Section */}
           <div className="flex flex-col items-center gap-2">
             <div className="w-20 h-20 rounded-3xl border-2 border-cyan-500/30 bg-[#1E293B] flex items-center justify-center shadow-2xl shadow-cyan-500/20 mb-4 overflow-hidden">
-               <NextImage src="/logo.png" alt="Logo" width={80} height={80} className="object-cover" />
+               <NextImage src="/logo.png" alt="NodeFlow Logo" width={80} height={80} className="object-cover" />
             </div>
-            <h1 className="text-4xl font-black tracking-tighter text-white uppercase italic">Captiv8</h1>
-            <p className="text-cyan-400/60 text-[10px] font-black uppercase tracking-[0.4em]">Strategic Verification Protocol</p>
+            <h1 className="text-4xl font-black tracking-tighter text-white uppercase italic">NodeFlow</h1>
+            <p className="text-cyan-400/60 text-[10px] font-black uppercase tracking-[0.4em]">Institutional Flow Protocol</p>
           </div>
 
           <Card className="bg-[#1E293B] border-white/5 shadow-2xl rounded-[40px] overflow-hidden">
@@ -187,7 +187,7 @@ export default function Page() {
           </Card>
           
           <div className="text-center">
-             <p className="text-[8px] text-zinc-600 font-black uppercase tracking-[0.4em]">© 2024 Captiv8 Protocol • v1.0.4</p>
+             <p className="text-[8px] text-zinc-600 font-black uppercase tracking-[0.4em]">© 2026 NodeFlow Protocol • v2.4.0</p>
           </div>
         </div>
       </div>

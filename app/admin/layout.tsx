@@ -113,7 +113,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="h-full flex flex-col p-6">
           <div className="mb-10 px-2">
             <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent">
-              Captiv8 Admin
+              NodeFlow Admin
             </h1>
           </div>
 
@@ -163,7 +163,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Main Content */}
       <main className="flex-1 flex flex-col lg:ml-64 relative z-10 min-h-screen"> 
         <header className="p-6 md:p-8 flex items-center justify-between lg:justify-end border-b border-slate-800/50 backdrop-blur-md sticky top-0 z-30">
-          <div className="lg:hidden text-xl font-bold text-purple-400">Captiv8</div>
+          <div className="lg:hidden text-xl font-bold text-purple-400">NodeFlow</div>
           <div className="flex items-center gap-4">
             {totalPending > 0 && (
               <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-red-500/10 border border-red-500/20 rounded-full text-red-500 text-xs font-semibold animate-pulse">

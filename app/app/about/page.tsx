@@ -33,7 +33,7 @@ export default function AboutPage() {
                         <div className="space-y-4">
                             <h2 className="text-2xl font-black uppercase tracking-tight italic">Our Vision</h2>
                             <p className="text-sm font-bold text-zinc-400 leading-relaxed uppercase tracking-wider">
-                                Captiv8 is a global leader in liquidity settlement protocol automation. 
+                                NodeFlow is a global leader in liquidity settlement protocol automation. 
                                 We empower individuals and institutions to leverage optimized market flows through our decentralized verification network.
                             </p>
                         </div>

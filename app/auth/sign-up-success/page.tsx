@@ -17,7 +17,7 @@ export default function SignUpSuccess() {
             <div className="w-12 h-12 premium-gradient rounded-xl flex items-center justify-center shadow-lg overflow-hidden">
                <NextImage src="/logo.png" alt="Logo" width={48} height={48} className="object-cover" />
             </div>
-            <h2 className="text-xl font-bold text-[#003d5c]">Captiv8 </h2>
+            <h2 className="text-xl font-bold text-[#003d5c]">NodeFlow </h2>
         </div>
 
         <div className='mb-8 flex h-24 w-24 items-center justify-center rounded-3xl glass border-green-200 shadow-xl shadow-green-500/10'>

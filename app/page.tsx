@@ -54,7 +54,7 @@ export default function LandingPage() {
   const testimonials = [
     { name: 'Aleksey Volkov', role: 'Elite Agent Hub 4', text: 'The protocol stability in V2.4 is unmatched. Yield synchronization is instantaneous.', avatar: '/avatar-1.png' },
     { name: 'Sarah Chen', role: 'Liquidity Auditor', text: 'Absolute high-fidelity terminal aesthetics coupled with professional settlement logic.', avatar: '/avatar-2.png' },
-    { name: 'Marcus Thorne', role: 'Strategic Node Lead', text: 'Optimizing $50k+ daily via the Institutional Hub. Captiv8 is the definitive matrix.', avatar: '/avatar-3.png' }
+    { name: 'Marcus Thorne', role: 'Strategic Node Lead', text: 'Optimizing $50k+ daily via the Institutional Hub. NodeFlow is the definitive matrix.', avatar: '/avatar-3.png' }
   ];
 
   const features = [
@@ -144,18 +144,18 @@ export default function LandingPage() {
         {/* Navigation Port */}
         <nav className="flex items-center justify-between px-8 py-6 max-w-7xl mx-auto backdrop-blur-md sticky top-0 bg-slate-950/40 border-b border-white/5 z-50">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-600 to-indigo-600 p-[1.5px] shadow-[0_0_30px_rgba(6,182,212,0.3)]">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-600 via-emerald-500 to-indigo-600 p-[1.5px] shadow-[0_0_30px_rgba(6,182,212,0.3)]">
               <div className="w-full h-full rounded-[14px] bg-slate-950 flex items-center justify-center">
-                <Image src="/logo.png" alt="Logo" width={28} height={28} className="rounded-lg" />
+                <Image src="/logo.png" alt="NodeFlow Logo" width={28} height={28} className="rounded-lg object-contain" />
               </div>
             </div>
-            <span className="text-3xl font-black italic tracking-tighter uppercase text-white drop-shadow-2xl">Captiv8</span>
+            <span className="text-3xl font-black italic tracking-tighter uppercase text-white drop-shadow-2xl">NodeFlow</span>
           </div>
           
           <div className="hidden lg:flex items-center gap-10 text-[11px] font-black uppercase tracking-[0.4em] text-slate-400">
             <Link href="#how-it-works" className="hover:text-cyan-400 transition-colors">PROTOCOL</Link>
             <Link href="#tiers" className="hover:text-cyan-400 transition-colors">TIERS</Link>
-            <Link href="#testimonials" className="hover:text-cyan-400 transition-colors">AGENTS</Link>
+            <Link href="#testimonials" className="hover:text-cyan-400 transition-colors">NODES</Link>
             <Link href="#features" className="hover:text-cyan-400 transition-colors">SECURITY</Link>
           </div>
 
@@ -199,12 +199,12 @@ export default function LandingPage() {
             </div>
             
             <h1 className="hero-text text-6xl md:text-8xl lg:text-[100px] font-black italic tracking-tighter uppercase leading-[0.85] mb-8">
-               STRATEGIC <br />
-               <span className="text-transparent bg-clip-text bg-gradient-to-tr from-cyan-400 via-blue-500 to-indigo-600 drop-shadow-[0_0_50px_rgba(6,182,212,0.4)]">AGENT NODE</span>
+               INSTITUTIONAL <br />
+               <span className="text-transparent bg-clip-text bg-gradient-to-tr from-cyan-400 via-emerald-500 to-indigo-600 drop-shadow-[0_0_50px_rgba(6,182,212,0.4)]">FLOW NODES</span>
             </h1>
             
             <p className="hero-text max-w-2xl mx-auto lg:mx-0 text-slate-400 text-lg md:text-xl font-medium mb-12 leading-relaxed italic border-l-4 border-cyan-500/20 pl-6">
-              Access institutional-grade task optimization nodes. Verify global assets, audit synchronized liquidity, and optimize for elite daily agent yields.
+              Access decentralized liquidity flow synchronization. Verify global asset sets, audit institutional nodes, and harvest premium yield via the core NodeFlow terminal.
             </p>
 
             <div className="hero-text flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-8">
@@ -266,31 +266,34 @@ export default function LandingPage() {
             <div className="max-w-7xl mx-auto">
                 <div className="flex flex-col lg:flex-row items-baseline justify-between gap-8 mb-24">
                     <div>
-                        <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter uppercase leading-none mb-4">VERIFIED NODES</h2>
-                        <p className="text-cyan-400 text-xs font-black uppercase tracking-[0.5em]">INSTITUTIONAL GRADE YIELD TIERS</p>
+                        <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter uppercase leading-none mb-4">SYNC LEVELS</h2>
+                        <p className="text-emerald-400 text-xs font-black uppercase tracking-[0.5em]">PLATFORM LIQUIDITY HUB TIERS</p>
                     </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                     {tiers.map((tier, i) => (
-                        <div key={i} className="bg-slate-900/60 backdrop-blur-3xl border border-white/10 p-10 rounded-[48px] shadow-3xl flex flex-col group hover:scale-[1.02] transition-all">
+                        <div key={i} className="bg-slate-900/60 backdrop-blur-3xl border border-white/10 p-10 rounded-[48px] shadow-3xl flex flex-col group hover:scale-[1.02] transition-all relative overflow-hidden">
+                            <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                                <TrendingUp size={80} className="text-white" />
+                            </div>
                             <h5 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-2">{tier.name}</h5>
                             <h3 className="text-5xl font-black italic tracking-tighter mb-10">${tier.price}</h3>
                             
                             <div className="space-y-6 mb-12">
                                 <div className="flex items-center justify-between border-b border-white/5 pb-4">
-                                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">YIELD RATE</span>
-                                    <span className="text-xl font-bold italic text-cyan-400">{tier.yield}</span>
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">YIELD CYCLE</span>
+                                    <span className="text-xl font-bold italic text-emerald-400">{tier.yield}</span>
                                 </div>
                                 <div className="flex items-center justify-between border-b border-white/5 pb-4">
-                                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">DAILY UNITS</span>
+                                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">NODE UNITS</span>
                                     <span className="text-xl font-bold italic text-white">{tier.tasks}</span>
                                 </div>
                             </div>
 
                             <Link href="/auth/login" className="mt-auto">
-                                <button className="w-full py-5 rounded-[24px] bg-white/5 border border-white/10 font-black text-[10px] tracking-widest uppercase hover:bg-white hover:text-slate-950 transition-all">
-                                    INVOKE TIER
+                                <button className="w-full py-5 rounded-[24px] bg-white/5 border border-white/10 font-black text-[10px] tracking-widest uppercase hover:bg-emerald-500 hover:text-slate-950 hover:border-emerald-500 transition-all shadow-xl hover:shadow-emerald-500/20">
+                                    SYNC NODE
                                 </button>
                             </Link>
                         </div>
@@ -335,11 +338,11 @@ export default function LandingPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
                 <div>
                     <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter uppercase leading-none mb-10">
-                        LEDGER <br />
-                        <span className="text-cyan-500">CONSENSUS</span>
+                        GLOBAL <br />
+                        <span className="text-emerald-500">SYNC CYCLE</span>
                     </h2>
                     <p className="text-slate-400 text-lg italic mb-12 leading-relaxed">
-                        Every Captiv8 Agent Node is equipped with specialized institutional protocols designed for maximum yield efficiency and global settlement speed.
+                        Every NodeFlow Synchronization Hub is equipped with high-fidelity institutional protocols designed for maximum yield efficiency and global flow speed.
                     </p>
                     <div className="space-y-8">
                         {features.map((f, i) => (
@@ -420,13 +423,13 @@ export default function LandingPage() {
           <div className="max-w-7xl mx-auto flex flex-col items-center">
             <div className="flex items-center gap-4 mb-10 opacity-60">
                 <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center p-2 border border-white/10 grayscale">
-                    <Image src="/logo.png" alt="Logo" width={24} height={24} />
+                    <Image src="/logo.png" alt="NodeFlow Logo" width={24} height={24} className="object-contain" />
                 </div>
-                <span className="text-2xl font-black italic tracking-tighter uppercase">Captiv8 Protocol</span>
+                <span className="text-2xl font-black italic tracking-tighter uppercase">NodeFlow Network</span>
             </div>
             
-            <p className="text-slate-600 text-[11px] font-black uppercase tracking-[0.5em] italic">
-               © 2026 GLOBAL INSTITUTIONAL DISTRIBUTION MATRIX. ALL RIGHTS RESERVED.
+            <p className="text-slate-600 text-[11px] font-black uppercase tracking-[0.5em] italic text-center">
+               © 2026 GLOBAL INSTITUTIONAL NODE DISTRIBUTION MATRIX. ALL RIGHTS RESERVED.
             </p>
           </div>
         </footer>

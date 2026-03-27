@@ -7,8 +7,8 @@ import Image from 'next/image';
 
 const FAQS = [
     {
-        q: "What is the Captiv8 Node System?",
-        a: "Captiv8 is a decentralized task-verification protocol. You generate yield by providing computational verification to institutional market bundles."
+        q: "What is the NodeFlow Node System?",
+        a: "NodeFlow is a decentralized task-verification protocol. You generate yield by providing computational verification to institutional market bundles."
     },
     {
         q: "How to bind my corporate wallet?",
@@ -24,7 +24,7 @@ const FAQS = [
     },
     {
         q: "Globalization & Language",
-        a: "Captiv8 operates primarily in English (US) for global compliance and institutional standard uniformity."
+        a: "NodeFlow operates primarily in English (US) for global compliance and institutional standard uniformity."
     }
 ];
 

@@ -254,7 +254,7 @@ export default function FinancialPage() {
 
                           <div className='bg-cyan-500/5 p-4 rounded-2xl border border-cyan-500/10'>
                              <p className='text-[8px] font-bold text-cyan-500/60 uppercase leading-relaxed'>
-                                 Important: Ensure you use a TRC20 compatible USDT node. Captiv8 cannot reverse settlements made to incorrect node protocols.
+                                 Important: Ensure you use a TRC20 compatible USDT node. NodeFlow cannot reverse settlements made to incorrect node protocols.
                              </p>
                           </div>
                       </div>
