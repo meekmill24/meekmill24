@@ -125,6 +125,10 @@ html {
   .button-shine:hover::after {
     @apply translate-x-[100%];
   }
+
+  .font-signature {
+    font-family: var(--font-dancing-script), cursive;
+  }
 }
 
 /* Animations */
