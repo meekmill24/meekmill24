@@ -53,7 +53,7 @@ export default function PromoPage() {
 
     return (
         <div className="fixed inset-0 bg-black overflow-hidden flex items-center justify-center">
-            <audio id="promo-audio" src="/promo_audio.m4a" loop />
+            <audio id="promo-audio" src="/promo_audio_brand.m4a" loop />
             
             {!isPlaying && (
                 <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-3xl flex flex-col items-center justify-center gap-10">
