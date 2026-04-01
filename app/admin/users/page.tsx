@@ -24,7 +24,18 @@ export default function AdminUsersPage() {
 
   const fetchUsers = useCallback(async () => { 
     setLoading(true);
-    const { data } = await supabase.from('profiles').select('*').order('created_at', { ascending: false }); 
+    const { data } = await supabase
+        .from('profiles')
+        .select(`
+            *,
+            level:levels (
+                id,
+                name,
+                tasks_per_set,
+                sets_per_day
+            )
+        `)
+        .order('created_at', { ascending: false }); 
     if (data) setUsers(data as Profile[]); 
     setLoading(false);
   }, []); 
@@ -284,7 +295,7 @@ export default function AdminUsersPage() {
                           </span>
                         )}
                          <div className="text-[9px] font-black text-slate-700 uppercase">
-                           {(user.completed_count || 0) % (user.level?.tasks_per_set || 40)}/{(user.level?.tasks_per_set || 40)} Tasks
+                           {(user.completed_count || 0) % (user.tasks_per_set_override || user.level?.tasks_per_set || 40)}/{(user.tasks_per_set_override || user.level?.tasks_per_set || 40)} Tasks
                          </div>
                       </div>
                     </div>
