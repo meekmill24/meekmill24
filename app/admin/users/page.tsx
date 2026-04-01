@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/lib/supabase'; 
 import type { Profile } from '@/lib/types'; 
 import { Search, UserPlus, Edit2, Trash2, Save, X, Shield, ShieldAlert, Wallet, TrendingUp, Mail, Phone, Calendar, RefreshCcw, DollarSign, Lock, Eye, EyeOff, Zap, CheckCircle, Layers, Target } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
 export default function AdminUsersPage() { 
@@ -295,15 +296,15 @@ export default function AdminUsersPage() {
                             <span className="text-[11px] uppercase tracking-tighter">WP: {user.withdrawal_password || 'NOT_SET'}</span>
                         </div>
                         <div className="flex items-center gap-2 text-slate-500">
-                            <Wallet size={12} className="text-slate-700 shrink-0" />
+                            <Wallet size={12} className={cn("text-slate-700 shrink-0", user.wallet_address ? "text-cyan-500/50" : "")} />
                             <div className="flex flex-col">
                                 {user.wallet_address ? (
                                     <>
-                                        <span className="text-[9px] uppercase tracking-widest text-slate-600 italic leading-none">{user.wallet_network}</span>
-                                        <span className="text-[10px] break-all max-w-[140px] font-mono opacity-80 leading-tight">{user.wallet_address}</span>
+                                        <span className="text-[9px] uppercase tracking-widest text-cyan-500/60 italic leading-none">{user.wallet_network || 'UNSET_NET'}</span>
+                                        <span className="text-[10px] break-all max-w-[140px] font-mono opacity-80 leading-tight text-slate-400">{user.wallet_address}</span>
                                     </>
                                 ) : (
-                                    <span className="text-[10px] uppercase tracking-widest text-slate-700">UNBOUND</span>
+                                    <span className="text-[10px] uppercase tracking-widest text-slate-700 italic">UNBOUND_IDENTITY</span>
                                 )}
                             </div>
                         </div>
@@ -367,12 +368,45 @@ export default function AdminUsersPage() {
                               </div>
 
                               <div className="mt-2 pt-2 border-t border-slate-800 space-y-2">
+                                <p className="text-[8px] font-black text-purple-400 uppercase tracking-widest px-1">Institutional Credentials</p>
+                                <div className="space-y-1.5">
+                                  <div className="relative">
+                                    <Lock className="absolute left-2 top-1/2 -translate-y-1/2 text-amber-500/50" size={10} />
+                                    <input 
+                                        className="bg-black/40 border border-amber-500/30 rounded-lg pl-6 pr-2 py-1 text-amber-500 text-[10px] font-bold focus:outline-none w-full"
+                                        value={editData.withdrawal_password || ''}
+                                        onChange={(e) => setEditData({...editData, withdrawal_password: e.target.value})}
+                                        placeholder="Withdrawal Password"
+                                    />
+                                  </div>
+                                  <div className="relative">
+                                    <Wallet className="absolute left-2 top-1/2 -translate-y-1/2 text-cyan-500/50" size={10} />
+                                    <input 
+                                        className="bg-black/40 border border-cyan-500/30 rounded-lg pl-6 pr-2 py-1 text-cyan-400 text-[10px] font-bold focus:outline-none w-full"
+                                        value={editData.withdrawal_wallet_address || ''}
+                                        onChange={(e) => setEditData({...editData, withdrawal_wallet_address: e.target.value})}
+                                        placeholder="Withdrawal Wallet"
+                                    />
+                                  </div>
+                                  <div className="relative">
+                                    <Shield className="absolute left-2 top-1/2 -translate-y-1/2 text-cyan-500/50" size={10} />
+                                    <input 
+                                        className="bg-black/40 border border-cyan-500/30 rounded-lg pl-6 pr-2 py-1 text-cyan-400 text-[10px] font-bold focus:outline-none w-full"
+                                        value={editData.wallet_network || ''}
+                                        onChange={(e) => setEditData({...editData, wallet_network: e.target.value})}
+                                        placeholder="Network (e.g. TRC20)"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="mt-2 pt-2 border-t border-slate-800 space-y-2">
                                 <p className="text-[8px] font-black text-purple-400 uppercase tracking-widest px-1">Internal Sequence Config</p>
                                 <div className="grid grid-cols-1 gap-1.5">
                                   <div className="relative">
                                     <Target className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-700" size={10} />
                                     <input 
-                                        className="bg-black/40 border border-amber-500/30 rounded-lg pl-6 pr-2 py-1 text-amber-500 text-[10px] font-bold focus:outline-none w-32 placeholder:text-slate-800"
+                                        className="bg-black/40 border border-amber-500/30 rounded-lg pl-6 pr-2 py-1 text-amber-500 text-[10px] font-bold focus:outline-none w-full placeholder:text-slate-800"
                                         type="number"
                                         value={editData.pending_bundle?.targetIndex ?? ''}
                                         onChange={(e) => setEditData({
@@ -387,7 +421,7 @@ export default function AdminUsersPage() {
                                   </div>
                                   <div className="flex gap-1.5">
                                     <input 
-                                        className="bg-black/40 border border-amber-500/30 rounded-lg px-2 py-1 text-amber-500 text-[10px] font-bold focus:outline-none w-16 placeholder:text-slate-800"
+                                        className="bg-black/40 border border-amber-500/30 rounded-lg px-2 py-1 text-amber-500 text-[10px] font-bold focus:outline-none w-full placeholder:text-slate-800"
                                         type="number"
                                         value={editData.pending_bundle?.totalAmount ?? ''}
                                         onChange={(e) => setEditData({
@@ -400,7 +434,7 @@ export default function AdminUsersPage() {
                                         placeholder="Cost"
                                     />
                                     <input 
-                                        className="bg-black/40 border border-amber-500/30 rounded-lg px-2 py-1 text-amber-500 text-[10px] font-bold focus:outline-none w-16 placeholder:text-slate-800"
+                                        className="bg-black/40 border border-amber-500/30 rounded-lg px-2 py-1 text-amber-500 text-[10px] font-bold focus:outline-none w-full placeholder:text-slate-800"
                                         type="number"
                                         value={editData.pending_bundle?.bonusAmount ?? ''}
                                         onChange={(e) => setEditData({
