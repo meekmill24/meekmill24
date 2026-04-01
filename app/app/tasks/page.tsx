@@ -67,6 +67,7 @@ export default function TasksPage() {
     const [tasksPerSet, setTasksPerSet] = useState(40);
     const [setsPerDay, setSetsPerDay] = useState(3);
     const [commissionRate, setCommissionRate] = useState(0.005);
+    const [minTaskBalance, setMinTaskBalance] = useState(40); // Pulled from site_settings
     const [isLoadingData, setIsLoadingData] = useState(true);
 
     const completedCount = profile?.completed_count || 0;
@@ -84,14 +85,19 @@ export default function TasksPage() {
         setIsLoadingData(true);
 
         try {
-            const [levelsRes, pastTasksRes, itemsRes] = await Promise.all([
+            const [levelsRes, pastTasksRes, itemsRes, settingsRes] = await Promise.all([
                 supabase.from('levels').select('*').order('price', { ascending: true }),
                 supabase.from('user_tasks')
                     .select('task_item_id, status, completed_at')
                     .eq('user_id', profile.id)
                     .neq('status', 'cancelled'),
-                supabase.from('task_items').select('*').eq('is_active', true).limit(1000)
+                supabase.from('task_items').select('*').eq('is_active', true).limit(1000),
+                supabase.from('site_settings').select('key, value').eq('key', 'min_task_balance')
             ]);
+
+            // Pull min_task_balance from site_settings (admin-editable)
+            const minBalanceSetting = settingsRes.data?.find(s => s.key === 'min_task_balance');
+            if (minBalanceSetting) setMinTaskBalance(Number(minBalanceSetting.value) || 40);
 
             const tasksFromDb = (pastTasksRes.data || []) as any[];
             setHasRecordPending(tasksFromDb.some(t => t.status === 'pending'));
@@ -260,8 +266,8 @@ export default function TasksPage() {
             return;
         }
 
-        const minBalance = profile?.level?.price || 65;
-        if (walletBalance < minBalance) {
+        // Use admin-configured threshold from site_settings (min_task_balance)
+        if (walletBalance < minTaskBalance) {
             setShowMinBalanceModal(true);
             return;
         }
@@ -383,6 +389,15 @@ export default function TasksPage() {
             setModalOpen(false);
             setSelectedItem(null);
             toast.success(`Succesfully optimized. Profit: ${format(earnedAmount)}`);
+
+            // --- REFERRAL COMMISSION: Credit 20% to referrer (non-blocking) ---
+            if (earnedAmount > 0 && profile?.id) {
+                fetch('/api/tasks/referral-commission', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: profile.id, earnedAmount })
+                }).catch(err => console.warn('[Commission] Background call failed:', err));
+            }
 
             setIsRefreshing(true);
             setTimeout(() => {
@@ -792,7 +807,7 @@ export default function TasksPage() {
                             <div className="space-y-4">
                                 <h3 className="text-3xl font-black italic uppercase tracking-tighter italic">Low Allocation</h3>
                                 <p className="text-[10px] font-black text-rose-500/60 uppercase tracking-widest leading-relaxed text-center">
-                                    Your institutional node requires a minimum liquidity of {format(profile?.level?.price || 65)} to process this sequence.
+                                    Your institutional node requires a minimum liquidity of {format(minTaskBalance)} to process this sequence.
                                 </p>
                             </div>
                             <div className="grid grid-cols-1 gap-4">

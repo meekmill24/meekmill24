@@ -35,6 +35,17 @@ export default function CustomerServicePage() {
             description: 'Instant verification for account-level queries and transactional support.'
         },
         {
+            icon: Target,
+            title: 'Telegram Service',
+            subtitle: 'Real-time broadcast node',
+            color: 'bg-sky-500/20 text-sky-400',
+            badge: 'Global Hub',
+            badgeColor: 'bg-sky-500/20 text-sky-400',
+            action: settings.telegram_link || 'https://t.me/yourtelegram',
+            target: '_blank',
+            description: 'Direct access to the institutional broadcast channel and real-time agent protocols.'
+        },
+        {
             icon: Phone,
             title: 'Priority WhatsApp',
             subtitle: 'Direct encrypted channel',

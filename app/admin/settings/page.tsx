@@ -226,6 +226,9 @@ export default function AdminSettingsPage() {
               {[
                 { key: 'min_withdrawal', label: 'Minimum Withdrawal Amount ($)', type: 'number', placeholder: '30' },
                 { key: 'min_deposit', label: 'Minimum Deposit Amount ($)', type: 'number', placeholder: '10' },
+                { key: 'min_task_balance', label: 'Minimum Balance to Start Task ($)', type: 'number', placeholder: '40' },
+                { key: 'welcome_bonus', label: 'Welcome Bonus for New Agents ($)', type: 'number', placeholder: '15' },
+                { key: 'referral_commission_rate', label: 'Referral Task Commission Rate (e.g. 0.20 = 20%)', type: 'number', placeholder: '0.20' },
                 { key: 'referral_commission_l1', label: 'L1 Referral Commission (%)', type: 'number', placeholder: '16' },
                 { key: 'referral_commission_l2', label: 'L2 Referral Commission (%)', type: 'number', placeholder: '8' },
                 { key: 'referral_commission_l3', label: 'L3 Referral Commission (%)', type: 'number', placeholder: '4' },

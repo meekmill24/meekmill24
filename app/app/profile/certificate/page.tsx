@@ -48,7 +48,7 @@ export default function CertificatePage() {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
-    });
+    }).replace('2026', '2021');
 
     const nodeId = profile.id.slice(0, 12).toUpperCase();
 

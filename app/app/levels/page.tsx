@@ -33,11 +33,13 @@ export default function VIPMapPage() {
         try {
             const data = await getLevels()
             if (data && data.length > 0) {
-                setLevels(data)
+                // Arrange levels from lowest to highest price
+                const sorted = [...data].sort((a, b) => Number(a.price) - Number(b.price))
+                setLevels(sorted)
             } else {
                 // Initial fallback if no levels found in DB
                 setLevels([
-                    { id: 1, name: 'JUNIOR NODE AGENT', price: 100, commission_rate: 0.00, tasks_per_set: 40 },
+                    { id: 1, name: 'JUNIOR NODE AGENT', price: 100, commission_rate: 0.0004, tasks_per_set: 40 },
                     { id: 2, name: 'ASSOCIATE NODE AGENT', price: 500, commission_rate: 0.001, tasks_per_set: 45 }
                 ])
             }

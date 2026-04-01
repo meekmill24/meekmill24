@@ -53,7 +53,9 @@ export default function HomePage() {
     async function loadLevels() {
         try {
             const data = await getLevels()
-            setLevels(data || [])
+            // Arrange levels from lowest to highest price
+            const sorted = (data || []).sort((a: any, b: any) => Number(a.price) - Number(b.price))
+            setLevels(sorted)
         } catch (e) {
             console.error(e)
         }
@@ -366,12 +368,12 @@ export default function HomePage() {
                     <div className="w-1.5 h-6 bg-purple-600 rounded-full" />
                     <h4 className='text-xl font-black tracking-tight uppercase italic'>Verified Nodes</h4>
                 </div>
-                <button 
-                    onClick={() => setShowAllLevels(!showAllLevels)}
+                <Link 
+                    href="/app/levels"
                     className="text-[9px] font-black uppercase tracking-[0.2em] text-cyan-400 hover:text-white transition-all flex items-center gap-2"
                 >
-                    {showAllLevels ? 'COMPRESS' : 'VIEW ALL'} <ChevronDown className={cn("w-4 h-4 transition-transform", showAllLevels && "rotate-180")} />
-                </button>
+                    VIEW ALL <ChevronRight className="w-4 h-4" />
+                </Link>
             </div>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8'>
             {(showAllLevels ? levels : levels.slice(0, 2)).length > 0 ? (showAllLevels ? levels : levels.slice(0, 2)).map((level, idx) => (

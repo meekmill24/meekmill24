@@ -722,7 +722,7 @@ export default function LandingPage() {
             </div>
 
             <p className="text-slate-700 text-[9px] font-black uppercase tracking-[0.4em] italic text-center">
-               © 2026 GLOBAL INSTITUTIONAL DISTRIBUTION MATRIX. PROTECTED BY AES-256 ENCRYPTION.
+               © 2021 GLOBAL INSTITUTIONAL DISTRIBUTION MATRIX. PROTECTED BY AES-256 ENCRYPTION.
             </p>
           </div>
         </footer>

@@ -64,7 +64,7 @@ export default function InstitutionalCertificate({ username, level, date, nodeId
                             </div>
                             <h2 className="text-[8px] md:text-[10px] font-black tracking-[0.4em] uppercase text-slate-500">Official Certification</h2>
                         </div>
-                        <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-slate-950 uppercase mb-4 leading-tight md:leading-none">UNITED STATES<br className="hidden md:block"/>{platformName || 'OPERATIONS'}</h1>
+                        <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-slate-950 uppercase mb-4 leading-tight md:leading-none">UNITED STATES {' '}<br className="hidden md:block"/>KRISHNA SUBRAMANIAN</h1>
                         <div className="flex gap-4 md:gap-8 text-[9px] md:text-[11px] font-bold text-slate-500 uppercase tracking-widest">
                             <div>
                                 <p className="mb-1 text-slate-400">Date Issued</p>
@@ -105,15 +105,10 @@ export default function InstitutionalCertificate({ username, level, date, nodeId
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 relative z-10">
                         <div className="space-y-6 md:space-y-8">
-                            <div>
+                             <div>
                                 <h3 className="font-bold underline uppercase mb-2 md:mb-3 text-[9px] md:text-[11px] tracking-widest text-slate-950">Business Name and Mailing Address:</h3>
-                                <p className="font-black text-slate-900 text-lg md:text-xl uppercase leading-tight mb-1">{platformName || "Simple Operations Inc."}</p>
-                                <p className="text-slate-600 font-bold leading-relaxed pr-6 md:pr-10 text-[11px] md:text-sm">{platformAddress || "United States of America"}</p>
-                            </div>
-
-                            <div>
-                                <h3 className="font-bold underline uppercase mb-2 md:mb-3 text-[9px] md:text-[11px] tracking-widest text-slate-950">Business Address:</h3>
-                                <p className="text-slate-600 font-bold leading-relaxed pr-6 md:pr-10 text-[11px] md:text-sm">{platformAddress || "United States of America"}</p>
+                                <p className="font-black text-slate-900 text-lg md:text-xl uppercase leading-tight mb-1">Krishna Subramanian</p>
+                                <p className="text-slate-600 font-bold leading-relaxed pr-6 md:pr-10 text-[11px] md:text-sm">United States of America</p>
                             </div>
 
                             <div className="bg-slate-50/50 p-4 md:p-6 border-l-4 border-slate-200">
@@ -128,7 +123,7 @@ export default function InstitutionalCertificate({ username, level, date, nodeId
                             <div className="w-40 h-40 md:w-56 md:h-56 rounded-full border-[6px] md:border-[8px] border-blue-900/10 flex flex-col items-center justify-center p-3 md:p-4 rotate-[-12deg] relative bg-blue-50/20 backdrop-blur-[2px] shadow-inner self-center md:self-auto transition-transform hover:rotate-0 duration-700">
                                 <div className="absolute inset-1 md:inset-2 border-2 border-dashed border-blue-900/20 rounded-full animate-[spin_30s_linear_infinite]" />
                                 <div className="absolute inset-3 md:inset-4 border border-blue-900/10 rounded-full" />
-                                <span className="text-[7px] md:text-[9px] font-black text-blue-900/50 uppercase tracking-tighter text-center px-4 leading-tight mb-2 relative z-10">OFFICIAL SEAL OF THE<br/>{(platformName || 'UNITED STATES').toUpperCase()}</span>
+                                <span className="text-[7px] md:text-[9px] font-black text-blue-900/50 uppercase tracking-tighter text-center px-4 leading-tight mb-2 relative z-10">OFFICIAL SEAL OF THE<br/>KRISHNA SUBRAMANIAN</span>
                                 <div className="w-16 h-16 md:w-24 md:h-24 bg-blue-900/5 rounded-full flex items-center justify-center border border-blue-900/10 my-1 shadow-sm relative z-10">
                                     <ShieldCheck className="text-blue-900/30 w-10 h-10 md:w-[50px] md:h-[50px]" />
                                 </div>
@@ -137,7 +132,7 @@ export default function InstitutionalCertificate({ username, level, date, nodeId
 
                             <div className="text-left md:text-right w-full mt-4 md:mt-24">
                                 <h3 className="font-bold underline uppercase mb-2 md:mb-3 text-[9px] md:text-[11px] tracking-widest text-slate-950">Type of Legal Entity:</h3>
-                                <p className="font-black text-slate-950 uppercase text-xl md:text-2xl tracking-tighter underline decoration-slate-300 underline-offset-4">GENERAL PARTNERSHIP</p>
+                                <p className="font-black text-slate-900 uppercase text-xl md:text-2xl tracking-tighter underline decoration-slate-300 underline-offset-4">GENERAL PARTNERSHIP</p>
                                 <p className="text-[9px] md:text-[10px] text-slate-500 mt-3 italic font-bold tracking-tight max-w-[200px] md:ml-auto">(Authorized federal partnership registered under US commerce guidelines)</p>
                             </div>
                         </div>
@@ -170,7 +165,7 @@ export default function InstitutionalCertificate({ username, level, date, nodeId
                             <h3 className="font-bold underline uppercase mb-10 md:mb-8 text-[9px] md:text-[11px] tracking-widest text-slate-950">Authorized Signature:</h3>
                             <div className="relative group">
                                 <div className="absolute -top-12 md:-top-14 left-0 font-signature text-3xl md:text-5xl text-slate-800/80 select-none pointer-events-none transform -rotate-2 italic drop-shadow-sm">
-                                    {platformName || 'Operations Manager'}
+                                    Krishna Subramanian
                                 </div>
                                 <div className="border-b-2 border-slate-900 pb-2 w-full md:w-72" />
                                 <p className="text-[8px] md:text-[10px] font-black text-slate-400 mt-2 uppercase tracking-[0.3em]">Institutional Registrar</p>
@@ -198,7 +193,7 @@ export default function InstitutionalCertificate({ username, level, date, nodeId
                                 <span>REG-ID: {nodeId}</span>
                                 <span className="flex items-center gap-1"><ShieldCheck size={10} /> SECURED DOCUMENT</span>
                             </div>
-                            <span className="text-slate-950 font-black">Page 1 OF 1 // {new Date().getFullYear()}</span>
+                            <span className="text-slate-950 font-black">Page 1 OF 1 // 2021</span>
                         </div>
                     </div>
                 </div>
