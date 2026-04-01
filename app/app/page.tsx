@@ -234,10 +234,10 @@ export default function HomePage() {
                 {/* Sub-Metric Rows */}
                 <div className="relative z-10 px-8 py-8 grid grid-cols-2 md:grid-cols-4 gap-6 bg-white/[0.02] border-t border-white/5">
                     {[
-                        { label: 'Yield Rate', value: `${(Number(profile?.level?.commission_rate || 0.005) * 100).toFixed(2)}%`, color: 'text-cyan-400' },
+                        { label: 'Yield Rate', value: `${(Number(profile?.level?.commission_rate || 0) * 100).toFixed(2)}%`, color: 'text-cyan-400' },
                         { label: 'Execution', value: '1x NODE', color: 'text-white/40' },
                         { label: 'Capacity', value: `${profile?.level?.tasks_per_set || 40} Units`, color: 'text-white/40' },
-                        { label: 'Cycles', value: '3 Daily', color: 'text-white/40' }
+                        { label: 'Cycles', value: `${profile?.level?.sets_per_day || 3} Daily`, color: 'text-white/40' }
                     ].map((m, i) => (
                         <div key={i} className={cn("flex flex-col", i > 0 && "md:border-l md:border-white/5 md:pl-6")}>
                             <span className={cn("text-[9px] font-black uppercase tracking-[0.2em] mb-1 italic", m.color || "text-white/40")}>{m.label}</span>
@@ -374,7 +374,7 @@ export default function HomePage() {
                 </button>
             </div>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8'>
-            {(showAllLevels ? levels : levels.slice(0, 2)).map((level, idx) => (
+            {(showAllLevels ? levels : levels.slice(0, 2)).length > 0 ? (showAllLevels ? levels : levels.slice(0, 2)).map((level, idx) => (
                 <div key={idx} className='w-full rounded-[32px] md:rounded-[48px] p-6 md:p-10 bg-zinc-900/60 backdrop-blur-3xl border border-white/10 relative group overflow-hidden shadow-3xl hover:border-cyan-500/30 transition-all animate-in fade-in slide-in-from-bottom-4 duration-500' style={{ animationDelay: `${idx * 50}ms` }}>
                     <div className='absolute -right-12 -top-12 w-48 h-48 bg-cyan-500/5 rounded-full blur-[80px]' />
                     <h5 className='text-[8px] md:text-[10px] font-black text-cyan-400 uppercase tracking-widest mb-1 opacity-60'>{level.name}</h5>
@@ -390,7 +390,7 @@ export default function HomePage() {
                         {Number(profile?.level_id) >= Number(level.id) ? 'Operational' : 'Restricted'}
                     </button>
                 </div>
-            ))}
+            )) : null}
             </div>
         </div>
 
