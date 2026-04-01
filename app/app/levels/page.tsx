@@ -134,7 +134,7 @@ export default function VIPMapPage() {
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="bg-white/5 rounded-2xl p-4 border border-white/5 group-hover:border-white/10 transition-all">
                                     <p className="text-[8px] font-black text-zinc-600 uppercase tracking-widest mb-1 italic">Yield Rate</p>
-                                    <p className="text-lg font-black text-cyan-400">{(Number(level.commission_rate) * 100).toFixed(1)}%</p>
+                                    <p className="text-lg font-black text-cyan-400">{(Number(level.commission_rate) * 100).toFixed(2)}%</p>
                                 </div>
                                 <div className="bg-white/5 rounded-2xl p-4 border border-white/5 group-hover:border-white/10 transition-all">
                                     <p className="text-[8px] font-black text-zinc-600 uppercase tracking-widest mb-1 italic">Stream Capacity</p>

@@ -380,7 +380,7 @@ export default function HomePage() {
                     <h5 className='text-[8px] md:text-[10px] font-black text-cyan-400 uppercase tracking-widest mb-1 opacity-60'>{level.name}</h5>
                                             <p className='text-3xl md:text-5xl font-black italic tracking-tighter mb-4 md:mb-8'>$ {Number(level.price).toLocaleString()}</p>
                     <div className='flex items-center gap-3 mb-6 md:mb-10'>
-                        <div className='px-2.5 py-1 bg-white/5 rounded-full border border-white/10 text-[8px] font-bold tracking-widest text-zinc-400 uppercase'>{(level.commission_rate * 100).toFixed(1)}% Yield</div>
+                        <div className='px-2.5 py-1 bg-white/5 rounded-full border border-white/10 text-[8px] font-bold tracking-widest text-zinc-400 uppercase'>{(level.commission_rate * 100).toFixed(2)}% Yield</div>
                         <div className='px-2.5 py-1 bg-white/5 rounded-full border border-white/10 text-[8px] font-bold tracking-widest text-zinc-400 uppercase'>{level.tasks_per_set} Units</div>
                     </div>
                     <button className={cn(
