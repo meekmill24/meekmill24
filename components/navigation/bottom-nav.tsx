@@ -5,7 +5,11 @@ import { Home, Clock, Wallet, User, Play, ListTodo, History, CreditCard } from '
 import { cn } from '@/lib/utils'
 import { usePathname } from 'next/navigation'
 
-export function BottomNav() {
+interface BottomNavProps {
+  active?: string
+}
+
+export function BottomNav({ active: manualActive }: BottomNavProps) {
   const pathname = usePathname()
   
   const navItems = [
@@ -18,6 +22,9 @@ export function BottomNav() {
 
   const getIsActive = (itemIdx: number) => {
     const item = navItems[itemIdx]
+    if (manualActive) {
+      return manualActive === item.id
+    }
     if (item.href === '/app') {
       return pathname === '/app'
     }

@@ -211,9 +211,9 @@ export default function AdminUsersPage() {
       <div className="bg-slate-900/40 border border-slate-800 rounded-[40px] overflow-hidden backdrop-blur-md shadow-2xl relative">
         <div className="overflow-x-auto">
           <table className="w-full text-sm border-separate border-spacing-0" style={{ minWidth: '1000px' }}>
-            <thead>
-                <tr className="text-left text-slate-600 text-[9px] font-black uppercase tracking-[0.3em] border-b border-slate-800 bg-white/[0.02]">
-                <th className="px-4 md:px-8 py-6 sticky left-0 bg-slate-900/60 backdrop-blur-md z-20">IDENTIFIER</th>
+            <thead className="sticky top-0 z-30">
+                <tr className="text-left text-slate-600 text-[9px] font-black uppercase tracking-[0.3em] border-b border-slate-800 bg-slate-900/95 backdrop-blur-md">
+                <th className="px-4 md:px-8 py-6 sticky left-0 bg-slate-900/95 backdrop-blur-md z-40">IDENTIFIER</th>
                 <th className="px-4 md:px-8 py-6">CONTACT PROTOCOL</th>
                 <th className="px-4 md:px-8 py-6">AUTHORIZATION</th>
                 <th className="px-4 md:px-8 py-6">SECURITY & PROTOCOL</th>

@@ -20,7 +20,16 @@ export default function BindWalletPage() {
             setWalletAddress(profile.wallet_address || profile.withdrawal_wallet_address || '');
         }
         if (profile?.wallet_network) {
-            setNetwork(profile.wallet_network as any);
+            // Fuzzy match logic for backward compatibility
+            const net = profile.wallet_network;
+            if (net === 'TRC20') setNetwork('USDT-TRC20');
+            else if (net === 'ERC20') setNetwork('ETH');
+            else if (['USDT-TRC20', 'USDC', 'ETH', 'BTC'].includes(net)) {
+                setNetwork(net as any);
+            }
+        } else if (profile?.wallet_address?.startsWith('T')) {
+            // Auto-detect based on address structure
+            setNetwork('USDT-TRC20');
         }
     }, [profile]);
 
