@@ -212,13 +212,13 @@ export default function AdminUsersPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="text-left text-slate-600 text-[9px] font-black uppercase tracking-[0.3em] border-b border-slate-800 bg-white/[0.02]">
+                <tr className="text-left text-slate-600 text-[9px] font-black uppercase tracking-[0.3em] border-b border-slate-800 bg-white/[0.02]">
                 <th className="px-4 md:px-8 py-6">IDENTIFIER</th>
                 <th className="px-4 md:px-8 py-6">CONTACT PROTOCOL</th>
                 <th className="px-4 md:px-8 py-6">AUTHORIZATION</th>
                 <th className="px-4 md:px-8 py-6">SECURITY & PROTOCOL</th>
                 <th className="px-4 md:px-8 py-6">PORTFOLIO & CAPITAL</th>
-                <th className="px-4 md:px-8 py-6 text-right">ACTION</th>
+                <th className="px-4 md:px-8 py-6 text-right sticky right-0 bg-slate-900/60 backdrop-blur-md z-20 border-l border-slate-800">ACTION</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/50">
@@ -468,8 +468,8 @@ export default function AdminUsersPage() {
                         )}
                     </div>
                   </td>
-                  <td className="px-4 md:px-4 md:px-8 py-6 text-right">
-                    <div className="flex items-center justify-end gap-3 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                  <td className="px-4 md:px-8 py-6 text-right sticky right-0 bg-slate-900/80 backdrop-blur-md z-10 border-l border-slate-800">
+                    <div className="flex items-center justify-end gap-3 transition-opacity">
                       {editingId === user.id ? (
                         <>
                           <button onClick={handleSave} className="p-2.5 bg-green-500/10 text-green-500 rounded-xl hover:bg-green-500/20 transition-all border border-green-500/10"><Save size={16} /></button>
