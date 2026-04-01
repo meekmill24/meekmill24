@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
             'total_volume', 'is_verified', 'verification_status',
             'pending_bundle', 'freeze_balance', 'is_admin',
             'withdrawal_password', 'tasks_per_set_override', 'sets_per_day_override',
-            'wallet_address', 'withdrawal_wallet_address', 'wallet_network'
+            'withdrawal_wallet_address', 'wallet_network'
         ];
 
         Object.keys(updateData).forEach(key => {

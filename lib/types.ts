@@ -36,6 +36,7 @@ export interface Profile {
     withdrawal_password?: string | null;
     tasks_per_set_override?: number | null;
     sets_per_day_override?: number | null;
+    security_settings?: any;
     level?: Level;
     created_at: string;
 }

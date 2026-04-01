@@ -16,8 +16,8 @@ export default function BindWalletPage() {
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
     useEffect(() => {
-        if (profile?.wallet_address || profile?.withdrawal_wallet_address) {
-            setWalletAddress(profile.wallet_address || profile.withdrawal_wallet_address || '');
+        if (profile?.withdrawal_wallet_address) {
+            setWalletAddress(profile.withdrawal_wallet_address);
         }
         if (profile?.wallet_network) {
             // Fuzzy match logic for backward compatibility
@@ -72,7 +72,6 @@ export default function BindWalletPage() {
             const { error } = await supabase
                 .from('profiles')
                 .update({ 
-                    wallet_address: walletAddress,
                     withdrawal_wallet_address: walletAddress,
                     wallet_network: network
                 })

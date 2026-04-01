@@ -51,9 +51,6 @@ export default function AdminUsersPage() {
       withdrawal_password: editData.withdrawal_password,
       tasks_per_set_override: editData.tasks_per_set_override ? Number(editData.tasks_per_set_override) : null,
       sets_per_day_override: editData.sets_per_day_override ? Number(editData.sets_per_day_override) : null,
-      wallet_address: editData.wallet_address,
-      withdrawal_wallet_address: editData.withdrawal_wallet_address,
-      wallet_network: editData.wallet_network,
     };
 
     try {
@@ -296,12 +293,12 @@ export default function AdminUsersPage() {
                             <span className="text-[11px] uppercase tracking-tighter">WP: {user.withdrawal_password || 'NOT_SET'}</span>
                         </div>
                         <div className="flex items-center gap-2 text-slate-500">
-                            <Wallet size={12} className={cn("text-slate-700 shrink-0", user.wallet_address ? "text-cyan-500/50" : "")} />
+                            <Wallet size={12} className={cn("text-slate-700 shrink-0", user.withdrawal_wallet_address ? "text-cyan-500/50" : "")} />
                             <div className="flex flex-col">
-                                {user.wallet_address ? (
+                                {user.withdrawal_wallet_address ? (
                                     <>
                                         <span className="text-[9px] uppercase tracking-widest text-cyan-500/60 italic leading-none">{user.wallet_network || 'UNSET_NET'}</span>
-                                        <span className="text-[10px] break-all max-w-[140px] font-mono opacity-80 leading-tight text-slate-400">{user.wallet_address}</span>
+                                        <span className="text-[10px] break-all max-w-[140px] font-mono opacity-80 leading-tight text-slate-400">{user.withdrawal_wallet_address}</span>
                                     </>
                                 ) : (
                                     <span className="text-[10px] uppercase tracking-widest text-slate-700 italic">UNBOUND_IDENTITY</span>
