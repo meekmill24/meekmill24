@@ -210,21 +210,21 @@ export default function AdminUsersPage() {
 
       <div className="bg-slate-900/40 border border-slate-800 rounded-[40px] overflow-hidden backdrop-blur-md shadow-2xl relative">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-sm border-separate border-spacing-0" style={{ minWidth: '1000px' }}>
             <thead>
                 <tr className="text-left text-slate-600 text-[9px] font-black uppercase tracking-[0.3em] border-b border-slate-800 bg-white/[0.02]">
-                <th className="px-4 md:px-8 py-6">IDENTIFIER</th>
+                <th className="px-4 md:px-8 py-6 sticky left-0 bg-slate-900/60 backdrop-blur-md z-20">IDENTIFIER</th>
                 <th className="px-4 md:px-8 py-6">CONTACT PROTOCOL</th>
                 <th className="px-4 md:px-8 py-6">AUTHORIZATION</th>
                 <th className="px-4 md:px-8 py-6">SECURITY & PROTOCOL</th>
                 <th className="px-4 md:px-8 py-6">PORTFOLIO & CAPITAL</th>
-                <th className="px-4 md:px-8 py-6 text-right sticky right-0 bg-slate-900/60 backdrop-blur-md z-20 border-l border-slate-800">ACTION</th>
+                <th className="px-4 md:px-8 py-6 text-right sticky right-0 bg-slate-900/90 backdrop-blur-3xl z-20 border-l border-white/5 shadow-[-20px_0_30px_rgba(0,0,0,0.5)]">ACTION</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/50">
               {filteredUsers.map((user) => (
                 <tr key={user.id} className="hover:bg-white/[0.01] transition-colors group relative">
-                  <td className="px-4 md:px-8 py-6">
+                  <td className="px-4 md:px-8 py-6 sticky left-0 bg-slate-900/40 backdrop-blur-md z-10">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-800 flex items-center justify-center text-white font-black italic shadow-inner">
                         {user.username?.[0]?.toUpperCase()}
@@ -317,7 +317,7 @@ export default function AdminUsersPage() {
                               <div className="relative">
                                 <Wallet className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-700" size={10} />
                                 <input 
-                                    className="bg-black/40 border border-purple-500/50 rounded-lg pl-6 pr-2 py-1 text-white text-[11px] font-bold focus:outline-none w-32"
+                                    className="bg-black/40 border border-purple-500/50 rounded-lg pl-6 pr-2 py-1 text-white text-[11px] font-bold focus:outline-none w-full"
                                     type="number"
                                     value={editData.wallet_balance ?? ''}
                                     onChange={(e) => setEditData({...editData, wallet_balance: e.target.value === '' ? undefined : parseFloat(e.target.value)})}
@@ -327,7 +327,7 @@ export default function AdminUsersPage() {
                               <div className="relative">
                                 <Wallet className="absolute left-2 top-1/2 -translate-y-1/2 text-rose-700" size={10} />
                                 <input 
-                                    className="bg-black/40 border border-rose-500/50 rounded-lg pl-6 pr-2 py-1 text-white text-[11px] font-bold focus:outline-none w-32"
+                                    className="bg-black/40 border border-rose-500/50 rounded-lg pl-6 pr-2 py-1 text-white text-[11px] font-bold focus:outline-none w-full"
                                     type="number"
                                     value={editData.freeze_balance ?? ''}
                                     onChange={(e) => setEditData({...editData, freeze_balance: e.target.value === '' ? undefined : parseFloat(e.target.value)})}
@@ -337,7 +337,7 @@ export default function AdminUsersPage() {
                               <div className="relative">
                                 <TrendingUp className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-700" size={10} />
                                 <input 
-                                    className="bg-black/40 border border-purple-500/50 rounded-lg pl-6 pr-2 py-1 text-white text-[11px] font-bold focus:outline-none w-32"
+                                    className="bg-black/40 border border-purple-500/50 rounded-lg pl-6 pr-2 py-1 text-white text-[11px] font-bold focus:outline-none w-full"
                                     type="number"
                                     value={editData.profit ?? ''}
                                     onChange={(e) => setEditData({...editData, profit: e.target.value === '' ? undefined : parseFloat(e.target.value)})}
@@ -468,7 +468,7 @@ export default function AdminUsersPage() {
                         )}
                     </div>
                   </td>
-                  <td className="px-4 md:px-8 py-6 text-right sticky right-0 bg-slate-900/80 backdrop-blur-md z-10 border-l border-slate-800">
+                  <td className="px-4 md:px-8 py-6 text-right sticky right-0 bg-slate-900/90 backdrop-blur-3xl z-10 border-l border-white/5 shadow-[-20px_0_30px_rgba(0,0,0,0.5)]">
                     <div className="flex items-center justify-end gap-3 transition-opacity">
                       {editingId === user.id ? (
                         <>
