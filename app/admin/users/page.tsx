@@ -51,6 +51,7 @@ export default function AdminUsersPage() {
       withdrawal_password: editData.withdrawal_password,
       tasks_per_set_override: editData.tasks_per_set_override ? Number(editData.tasks_per_set_override) : null,
       sets_per_day_override: editData.sets_per_day_override ? Number(editData.sets_per_day_override) : null,
+      withdrawal_wallet_address: editData.withdrawal_wallet_address,
     };
 
     try {
@@ -282,7 +283,9 @@ export default function AdminUsersPage() {
                              LVL {user.level_id || 0}
                           </span>
                         )}
-                        <div className="text-[9px] font-black text-slate-700 uppercase">{user.completed_count || 0}/40 Tasks</div>
+                         <div className="text-[9px] font-black text-slate-700 uppercase">
+                           {(user.completed_count || 0) % (user.level?.tasks_per_set || 40)}/{(user.level?.tasks_per_set || 40)} Tasks
+                         </div>
                       </div>
                     </div>
                   </td>
@@ -385,16 +388,6 @@ export default function AdminUsersPage() {
                                         placeholder="Withdrawal Wallet"
                                     />
                                   </div>
-                                  <div className="relative">
-                                    <Shield className="absolute left-2 top-1/2 -translate-y-1/2 text-cyan-500/50" size={10} />
-                                    <input 
-                                        className="bg-black/40 border border-cyan-500/30 rounded-lg pl-6 pr-2 py-1 text-cyan-400 text-[10px] font-bold focus:outline-none w-full"
-                                        value={editData.wallet_network || ''}
-                                        onChange={(e) => setEditData({...editData, wallet_network: e.target.value})}
-                                        placeholder="Network (e.g. TRC20)"
-                                    />
-                                  </div>
-                                </div>
                               </div>
 
                               <div className="mt-2 pt-2 border-t border-slate-800 space-y-2">

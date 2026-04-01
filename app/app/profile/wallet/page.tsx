@@ -19,16 +19,7 @@ export default function BindWalletPage() {
         if (profile?.withdrawal_wallet_address) {
             setWalletAddress(profile.withdrawal_wallet_address);
         }
-        if (profile?.wallet_network) {
-            // Fuzzy match logic for backward compatibility
-            const net = profile.wallet_network;
-            if (net === 'TRC20') setNetwork('USDT-TRC20');
-            else if (net === 'ERC20') setNetwork('ETH');
-            else if (['USDT-TRC20', 'USDC', 'ETH', 'BTC'].includes(net)) {
-                setNetwork(net as any);
-            }
-        } else if (profile?.wallet_address?.startsWith('T')) {
-            // Auto-detect based on address structure
+        if (profile?.withdrawal_wallet_address?.startsWith('T')) {
             setNetwork('USDT-TRC20');
         }
     }, [profile]);
@@ -72,8 +63,7 @@ export default function BindWalletPage() {
             const { error } = await supabase
                 .from('profiles')
                 .update({ 
-                    withdrawal_wallet_address: walletAddress,
-                    wallet_network: network
+                    withdrawal_wallet_address: walletAddress
                 })
                 .eq('id', profile.id);
 
