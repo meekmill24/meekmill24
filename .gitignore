@@ -1,0 +1,31 @@
+# Internal Blueprints & Private Intelligence
+.blueprints/
+supabase/
+*.sql
+*.patch
+*.ts.temp
+internal-docs/
+scripts/
+
+# Sandbox Internal Files
+__v0_runtime_loader.js
+__v0_devtools.tsx
+__v0_jsx-dev-runtime.ts
+.npmrc
+.snowflake/
+.v0-trash/
+.vercel/
+next.user-config.*
+
+# Environment variables
+.env
+.env.local
+.env*.local
+
+# Common ignores
+node_modules/
+.next/
+.DS_Store
+*.zip
+simple-money-unzipped/
+simple-money-temp-*/
