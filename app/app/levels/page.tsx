@@ -30,29 +30,19 @@ export default function VIPMapPage() {
 
   useEffect(() => {
     async function loadLevels() {
-        const mockupTiers = [
-            { id: 1, name: 'SILVER NODE', price: 250, commission_rate: 0.12, tasks_per_set: 40 },
-            { id: 2, name: 'GOLD NODE', price: 750, commission_rate: 0.18, tasks_per_set: 65 },
-            { id: 3, name: 'PLATINUM NODE', price: 2500, commission_rate: 0.25, tasks_per_set: 100 },
-            { id: 4, name: 'ELITE HUB', price: 10000, commission_rate: 0.35, tasks_per_set: 250 }
-        ];
-
         try {
             const data = await getLevels()
-            
             if (data && data.length > 0) {
-                // Merge data with mockup if less than standard
-                const combined = [...data]
-                if (combined.length < 4) {
-                    combined.push(...mockupTiers.slice(combined.length))
-                }
-                setLevels(combined)
+                setLevels(data)
             } else {
-                setLevels(mockupTiers)
+                // Initial fallback if no levels found in DB
+                setLevels([
+                    { id: 1, name: 'JUNIOR NODE AGENT', price: 100, commission_rate: 0.00, tasks_per_set: 40 },
+                    { id: 2, name: 'ASSOCIATE NODE AGENT', price: 500, commission_rate: 0.001, tasks_per_set: 45 }
+                ])
             }
         } catch (e) {
             console.error(e)
-            setLevels(mockupTiers)
         } finally {
             setLoading(false)
         }
