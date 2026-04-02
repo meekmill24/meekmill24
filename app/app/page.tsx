@@ -44,7 +44,7 @@ import { supabase } from '@/lib/supabase'
 
 export default function HomePage() {
   const { profile, loading: profileLoading } = useAuth()
-  const { format } = useCurrency()
+  const { format, currency, convert } = useCurrency()
   const [isSpinning, setIsSpinning] = useState(false)
   const [levels, setLevels] = useState<any[]>([])
   const [showAllLevels, setShowAllLevels] = useState(false)
@@ -258,12 +258,12 @@ export default function HomePage() {
                         <div>
                             <p className='text-[8px] md:text-[10px] font-black uppercase tracking-[0.4em] text-cyan-400 mb-2 italic'>Available Registry</p>
                             <div className='flex items-baseline gap-2 mb-4'>
-                                <span className='text-zinc-600 font-bold text-xl md:text-2xl'>$</span>
+                                <span className='text-zinc-600 font-bold text-xl md:text-2xl'>{currency.symbol}</span>
                                 <h1 className={cn(
                                     'text-2xl md:text-4xl font-black italic tracking-tighter',
                                     (profile?.wallet_balance || 0) < 0 ? 'text-rose-500' : 'text-white'
                                 )}>
-                                    {profile?.wallet_balance?.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                    {convert(profile?.wallet_balance || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                 </h1>
                             </div>
                         </div>
@@ -278,9 +278,9 @@ export default function HomePage() {
                         <div>
                             <p className='text-[8px] md:text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 mb-2'>Cycle Profit</p>
                             <div className='flex items-baseline gap-1 md:gap-2 mb-4'>
-                                <span className='text-emerald-900 font-bold text-lg md:text-2xl'>$</span>
+                                <span className='text-emerald-900 font-bold text-lg md:text-2xl'>{currency.symbol}</span>
                                 <h1 className='text-xl md:text-3xl font-black italic tracking-tighter text-emerald-400'>
-                                    {(profile?.profit || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                    {convert(profile?.profit || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                 </h1>
                             </div>
                         </div>
@@ -303,9 +303,9 @@ export default function HomePage() {
                                 </div>
                             </div>
                             <div className='flex items-baseline gap-1 md:gap-2 mb-1'>
-                                <span className='text-indigo-900 font-bold text-lg md:text-2xl'>$</span>
+                                <span className='text-indigo-900 font-bold text-lg md:text-2xl'>{currency.symbol}</span>
                                 <h1 className='text-xl md:text-3xl font-black italic tracking-tighter text-white'>
-                                    {(profile?.referral_earned || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                    {convert(profile?.referral_earned || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                                 </h1>
                             </div>
                             <p className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest">{profile?.referred_users_count || 0} Synchronized Peers</p>
@@ -380,7 +380,7 @@ export default function HomePage() {
                 <div key={idx} className='w-full rounded-[32px] md:rounded-[48px] p-6 md:p-10 bg-zinc-900/60 backdrop-blur-3xl border border-white/10 relative group overflow-hidden shadow-3xl hover:border-cyan-500/30 transition-all animate-in fade-in slide-in-from-bottom-4 duration-500' style={{ animationDelay: `${idx * 50}ms` }}>
                     <div className='absolute -right-12 -top-12 w-48 h-48 bg-cyan-500/5 rounded-full blur-[80px]' />
                     <h5 className='text-[8px] md:text-[10px] font-black text-cyan-400 uppercase tracking-widest mb-1 opacity-60'>{level.name}</h5>
-                                            <p className='text-3xl md:text-5xl font-black italic tracking-tighter mb-4 md:mb-8'>$ {Number(level.price).toLocaleString()}</p>
+                                            <p className='text-3xl md:text-5xl font-black italic tracking-tighter mb-4 md:mb-8'>{currency.symbol} {convert(Number(level.price)).toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
                     <div className='flex items-center gap-3 mb-6 md:mb-10'>
                         <div className='px-2.5 py-1 bg-white/5 rounded-full border border-white/10 text-[8px] font-bold tracking-widest text-zinc-400 uppercase'>{(level.commission_rate * 100).toFixed(2)}% Yield</div>
                         <div className='px-2.5 py-1 bg-white/5 rounded-full border border-white/10 text-[8px] font-bold tracking-widest text-zinc-400 uppercase'>{level.tasks_per_set} Units</div>

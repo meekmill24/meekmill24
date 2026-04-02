@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { BottomNav } from '@/components/navigation/bottom-nav'
 import { Spinner } from '@/components/ui/spinner'
+import GoogleTranslate from '@/components/GoogleTranslate'
 import Link from 'next/link'
 
 export default function AppLayout({
@@ -50,6 +51,7 @@ export default function AppLayout({
   return (
     <div className='min-h-screen bg-black flex justify-center'>
       <div className='w-full max-w-md lg:max-w-4xl relative pb-24 bg-black shadow-2xl border-x border-white/5'>
+        <GoogleTranslate />
         {children}
         <div className="flex flex-col items-center pb-8 opacity-40 hover:opacity-100 transition-opacity">
             <Link href="https://www.wfp.org" target="_blank" className="flex items-center gap-2 grayscale hover:grayscale-0 transition-all">
