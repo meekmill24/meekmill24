@@ -8,7 +8,7 @@ import {
   LayoutDashboard, Users, Layers, Grid3X3, Share2, Receipt, LogOut, Menu, X, ArrowUpFromLine, Package, Bell, Settings, AlertCircle, Wallet as WalletIcon, ShieldCheck, ChevronLeft
 } from 'lucide-react'; 
 import AnimatePage from '@/components/AnimatePage'; 
-import NotificationCenter from '@/components/NotificationCenter';
+import AdminNotificationCenter from '@/components/AdminNotificationCenter';
 import { cn } from '@/lib/utils';
 
 const navItems = [ 
@@ -191,7 +191,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <span>{totalPending} ACTIONS_PENDING</span>
               </div>
             )}
-            <NotificationCenter />
+            <AdminNotificationCenter />
             <div className="flex items-center gap-4 px-5 py-2.5 bg-white/[0.02] rounded-2xl border border-white/5">
               <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-xs font-black shadow-lg">
                 {profile?.username?.[0]?.toUpperCase() || 'A'}
