@@ -64,7 +64,7 @@ export default function InstitutionalCertificate({ username, level, date, nodeId
                             </div>
                             <h2 className="text-[8px] md:text-[10px] font-black tracking-[0.4em] uppercase text-slate-500">Official Certification</h2>
                         </div>
-                        <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-slate-950 uppercase mb-4 leading-tight md:leading-none">UNITED STATES {' '}<br className="hidden md:block"/>KRISHNA SUBRAMANIAN</h1>
+                        <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-slate-950 uppercase mb-4 leading-tight md:leading-none text-balance">{platformName || 'CAPTIV8 OPERATIONS INC'}</h1>
                         <div className="flex gap-4 md:gap-8 text-[9px] md:text-[11px] font-bold text-slate-500 uppercase tracking-widest">
                             <div>
                                 <p className="mb-1 text-slate-400">Date Issued</p>
@@ -107,8 +107,8 @@ export default function InstitutionalCertificate({ username, level, date, nodeId
                         <div className="space-y-6 md:space-y-8">
                              <div>
                                 <h3 className="font-bold underline uppercase mb-2 md:mb-3 text-[9px] md:text-[11px] tracking-widest text-slate-950">Business Name and Mailing Address:</h3>
-                                <p className="font-black text-slate-900 text-lg md:text-xl uppercase leading-tight mb-1">Krishna Subramanian</p>
-                                <p className="text-slate-600 font-bold leading-relaxed pr-6 md:pr-10 text-[11px] md:text-sm">United States of America</p>
+                                <p className="font-black text-slate-900 text-lg md:text-xl uppercase leading-tight mb-1">{platformName || 'CAPTIV8 OPERATIONS INC'}</p>
+                                <p className="text-slate-600 font-bold leading-relaxed pr-6 md:pr-10 text-[11px] md:text-sm">{platformAddress || '250 Schoolhouse Street, Coquitlam, BC, Canada'}</p>
                             </div>
 
                             <div className="bg-slate-50/50 p-4 md:p-6 border-l-4 border-slate-200">
@@ -123,7 +123,7 @@ export default function InstitutionalCertificate({ username, level, date, nodeId
                             <div className="w-40 h-40 md:w-56 md:h-56 rounded-full border-[6px] md:border-[8px] border-blue-900/10 flex flex-col items-center justify-center p-3 md:p-4 rotate-[-12deg] relative bg-blue-50/20 backdrop-blur-[2px] shadow-inner self-center md:self-auto transition-transform hover:rotate-0 duration-700">
                                 <div className="absolute inset-1 md:inset-2 border-2 border-dashed border-blue-900/20 rounded-full animate-[spin_30s_linear_infinite]" />
                                 <div className="absolute inset-3 md:inset-4 border border-blue-900/10 rounded-full" />
-                                <span className="text-[7px] md:text-[9px] font-black text-blue-900/50 uppercase tracking-tighter text-center px-4 leading-tight mb-2 relative z-10">OFFICIAL SEAL OF THE<br/>KRISHNA SUBRAMANIAN</span>
+                                <span className="text-[7px] md:text-[9px] font-black text-blue-900/50 uppercase tracking-tighter text-center px-4 leading-tight mb-2 relative z-10">OFFICIAL SEAL OF<br/>{platformName || 'CAPTIV8'}</span>
                                 <div className="w-16 h-16 md:w-24 md:h-24 bg-blue-900/5 rounded-full flex items-center justify-center border border-blue-900/10 my-1 shadow-sm relative z-10">
                                     <ShieldCheck className="text-blue-900/30 w-10 h-10 md:w-[50px] md:h-[50px]" />
                                 </div>
@@ -165,7 +165,7 @@ export default function InstitutionalCertificate({ username, level, date, nodeId
                             <h3 className="font-bold underline uppercase mb-10 md:mb-8 text-[9px] md:text-[11px] tracking-widest text-slate-950">Authorized Signature:</h3>
                             <div className="relative group">
                                 <div className="absolute -top-12 md:-top-14 left-0 font-signature text-3xl md:text-5xl text-slate-800/80 select-none pointer-events-none transform -rotate-2 italic drop-shadow-sm">
-                                    Krishna Subramanian
+                                    {platformName || 'Captiv8 Operations'}
                                 </div>
                                 <div className="border-b-2 border-slate-900 pb-2 w-full md:w-72" />
                                 <p className="text-[8px] md:text-[10px] font-black text-slate-400 mt-2 uppercase tracking-[0.3em]">Institutional Registrar</p>
