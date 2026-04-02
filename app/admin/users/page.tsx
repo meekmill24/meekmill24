@@ -263,7 +263,7 @@ export default function AdminUsersPage() {
           <table className="w-full text-sm border-separate border-spacing-0 whitespace-nowrap">
             <thead className="sticky top-0 z-30">
                 <tr className="text-left text-slate-600 text-[9px] font-black uppercase tracking-[0.3em] border-b border-slate-800 bg-slate-900/95 backdrop-blur-md">
-                <th className="px-4 md:px-8 py-6 sticky left-0 bg-slate-900/95 backdrop-blur-md z-40">IDENTIFIER</th>
+                <th className="px-4 md:px-8 py-6">IDENTIFIER</th>
                 <th className="px-4 md:px-8 py-6">CONTACT PROTOCOL</th>
                 <th className="px-4 md:px-8 py-6">AUTHORIZATION</th>
                 <th className="px-4 md:px-8 py-6">SECURITY & PROTOCOL</th>
@@ -274,7 +274,7 @@ export default function AdminUsersPage() {
             <tbody className="divide-y divide-slate-800/50">
               {filteredUsers.map((user) => (
                 <tr key={user.id} className="hover:bg-white/[0.01] transition-colors group relative">
-                  <td className="px-4 md:px-8 py-6 sticky left-0 bg-slate-900/40 backdrop-blur-md z-10">
+                  <td className="px-4 md:px-8 py-6">
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-800 flex items-center justify-center text-white font-black italic shadow-inner">
                         {user.username?.[0]?.toUpperCase()}

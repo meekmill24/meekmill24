@@ -80,7 +80,7 @@ export default function AdminTransactionsPage() {
           <table className="w-full text-sm border-separate border-spacing-0 whitespace-nowrap"> 
             <thead className="sticky top-0 z-30"> 
               <tr className="text-left text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] border-b border-slate-800 bg-slate-900/95 backdrop-blur-md"> 
-                <th className="px-8 py-6 sticky left-0 bg-slate-900/95 backdrop-blur-md z-40">Identity</th> 
+                <th className="px-8 py-6">Identity</th> 
                 <th className="px-8 py-6">Classification</th> 
                 <th className="px-8 py-6 font-bold text-white">Quantum</th> 
                 <th className="px-8 py-6">Evidence</th>
