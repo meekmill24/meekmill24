@@ -75,12 +75,12 @@ export default function AdminTransactionsPage() {
         </div>
       </div> 
 
-      <div className="bg-slate-900/40 border border-slate-800 rounded-[32px] overflow-hidden backdrop-blur-sm"> 
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm"> 
-            <thead> 
-              <tr className="text-left text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] border-b border-slate-800"> 
-                <th className="px-8 py-6">Identity</th> 
+      <div className="bg-slate-900/40 border border-slate-800 rounded-[32px] backdrop-blur-sm"> 
+        <div className="overflow-x-auto rounded-[32px]">
+          <table className="w-full text-sm border-separate border-spacing-0" style={{ minWidth: '1400px' }}> 
+            <thead className="sticky top-0 z-30"> 
+              <tr className="text-left text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] border-b border-slate-800 bg-slate-900/95 backdrop-blur-md"> 
+                <th className="px-8 py-6 sticky left-0 bg-slate-900/95 backdrop-blur-md z-40">Identity</th> 
                 <th className="px-8 py-6">Classification</th> 
                 <th className="px-8 py-6 font-bold text-white">Quantum</th> 
                 <th className="px-8 py-6">Evidence</th>

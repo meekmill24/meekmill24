@@ -2,7 +2,7 @@
 import { useEffect, useState, useCallback } from 'react'; 
 import { supabase } from '@/lib/supabase'; 
 import type { Profile } from '@/lib/types'; 
-import { Search, UserPlus, Edit2, Trash2, Save, X, Shield, ShieldAlert, Wallet, TrendingUp, Mail, Phone, Calendar, RefreshCcw, DollarSign, Lock, Eye, EyeOff, Zap, CheckCircle, Layers, Target } from 'lucide-react';
+import { Search, UserPlus, Edit2, Trash2, Save, X, Shield, ShieldAlert, Wallet, TrendingUp, Mail, Phone, Calendar, RefreshCcw, DollarSign, Lock, Eye, EyeOff, Zap, CheckCircle, Layers, Target, Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
@@ -217,9 +217,50 @@ export default function AdminUsersPage() {
         </div>
       </div>
 
-      <div className="bg-slate-900/40 border border-slate-800 rounded-[40px] overflow-hidden backdrop-blur-md shadow-2xl relative">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm border-separate border-spacing-0" style={{ minWidth: '1000px' }}>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-slate-900/40 border border-slate-800 p-8 rounded-[32px] backdrop-blur-md relative overflow-hidden group hover:border-purple-500/30 transition-all duration-500">
+          <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
+            <Users size={64} className="text-white" />
+          </div>
+          <div className="relative z-10">
+            <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-2">Total Platform Nodes</p>
+            <h3 className="text-5xl font-black text-white italic tracking-tighter">{users.length}</h3>
+            <div className="mt-4 flex items-center gap-2 text-green-500 text-[10px] font-black uppercase tracking-widest">
+              <Zap size={12} strokeWidth={3} /> Active Cluster
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-slate-900/40 border border-slate-800 p-8 rounded-[32px] backdrop-blur-md relative overflow-hidden group hover:border-purple-500/30 transition-all duration-500">
+          <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
+            <Shield size={64} className="text-purple-500" />
+          </div>
+          <div className="relative z-10">
+            <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-2">Root Administrators</p>
+            <h3 className="text-5xl font-black text-purple-500 italic tracking-tighter">{users.filter(u => u.role === 'admin').length}</h3>
+            <div className="mt-4 flex items-center gap-2 text-purple-400 text-[10px] font-black uppercase tracking-widest">
+              <ShieldAlert size={12} strokeWidth={3} /> Security Level A
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-slate-900/40 border border-slate-800 p-8 rounded-[32px] backdrop-blur-md relative overflow-hidden group hover:border-purple-500/30 transition-all duration-500">
+          <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
+            <Target size={64} className="text-blue-500" />
+          </div>
+          <div className="relative z-10">
+            <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-2">Participant Nodes</p>
+            <h3 className="text-5xl font-black text-blue-400 italic tracking-tighter">{users.filter(u => u.role !== 'admin').length}</h3>
+            <div className="mt-4 flex items-center gap-2 text-blue-400 text-[10px] font-black uppercase tracking-widest">
+              <TrendingUp size={12} strokeWidth={3} /> Matrix Yield Active
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-slate-900/40 border border-slate-800 rounded-[40px] backdrop-blur-md shadow-2xl relative">
+        <div className="overflow-x-auto rounded-[40px]">
+          <table className="w-full text-sm border-separate border-spacing-0" style={{ minWidth: '1400px' }}>
             <thead className="sticky top-0 z-30">
                 <tr className="text-left text-slate-600 text-[9px] font-black uppercase tracking-[0.3em] border-b border-slate-800 bg-slate-900/95 backdrop-blur-md">
                 <th className="px-4 md:px-8 py-6 sticky left-0 bg-slate-900/95 backdrop-blur-md z-40">IDENTIFIER</th>

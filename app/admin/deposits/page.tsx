@@ -1,7 +1,7 @@
 'use client'; 
 import { useEffect, useState } from 'react'; 
 import { supabase } from '@/lib/supabase'; 
-import { Check, X, Search, ArrowDownToLine, Clock, Wallet, User as UserIcon, AlertCircle, Loader2, Eye, ExternalLink } from 'lucide-react'; 
+import { Check, X, Search, ArrowDownToLine, Clock, Wallet, User as UserIcon, AlertCircle, Loader2, Eye, ExternalLink, Layers, XCircle } from 'lucide-react'; 
 import { toast } from 'sonner';
 
 export default function AdminDepositsPage() { 
@@ -77,16 +77,50 @@ export default function AdminDepositsPage() {
         </div>
       </div>
 
-      <div className="bg-slate-900/40 border border-slate-800 rounded-[40px] overflow-hidden backdrop-blur-md shadow-2xl relative">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-[32px] backdrop-blur-md relative overflow-hidden group hover:border-indigo-500/30 transition-all">
+          <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+            <Layers size={48} className="text-white" />
+          </div>
+          <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Total Solicitations</p>
+          <h3 className="text-3xl font-black text-white italic tracking-tighter">{deposits.length}</h3>
+        </div>
+
+        <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-[32px] backdrop-blur-md relative overflow-hidden group hover:border-emerald-500/30 transition-all">
+          <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+            <Check size={48} className="text-emerald-500" />
+          </div>
+          <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Approved Ledger</p>
+          <h3 className="text-3xl font-black text-emerald-500 italic tracking-tighter">{deposits.filter(d => d.status === 'approved').length}</h3>
+        </div>
+
+        <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-[32px] backdrop-blur-md relative overflow-hidden group hover:border-blue-500/30 transition-all">
+          <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+            <Clock size={48} className="text-blue-500" />
+          </div>
+          <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Pending Validation</p>
+          <h3 className="text-3xl font-black text-blue-500 italic tracking-tighter">{deposits.filter(d => d.status === 'pending').length}</h3>
+        </div>
+
+        <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-[32px] backdrop-blur-md relative overflow-hidden group hover:border-rose-500/30 transition-all">
+          <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+            <XCircle size={48} className="text-rose-500" />
+          </div>
+          <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Rejected Entries</p>
+          <h3 className="text-3xl font-black text-rose-500 italic tracking-tighter">{deposits.filter(d => d.status === 'rejected').length}</h3>
+        </div>
+      </div>
+
+      <div className="bg-slate-900/40 border border-slate-800 rounded-[40px] backdrop-blur-md shadow-2xl relative">
         <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
           <ArrowDownToLine size={200} className="text-white" />
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="text-left text-slate-600 text-[9px] font-black uppercase tracking-[0.3em] border-b border-white/[0.05] bg-white/[0.02]">
-                <th className="px-4 md:px-8 py-6">Timestamp / ID</th>
+        <div className="overflow-x-auto rounded-[40px]">
+          <table className="w-full text-sm border-separate border-spacing-0" style={{ minWidth: '1400px' }}>
+            <thead className="sticky top-0 z-30">
+              <tr className="text-left text-slate-600 text-[9px] font-black uppercase tracking-[0.3em] border-b border-white/[0.05] bg-white/[0.02] backdrop-blur-md">
+                <th className="px-4 md:px-8 py-6 sticky left-0 bg-slate-900/95 backdrop-blur-md z-40">Timestamp / ID</th>
                 <th className="px-4 md:px-8 py-6">Beneficiary</th>
                 <th className="px-4 md:px-8 py-6 font-bold text-white">Amount</th>
                 <th className="px-4 md:px-8 py-6">Evidence</th>

@@ -113,11 +113,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <ChevronLeft size={16} className={cn("transition-transform duration-500", isCollapsed && "rotate-180")} />
           </button>
 
-          <div className={cn("mb-12 px-2 transition-all duration-500", isCollapsed ? "opacity-0 scale-50" : "opacity-100")}>
-            <h1 className="text-3xl font-black bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent italic tracking-tighter">
-              HUB_ROOT
-            </h1>
-            <p className="text-[8px] font-black text-slate-600 uppercase tracking-[0.4em] mt-1 ml-1">Admin Command Center</p>
+          <div className={cn("mb-12 px-2 transition-all duration-500 flex items-center gap-3", isCollapsed ? "opacity-0 scale-50" : "opacity-100")}>
+            <div className="w-10 h-10 bg-purple-600 rounded-xl flex items-center justify-center p-2 shadow-lg shadow-purple-500/20">
+              <img src="/logo.png" alt="captiv8" className="w-full h-full object-contain invert" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-black bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent italic tracking-tighter">
+                captiv8
+              </h1>
+              <p className="text-[8px] font-black text-slate-600 uppercase tracking-[0.4em] mt-0.5 ml-1">Admin Command Center</p>
+            </div>
           </div>
 
           <nav className="flex-1 space-y-2 no-scrollbar overflow-y-auto pr-2 -mr-2">
