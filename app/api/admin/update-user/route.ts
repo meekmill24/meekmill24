@@ -12,6 +12,10 @@ export async function POST(req: NextRequest) {
             process.env.SUPABASE_SERVICE_ROLE_KEY!
         );
 
+        if (!updateData || typeof updateData !== 'object') {
+            return NextResponse.json({ error: 'No update data provided' }, { status: 400 });
+        }
+
         const payload: any = {};
         const allowedFields = [
             'username', 'display_name', 'phone', 'phone_number', 
