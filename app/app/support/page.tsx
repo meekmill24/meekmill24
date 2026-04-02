@@ -41,7 +41,7 @@ export default function CustomerServicePage() {
             color: 'bg-sky-500/20 text-sky-400',
             badge: 'Global Hub',
             badgeColor: 'bg-sky-500/20 text-sky-400',
-            action: settings.telegram_link || 'https://t.me/yourtelegram',
+            action: settings.support_link || 'https://t.me/yourtelegram',
             target: '_blank',
             description: 'Direct access to the institutional broadcast channel and real-time agent protocols.'
         },
