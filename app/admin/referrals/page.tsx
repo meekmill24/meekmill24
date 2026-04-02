@@ -69,15 +69,15 @@ export default function AdminReferralsPage() {
       </div> 
 
       <div className="bg-slate-900/40 border border-slate-800 rounded-[40px] overflow-hidden backdrop-blur-sm"> 
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm"> 
+        <div className="overflow-auto max-h-[calc(100vh-320px)]">
+          <table className="w-full text-sm" style={{ minWidth: '2500px', tableLayout: 'auto' }}> 
             <thead> 
               <tr className="text-left text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] border-b border-slate-800"> 
                 <th className="px-8 py-6">Identity</th> 
                 <th className="px-8 py-6">Referral Code</th> 
                 <th className="px-8 py-6 text-center">Conversion</th> 
                 <th className="px-8 py-6">Engagement</th> 
-                <th className="px-8 py-6 text-right">Protocol</th> 
+                <th className="px-8 py-6 text-right border-l border-white/5 opacity-50 font-bold uppercase tracking-widest text-[9px]">Protocol</th> 
               </tr> 
             </thead> 
             <tbody className="divide-y divide-slate-800/50"> 
@@ -114,7 +114,7 @@ export default function AdminReferralsPage() {
                       {(ref.referred_users_count || 0) > 0 ? 'ACTIVE YIELD' : 'DORMANT'}
                     </span>
                   </td>
-                  <td className="px-8 py-6 text-right"> 
+                  <td className="px-8 py-6 text-right border-l border-white/5 bg-slate-900/20 shadow-[-20px_0_30px_rgba(0,0,0,0.1)]"> 
                     <button className="p-3 bg-slate-800 text-slate-400 rounded-2xl hover:bg-slate-700 hover:text-white transition-all shadow-lg">
                        <ExternalLink size={18} />
                     </button> 

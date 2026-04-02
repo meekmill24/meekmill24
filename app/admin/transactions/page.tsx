@@ -75,9 +75,9 @@ export default function AdminTransactionsPage() {
         </div>
       </div> 
 
-      <div className="bg-slate-900/40 border border-slate-800 rounded-[32px] backdrop-blur-sm"> 
-        <div className="overflow-x-auto rounded-[32px]">
-          <table className="w-full text-sm border-separate border-spacing-0" style={{ minWidth: '1400px' }}> 
+      <div className="bg-slate-900/40 border border-slate-800 rounded-[32px] backdrop-blur-sm overflow-hidden relative"> 
+        <div className="overflow-auto max-h-[calc(100vh-320px)]">
+          <table className="w-full text-sm border-separate border-spacing-0" style={{ minWidth: '2500px', tableLayout: 'auto' }}> 
             <thead className="sticky top-0 z-30"> 
               <tr className="text-left text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] border-b border-slate-800 bg-slate-900/95 backdrop-blur-md"> 
                 <th className="px-8 py-6 sticky left-0 bg-slate-900/95 backdrop-blur-md z-40">Identity</th> 
@@ -85,7 +85,7 @@ export default function AdminTransactionsPage() {
                 <th className="px-8 py-6 font-bold text-white">Quantum</th> 
                 <th className="px-8 py-6">Evidence</th>
                 <th className="px-8 py-6">Manifestation</th> 
-                <th className="px-8 py-6 text-right text-rose-500">Purge</th> 
+                <th className="px-8 py-6 text-right text-rose-500 border-l border-white/5 opacity-50 font-bold uppercase tracking-widest text-[9px]">Purge</th> 
               </tr> 
             </thead> 
             <tbody className="divide-y divide-slate-800/50"> 
@@ -135,7 +135,7 @@ export default function AdminTransactionsPage() {
                       {new Date(tx.created_at).toLocaleString()}
                     </div>
                   </td>
-                  <td className="px-8 py-6 text-right"> 
+                  <td className="px-8 py-6 text-right border-l border-white/5 bg-slate-900/20 shadow-[-20px_0_30px_rgba(0,0,0,0.1)]"> 
                     <button onClick={() => handleDelete(tx.id)} className="p-2.5 bg-rose-500/10 text-rose-500 rounded-xl hover:bg-rose-500 hover:text-white transition-all opacity-0 group-hover:opacity-100">
                        <Trash2 size={16} />
                     </button> 

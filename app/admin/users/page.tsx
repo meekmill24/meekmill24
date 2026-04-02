@@ -258,9 +258,9 @@ export default function AdminUsersPage() {
         </div>
       </div>
 
-      <div className="bg-slate-900/40 border border-slate-800 rounded-[40px] backdrop-blur-md shadow-2xl relative">
-        <div className="overflow-x-auto rounded-[40px]">
-          <table className="w-full text-sm border-separate border-spacing-0" style={{ minWidth: '1400px' }}>
+      <div className="bg-slate-900/40 border border-slate-800 rounded-[40px] backdrop-blur-md shadow-2xl relative overflow-hidden">
+        <div className="overflow-auto max-h-[calc(100vh-300px)]">
+          <table className="w-full text-sm border-separate border-spacing-0" style={{ minWidth: '2500px', tableLayout: 'auto' }}>
             <thead className="sticky top-0 z-30">
                 <tr className="text-left text-slate-600 text-[9px] font-black uppercase tracking-[0.3em] border-b border-slate-800 bg-slate-900/95 backdrop-blur-md">
                 <th className="px-4 md:px-8 py-6 sticky left-0 bg-slate-900/95 backdrop-blur-md z-40">IDENTIFIER</th>
@@ -268,7 +268,7 @@ export default function AdminUsersPage() {
                 <th className="px-4 md:px-8 py-6">AUTHORIZATION</th>
                 <th className="px-4 md:px-8 py-6">SECURITY & PROTOCOL</th>
                 <th className="px-4 md:px-8 py-6">PORTFOLIO & CAPITAL</th>
-                <th className="px-4 md:px-8 py-6 text-right sticky right-0 bg-slate-900/90 backdrop-blur-3xl z-20 border-l border-white/5 shadow-[-20px_0_30px_rgba(0,0,0,0.5)]">ACTION</th>
+                <th className="px-4 md:px-8 py-6 text-right border-l border-white/5 opacity-50 font-bold uppercase tracking-widest text-[9px]">ACTION</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/50">
@@ -511,7 +511,7 @@ export default function AdminUsersPage() {
                         )}
                     </div>
                   </td>
-                  <td className="px-4 md:px-8 py-6 text-right sticky right-0 bg-slate-900/90 backdrop-blur-3xl z-10 border-l border-white/5 shadow-[-20px_0_30px_rgba(0,0,0,0.5)]">
+                  <td className="px-4 md:px-8 py-6 text-right border-l border-white/5 bg-slate-900/20 shadow-[-20px_0_30px_rgba(0,0,0,0.1)]">
                     <div className="flex items-center justify-end gap-3 transition-opacity">
                       {editingId === user.id ? (
                         <>

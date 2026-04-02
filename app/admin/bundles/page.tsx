@@ -584,15 +584,15 @@ export default function AdminBundlesPage() {
                                 {users.filter(u => u.pending_bundle).length} Pending Active
                             </span>
                         </div>
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-sm">
+                        <div className="overflow-auto max-h-[500px]">
+                            <table className="w-full text-sm" style={{ minWidth: '2500px', tableLayout: 'auto' }}>
                                 <thead>
                                     <tr className="text-[9px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-800">
                                         <th className="px-8 py-5 text-left">Agent</th>
                                         <th className="px-8 py-5 text-center">Hit Index</th>
                                         <th className="px-8 py-5 text-center">Value</th>
                                         <th className="px-8 py-5 text-center">Reward</th>
-                                        <th className="px-8 py-5 text-right">Control</th>
+                                        <th className="px-8 py-5 text-right sticky right-0 bg-slate-900/95 backdrop-blur-md z-40 border-l border-white/5 shadow-[-20px_0_30px_rgba(0,0,0,0.5)]">Control</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-800/10">
@@ -635,7 +635,7 @@ export default function AdminBundlesPage() {
                                                 <td className="px-8 py-5 text-center font-black text-green-500 italic">
                                                     +${Number(isAccepted ? u.pending_earned_amount : (b?.bonusAmount || 0)).toLocaleString()}
                                                 </td>
-                                                <td className="px-8 py-5 text-right">
+                                                <td className="px-8 py-5 text-right border-l border-white/5 bg-slate-900/20 shadow-[-20px_0_30_rgba(0,0,0,0.1)]">
                                                     <div className="flex justify-end gap-2">
                                                         {!isAccepted && (
                                                             <button 
@@ -715,14 +715,14 @@ export default function AdminBundlesPage() {
                             </div>
                         )}
 
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-sm">
+                        <div className="overflow-auto max-h-[600px]">
+                            <table className="w-full text-sm" style={{ minWidth: '2500px', tableLayout: 'auto' }}>
                                 <thead>
                                     <tr className="text-[9px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-800">
                                         <th className="px-8 py-5 text-left">Variant</th>
                                         <th className="px-8 py-5 text-center">Entry</th>
                                         <th className="px-8 py-5 text-center">Profit</th>
-                                        <th className="px-8 py-5 text-right">Control</th>
+                                        <th className="px-8 py-5 text-right sticky right-0 bg-slate-900/95 backdrop-blur-md z-40 border-l border-white/5 shadow-[-20px_0_30px_rgba(0,0,0,0.5)]">Control</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-800/10">
@@ -734,7 +734,7 @@ export default function AdminBundlesPage() {
                                             </td>
                                             <td className="px-8 py-5 text-center font-bold text-slate-300">${b.total_amount.toFixed(2)}</td>
                                             <td className="px-8 py-5 text-center font-black text-green-500 italic">+${b.bonus_amount.toFixed(2)}</td>
-                                            <td className="px-8 py-5 text-right">
+                                            <td className="px-8 py-5 text-right border-l border-white/5 bg-slate-900/20 shadow-[-20px_0_30px_rgba(0,0,0,0.1)]">
                                                 <div className="flex justify-end gap-1">
                                                     <button onClick={() => { setEditingId(b.id); setFormData({ ...b }); }} className="p-2 text-slate-600 hover:text-white"><Pencil size={14} /></button>
                                                     <button onClick={() => handleDelete(b.id)} className="p-2 text-slate-600 hover:text-red-400"><Trash2 size={14} /></button>

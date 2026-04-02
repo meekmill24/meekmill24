@@ -111,16 +111,16 @@ export default function AdminWithdrawalsPage() {
         </div>
       </div>
 
-      <div className="bg-slate-900/40 border border-slate-800 rounded-[32px] backdrop-blur-md">
-        <div className="overflow-x-auto rounded-[32px]">
-          <table className="w-full text-sm border-separate border-spacing-0" style={{ minWidth: '1400px' }}>
+      <div className="bg-slate-900/40 border border-slate-800 rounded-[32px] backdrop-blur-md overflow-hidden relative">
+        <div className="overflow-auto max-h-[calc(100vh-320px)]">
+          <table className="w-full text-sm border-separate border-spacing-0" style={{ minWidth: '2500px', tableLayout: 'auto' }}>
             <thead className="sticky top-0 z-30">
               <tr className="text-left text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] border-b border-slate-800 bg-slate-900/95 backdrop-blur-md">
                 <th className="px-4 md:px-8 py-6 sticky left-0 bg-slate-900/95 backdrop-blur-md z-40">Timestamp / ID</th>
                 <th className="px-4 md:px-8 py-6">Beneficiary & Destination Node</th>
                 <th className="px-4 md:px-8 py-6 font-bold text-white">Quantum</th>
                 <th className="px-4 md:px-8 py-6">Status</th>
-                <th className="px-4 md:px-8 py-6 text-right">Approval Cycle</th>
+                <th className="px-4 md:px-8 py-6 text-right border-l border-white/5 opacity-50 font-bold uppercase tracking-widest text-[9px]">Approval Cycle</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800/50">
@@ -163,7 +163,7 @@ export default function AdminWithdrawalsPage() {
                       {withd.status}
                     </span>
                   </td>
-                  <td className="px-4 md:px-8 py-6 text-right">
+                  <td className="px-4 md:px-8 py-6 text-right border-l border-white/5 bg-slate-900/20 shadow-[-20px_0_30px_rgba(0,0,0,0.1)]">
                     {withd.status === 'pending' ? (
                       <div className="flex items-center justify-end gap-3">
                         <button 

@@ -111,13 +111,13 @@ export default function AdminDepositsPage() {
         </div>
       </div>
 
-      <div className="bg-slate-900/40 border border-slate-800 rounded-[40px] backdrop-blur-md shadow-2xl relative">
+      <div className="bg-slate-900/40 border border-slate-800 rounded-[40px] backdrop-blur-md shadow-2xl relative overflow-hidden">
         <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none">
           <ArrowDownToLine size={200} className="text-white" />
         </div>
 
-        <div className="overflow-x-auto rounded-[40px]">
-          <table className="w-full text-sm border-separate border-spacing-0" style={{ minWidth: '1400px' }}>
+        <div className="overflow-auto max-h-[calc(100vh-320px)]">
+          <table className="w-full text-sm border-separate border-spacing-0" style={{ minWidth: '2500px', tableLayout: 'auto' }}>
             <thead className="sticky top-0 z-30">
               <tr className="text-left text-slate-600 text-[9px] font-black uppercase tracking-[0.3em] border-b border-white/[0.05] bg-white/[0.02] backdrop-blur-md">
                 <th className="px-4 md:px-8 py-6 sticky left-0 bg-slate-900/95 backdrop-blur-md z-40">Timestamp / ID</th>
@@ -125,7 +125,7 @@ export default function AdminDepositsPage() {
                 <th className="px-4 md:px-8 py-6 font-bold text-white">Amount</th>
                 <th className="px-4 md:px-8 py-6">Evidence</th>
                 <th className="px-4 md:px-8 py-6">Current Status</th>
-                <th className="px-4 md:px-8 py-6 text-right">Verification</th>
+                <th className="px-4 md:px-8 py-6 text-right border-l border-white/5 opacity-50 font-bold uppercase tracking-widest text-[9px]">Verification</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/[0.05]">
@@ -178,7 +178,7 @@ export default function AdminDepositsPage() {
                       {dep.status}
                     </span>
                   </td>
-                  <td className="px-4 md:px-8 py-6 text-right">
+                  <td className="px-4 md:px-8 py-6 text-right border-l border-white/5 bg-slate-900/20 shadow-[-20px_0_30px_rgba(0,0,0,0.1)]">
                     {dep.status === 'pending' ? (
                       <div className="flex items-center justify-end gap-3">
                         <button 

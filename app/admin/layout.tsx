@@ -173,7 +173,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* Main Terminal */}
       <main className={cn(
-        "flex-1 flex flex-col transition-all duration-500 relative z-10 min-h-screen",
+        "flex-1 flex flex-col transition-all duration-500 relative z-10 min-h-screen min-w-0",
         isCollapsed ? "lg:ml-24" : "lg:ml-72"
       )}> 
         <header className="p-8 flex items-center justify-between border-b border-white/[0.03] backdrop-blur-xl sticky top-0 z-30">
@@ -203,8 +203,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
         </header>
 
-        <div className="p-8 flex-1 overflow-auto bg-[radial-gradient(circle_at_top_right,rgba(124,58,237,0.03),transparent)]"> 
-          <div className="max-w-[1600px] mx-auto"> 
+        <div className="p-8 flex-1 overflow-y-auto bg-[radial-gradient(circle_at_top_right,rgba(124,58,237,0.03),transparent)] min-w-0"> 
+          <div className="w-full min-w-0"> 
             <AnimatePage key={pathname}>{children}</AnimatePage> 
           </div> 
         </div> 
