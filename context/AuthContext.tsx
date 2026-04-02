@@ -146,6 +146,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }, [router]);
 
     useEffect(() => {
+        if (!loading && user) {
+            // Bind User Identity to Live Support (Tawk.to)
+            if (typeof window !== 'undefined') {
+                const w = window as any;
+                w.Tawk_API = w.Tawk_API || {};
+                // Fallback direct assignment for init phase
+                w.Tawk_API.visitor = {
+                    name: profile?.username || user.email?.split('@')[0],
+                    email: user.email
+                };
+                // Real-time attribute sync if script loaded
+                if (typeof w.Tawk_API.setAttributes === 'function') {
+                    w.Tawk_API.setAttributes({
+                        name: profile?.username || user.email?.split('@')[0],
+                        email: user.email,
+                        id: profile?.id
+                    }, function (error: any) {});
+                }
+            }
+        }
+    }, [loading, user, profile]);
+
+    useEffect(() => {
         console.log("PROFILE STATE UPDATE:", profile);
         if (!loading && user && profile === null) {
             console.warn("Profile not loaded, but user exists");
