@@ -82,14 +82,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return ( 
     <div className="min-h-screen flex bg-[#0a0a0c] text-slate-200 relative overflow-x-hidden"> 
-      {/* Mobile Control Handle */}
-      <button 
-        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="lg:hidden fixed top-6 right-6 z-50 p-4 bg-purple-600 rounded-2xl shadow-2xl transition-all active:scale-95"
-      >
-        {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
-      </button>
-
       {/* Backdrop */}
       {isSidebarOpen && (
         <div 
@@ -104,7 +96,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         isCollapsed ? "w-24" : "w-72",
         isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       )}>
-        <div className="h-full flex flex-col p-6">
+        <div className="h-full flex flex-col p-6 relative">
+          {/* Mobile Close Handle */}
+          <button 
+            onClick={() => setIsSidebarOpen(false)}
+            className="lg:hidden absolute top-6 right-6 w-8 h-8 bg-white/5 rounded-full flex items-center justify-center text-slate-400 hover:text-white transition-all z-[80]"
+          >
+            <X size={16} />
+          </button>
+
           {/* Collapse Toggle Handle */}
           <button 
             onClick={() => setIsCollapsed(!isCollapsed)}
@@ -178,6 +178,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       )}> 
         <header className="p-8 flex items-center justify-between border-b border-white/[0.03] backdrop-blur-xl sticky top-0 z-30">
           <div className="flex items-center gap-6">
+             <button 
+               onClick={() => setIsSidebarOpen(true)}
+               className="lg:hidden p-3 bg-purple-600 rounded-xl text-white shadow-lg active:scale-95 transition-all"
+             >
+               <Menu size={20} />
+             </button>
              <div className="hidden lg:flex items-center gap-3">
                 <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
                 <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">SYSTEM_OPTIMIZED</span>
