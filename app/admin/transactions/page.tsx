@@ -77,7 +77,7 @@ export default function AdminTransactionsPage() {
 
       <div className="bg-slate-900/40 border border-slate-800 rounded-[32px] backdrop-blur-sm overflow-hidden relative"> 
         <div className="overflow-auto max-h-[calc(100vh-320px)]">
-          <table className="w-full text-sm border-separate border-spacing-0" style={{ minWidth: '2500px', tableLayout: 'auto' }}> 
+          <table className="w-full text-sm border-separate border-spacing-0 whitespace-nowrap"> 
             <thead className="sticky top-0 z-30"> 
               <tr className="text-left text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] border-b border-slate-800 bg-slate-900/95 backdrop-blur-md"> 
                 <th className="px-8 py-6 sticky left-0 bg-slate-900/95 backdrop-blur-md z-40">Identity</th> 

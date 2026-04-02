@@ -70,7 +70,7 @@ export default function AdminReferralsPage() {
 
       <div className="bg-slate-900/40 border border-slate-800 rounded-[40px] overflow-hidden backdrop-blur-sm"> 
         <div className="overflow-auto max-h-[calc(100vh-320px)]">
-          <table className="w-full text-sm" style={{ minWidth: '2500px', tableLayout: 'auto' }}> 
+          <table className="w-full text-sm whitespace-nowrap"> 
             <thead> 
               <tr className="text-left text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] border-b border-slate-800"> 
                 <th className="px-8 py-6">Identity</th> 

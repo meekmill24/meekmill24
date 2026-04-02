@@ -585,7 +585,7 @@ export default function AdminBundlesPage() {
                             </span>
                         </div>
                         <div className="overflow-auto max-h-[500px]">
-                            <table className="w-full text-sm" style={{ minWidth: '2500px', tableLayout: 'auto' }}>
+                            <table className="w-full text-sm whitespace-nowrap">
                                 <thead>
                                     <tr className="text-[9px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-800">
                                         <th className="px-8 py-5 text-left">Agent</th>
@@ -716,7 +716,7 @@ export default function AdminBundlesPage() {
                         )}
 
                         <div className="overflow-auto max-h-[600px]">
-                            <table className="w-full text-sm" style={{ minWidth: '2500px', tableLayout: 'auto' }}>
+                            <table className="w-full text-sm whitespace-nowrap">
                                 <thead>
                                     <tr className="text-[9px] font-black text-slate-500 uppercase tracking-widest border-b border-slate-800">
                                         <th className="px-8 py-5 text-left">Variant</th>

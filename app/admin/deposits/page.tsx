@@ -117,7 +117,7 @@ export default function AdminDepositsPage() {
         </div>
 
         <div className="overflow-auto max-h-[calc(100vh-320px)]">
-          <table className="w-full text-sm border-separate border-spacing-0" style={{ minWidth: '2500px', tableLayout: 'auto' }}>
+          <table className="w-full text-sm border-separate border-spacing-0 whitespace-nowrap">
             <thead className="sticky top-0 z-30">
               <tr className="text-left text-slate-600 text-[9px] font-black uppercase tracking-[0.3em] border-b border-white/[0.05] bg-white/[0.02] backdrop-blur-md">
                 <th className="px-4 md:px-8 py-6 sticky left-0 bg-slate-900/95 backdrop-blur-md z-40">Timestamp / ID</th>
