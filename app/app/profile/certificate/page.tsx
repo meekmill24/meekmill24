@@ -67,13 +67,11 @@ export default function CertificatePage() {
 
             <div className="p-6 md:p-10">
                 <div className="mb-12 text-center print:hidden">
-                    <h2 className="text-3xl font-black italic tracking-tighter uppercase mb-2">Agent Validation</h2>
-                    <p className="text-zinc-500 text-[10px] font-black uppercase tracking-[0.4em]">Official Institutional Credentials</p>
+                    <h2 className="text-3xl font-black italic tracking-tighter uppercase mb-2">Company Certification</h2>
+                    <p className="text-zinc-500 text-[10px] font-black uppercase tracking-[0.4em]">Official Institutional Business License</p>
                 </div>
 
                 <InstitutionalCertificate 
-                    username={profile.username || profile.email?.split('@')[0] || 'Unknown'} 
-                    level={profile.level?.name || 'Standard Agent'} 
                     date={today}
                     nodeId={nodeId}
                     platformName={settings.platform_name}
@@ -82,7 +80,7 @@ export default function CertificatePage() {
                 
                 <div className="mt-12 max-w-2xl mx-auto p-8 bg-zinc-900/40 border border-white/5 rounded-[32px] text-center print:hidden">
                     <p className="text-xs text-zinc-500 italic leading-relaxed">
-                        "Your institutional certificate is a high-fidelity proof of your synchronized node status. Please ensure this document remains confidential to protect your agent identity."
+                        "This institutional certificate is a high-fidelity proof of the company's operational legitimacy and registration. It serves as our guarantee of compliance."
                     </p>
                 </div>
             </div>

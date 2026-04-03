@@ -12,18 +12,25 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useState, useEffect, Suspense } from 'react'
 import NextImage from 'next/image'
 import { ArrowRight, Sparkles, User, Mail, Lock, UserCheck, ShieldCheck, Share2, Phone, AtSign } from 'lucide-react'
 
-export default function Page() {
+function SignUpForm() {
   const [step, setStep] = useState(1)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [repeatPassword, setRepeatPassword] = useState('')
   const [referral, setReferral] = useState('')
-  
+  const searchParams = useSearchParams()
+
+  // Auto-prefill referral code from ?ref= URL param (invite links)
+  useEffect(() => {
+    const refParam = searchParams.get('ref')
+    if (refParam) setReferral(refParam.toUpperCase().slice(0, 4))
+  }, [searchParams])
+
   // Step 2 Info
   const [username, setUsername] = useState('')
   const [phone, setPhone] = useState('')
@@ -93,15 +100,16 @@ export default function Page() {
           
           if (signUpError) throw signUpError
           
-          // Update profile initially
+          // Update profile and link referral via admin fallback
           if (data.user) {
-            await fetch('/api/profile', {
-                method: 'PUT',
+            await fetch('/api/auth/register', {
+                method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
-                    username: username,
-                    display_name: username,
-                    phone_number: phone
+                    isLinkOnly: true,
+                    existingUserId: data.user.id,
+                    username,
+                    referral
                 }),
             })
           }
@@ -347,5 +355,13 @@ export default function Page() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={null}>
+      <SignUpForm />
+    </Suspense>
   )
 }

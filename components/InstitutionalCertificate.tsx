@@ -5,15 +5,13 @@ import { ShieldCheck, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface CertificateProps {
-    username: string;
-    level: string;
     date: string;
     nodeId: string;
     platformName?: string;
     platformAddress?: string;
 }
 
-export default function InstitutionalCertificate({ username, level, date, nodeId, platformName, platformAddress }: CertificateProps) {
+export default function InstitutionalCertificate({ date, nodeId, platformName, platformAddress }: CertificateProps) {
     const certificateRef = React.useRef<HTMLDivElement>(null);
 
     const handleDownload = async () => {
@@ -38,7 +36,7 @@ export default function InstitutionalCertificate({ username, level, date, nodeId
             });
             
             pdf.addImage(imgData, 'PNG', 0, 0, canvas.width / 2, canvas.height / 2);
-            pdf.save(`Certificate_${username}_${nodeId}.pdf`);
+            pdf.save(`Certificate_${platformName || 'CAPTIV8'}_Business_License.pdf`);
         } catch (error) {
             console.error('Export failed:', error);
             window.print(); // Fallback
@@ -46,10 +44,16 @@ export default function InstitutionalCertificate({ username, level, date, nodeId
     };
 
     return (
-        <div className="w-full max-w-4xl mx-auto p-2 md:p-8">
+        <div className="w-full max-w-4xl mx-auto p-2 md:p-8 print:p-0 print:m-0">
+            <style jsx global>{`
+                @media print {
+                    @page { size: letter portrait; margin: 0; }
+                    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; margin: 0; padding: 0; }
+                }
+            `}</style>
             <div 
                 ref={certificateRef}
-                className="relative bg-[#fcfaf7] text-slate-900 shadow-[0_0_50px_rgba(0,0,0,0.1)] p-6 md:p-20 font-serif border-[1px] border-slate-200 print:shadow-none print:border-0 overflow-hidden min-h-[800px] md:min-h-[1050px] flex flex-col rounded-sm"
+                className="relative bg-[#fcfaf7] text-slate-900 shadow-[0_0_50px_rgba(0,0,0,0.1)] p-6 md:p-20 font-serif border-[1px] border-slate-200 print:border-0 print:shadow-none overflow-hidden min-h-[800px] md:min-h-[1050px] print:min-h-0 print:h-[10in] print:w-[8in] flex flex-col rounded-sm"
             >
                 {/* Decorative Frame */}
                 <div className="absolute inset-2 md:inset-4 border border-slate-300 pointer-events-none" />
@@ -112,9 +116,9 @@ export default function InstitutionalCertificate({ username, level, date, nodeId
                             </div>
 
                             <div className="bg-slate-50/50 p-4 md:p-6 border-l-4 border-slate-200">
-                                <h3 className="font-bold underline uppercase mb-2 md:mb-3 text-[9px] md:text-[11px] tracking-widest text-slate-950">Awarded To / Agent:</h3>
-                                <p className="font-black uppercase tracking-wide text-slate-950 text-lg md:text-xl underline decoration-slate-300 underline-offset-4">{username}</p>
-                                <p className="text-slate-400 font-mono text-[9px] md:text-[10px] mt-2 tracking-widest font-bold">NODE PROTOCOL-ID: {nodeId}</p>
+                                <h3 className="font-bold underline uppercase mb-2 md:mb-3 text-[9px] md:text-[11px] tracking-widest text-slate-950">Incorporation Status:</h3>
+                                <p className="font-black uppercase tracking-wide text-slate-950 text-lg md:text-xl underline decoration-slate-300 underline-offset-4">ACTIVE IN GOOD STANDING</p>
+                                <p className="text-slate-400 font-mono text-[9px] md:text-[10px] mt-2 tracking-widest font-bold">REGISTRY PROTOCOL-ID: {nodeId}</p>
                             </div>
                         </div>
 

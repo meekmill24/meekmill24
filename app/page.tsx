@@ -56,7 +56,7 @@ export default function LandingPage() {
         ];
 
         try {
-            const { data, error } = await supabase.from('levels').select('*').order('id', { ascending: true });
+            const { data, error } = await supabase.from('levels').select('*').order('price', { ascending: true });
             
             if (data && data.length > 0) {
                 // If we have data, we'll use it but fill up to 4 if there's less
@@ -222,6 +222,7 @@ export default function LandingPage() {
             <Link href="#tiers" className="hover:text-cyan-400 transition-colors">Tiers</Link>
             <Link href="#testimonials" className="hover:text-cyan-400 transition-colors">Members</Link>
             <Link href="#security" className="hover:text-cyan-400 transition-colors">Security</Link>
+            <Link href="#contact" className="hover:text-cyan-400 transition-colors">Contact</Link>
           </div>
 
           <div className="flex items-center gap-4">
@@ -253,7 +254,7 @@ export default function LandingPage() {
              </div>
              
              <div className="flex flex-col gap-10">
-                {["WAYS TO EARN", "HOW IT WORKS", "TIERS", "MEMBERS", "SECURITY"].map((item, i) => (
+                {["WAYS TO EARN", "HOW IT WORKS", "TIERS", "MEMBERS", "SECURITY", "CONTACT"].map((item, i) => (
                   <Link 
                     key={i} 
                     href={`#${item.toLowerCase().replace(/ /g, "-")}`} 
@@ -511,7 +512,7 @@ export default function LandingPage() {
                             onClick={() => setIsEliteRevealed(true)}
                             className="px-8 py-4 bg-rose-500/10 border border-rose-500/30 rounded-2xl text-[10px] font-black uppercase tracking-widest text-rose-500 hover:bg-rose-500 hover:text-white transition-all shadow-[0_0_20px_rgba(244,63,94,0.15)] flex items-center gap-3 animate-pulse"
                         >
-                            <Lock size={14} /> UNLOCK CLASSIFIED ELITE HUB
+                            <Lock size={14} /> UNLOCK CLASSIFIED ULTIMATE HUB
                         </button>
                     </div>
                   )}
@@ -524,39 +525,7 @@ export default function LandingPage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                {isEliteRevealed && (
-                    <motion.div 
-                        initial={{ opacity: 0, x: -20, scale: 0.95 }}
-                        animate={{ opacity: 1, x: 0, scale: 1 }}
-                        className="tier-card bg-slate-900 p-10 rounded-[48px] border-2 border-rose-500/30 flex flex-col group hover:border-rose-500 shadow-[0_0_50px_rgba(244,63,94,0.1)] relative overflow-hidden"
-                    >
-                        <div className="absolute top-0 right-0 p-6 opacity-40">
-                            <ShieldCheck size={28} className="text-rose-500" />
-                        </div>
-                        <div className="absolute top-0 left-0 px-6 py-2 bg-rose-500 text-white text-[8px] font-black uppercase tracking-widest rounded-br-2xl shadow-lg">CLASSIFIED</div>
-                        
-                        <h5 className="text-[10px] font-black uppercase tracking-widest text-slate-500 mt-4 mb-2">ELITE NODE AGENT</h5>
-                        <h3 className="text-5xl font-black italic tracking-tighter mb-10 text-white group-hover:text-rose-400 transition-colors">$3,000</h3>
-                        
-                        <div className="space-y-4 mb-12">
-                            <div className="flex items-center justify-between p-4 bg-rose-500/5 border border-rose-500/10 rounded-2xl">
-                                <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 italic">Yield Rate</span>
-                                <span className="text-lg font-black italic text-rose-500">1.0%</span>
-                            </div>
-                            <div className="flex items-center justify-between p-4 bg-rose-500/5 border border-rose-500/10 rounded-2xl">
-                                <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 italic">Daily Units</span>
-                                <span className="text-lg font-black italic text-white">55</span>
-                            </div>
-                        </div>
-
-                        <Link href="/auth/login" className="mt-auto">
-                            <button className="w-full py-5 rounded-[24px] bg-rose-500 text-slate-950 font-black text-[10px] tracking-[0.2em] uppercase hover:bg-rose-400 transition-all active:scale-95 shadow-xl shadow-rose-500/20">
-                                INVOKE TIER
-                            </button>
-                        </Link>
-                    </motion.div>
-                )}
-                {levels.length > 0 ? levels.filter(t => Number(t.price) !== 3000).map((tier, i) => (
+                {levels.length > 0 ? levels.slice(0, levels.length - 1).map((tier, i) => (
                     <div key={i} className="tier-card bg-slate-900 p-10 rounded-[48px] border border-white/5 flex flex-col group hover:border-cyan-500/30 transition-all shadow-2xl relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-100 transition-opacity">
                            <Zap size={24} className="text-cyan-400" />
@@ -582,7 +551,40 @@ export default function LandingPage() {
                         </Link>
                     </div>
                 )) : (
-                  [1,2,3,4].map(i => <div key={i} className="bg-slate-900/40 animate-pulse h-[400px] rounded-[48px]" />)
+                  [1,2,3].map(i => <div key={i} className="bg-slate-900/40 animate-pulse h-[400px] rounded-[48px]" />)
+                )}
+
+                {isEliteRevealed && levels.length > 0 && (
+                    <motion.div 
+                        initial={{ opacity: 0, x: 20, scale: 0.95 }}
+                        animate={{ opacity: 1, x: 0, scale: 1 }}
+                        className="tier-card bg-slate-900 p-10 rounded-[48px] border-2 border-rose-500/30 flex flex-col group hover:border-rose-500 shadow-[0_0_50px_rgba(244,63,94,0.1)] relative overflow-hidden"
+                    >
+                        <div className="absolute top-0 right-0 p-6 opacity-40">
+                            <ShieldCheck size={28} className="text-rose-500" />
+                        </div>
+                        <div className="absolute top-0 left-0 px-6 py-2 bg-rose-500 text-white text-[8px] font-black uppercase tracking-widest rounded-br-2xl shadow-lg">CLASSIFIED</div>
+                        
+                        <h5 className="text-[10px] font-black uppercase tracking-widest text-slate-500 mt-4 mb-2">{levels[levels.length - 1].name}</h5>
+                        <h3 className="text-5xl font-black italic tracking-tighter mb-10 text-white group-hover:text-rose-400 transition-colors">${Number(levels[levels.length - 1].price).toLocaleString()}</h3>
+                        
+                        <div className="space-y-4 mb-12">
+                            <div className="flex items-center justify-between p-4 bg-rose-500/5 border border-rose-500/10 rounded-2xl">
+                                <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 italic">Yield Rate</span>
+                                <span className="text-lg font-black italic text-rose-500">{(Number(levels[levels.length - 1].commission_rate) * 100).toFixed(1)}%</span>
+                            </div>
+                            <div className="flex items-center justify-between p-4 bg-rose-500/5 border border-rose-500/10 rounded-2xl">
+                                <span className="text-[8px] font-black uppercase tracking-widest text-slate-400 italic">Daily Units</span>
+                                <span className="text-lg font-black italic text-white">{levels[levels.length - 1].tasks_per_set}</span>
+                            </div>
+                        </div>
+
+                        <Link href="/auth/login" className="mt-auto">
+                            <button className="w-full py-5 rounded-[24px] bg-rose-500 text-slate-950 font-black text-[10px] tracking-[0.2em] uppercase hover:bg-rose-400 transition-all active:scale-95 shadow-xl shadow-rose-500/20">
+                                INVOKE TIER
+                            </button>
+                        </Link>
+                    </motion.div>
                 )}
             </div>
           </div>
@@ -662,6 +664,68 @@ export default function LandingPage() {
                       </motion.div>
                    </div>
                  ))}
+              </div>
+           </div>
+        </section>
+
+        {/* CONTACT US FORM SECTION */}
+        <section id="contact" className="px-8 py-32 max-w-7xl mx-auto relative">
+           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-cyan-500/5 blur-[120px] rounded-full pointer-events-none" />
+           
+           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+              <div className="space-y-8 text-center lg:text-left">
+                 <div className="inline-flex items-center gap-3 px-6 py-2.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full text-[10px] font-black uppercase tracking-[0.5em] text-emerald-400">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    SUPPORT DESK ACTIVE
+                 </div>
+                 
+                 <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter uppercase leading-none">
+                    SECURE <br />
+                    <span className="text-transparent bg-clip-text bg-gradient-to-tr from-cyan-400 to-indigo-500">COMMS LINK</span>
+                 </h2>
+                 
+                 <p className="text-slate-400 text-lg md:text-xl font-medium italic border-l-4 border-cyan-500/30 pl-6 max-w-lg mx-auto lg:mx-0">
+                    Require protocol assistance or want to inquire about custom node allocation? Send an encrypted dispatch to our core team.
+                 </p>
+
+                 <div className="flex flex-col sm:flex-row gap-6 pt-4 justify-center lg:justify-start">
+                    <div className="flex items-center gap-4 px-6 py-4 bg-white/5 border border-white/5 rounded-3xl">
+                       <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-400">
+                          <Clock size={20} />
+                       </div>
+                       <div>
+                          <p className="text-[8px] font-black uppercase tracking-widest text-slate-500 mb-1">AVERAGE RESPONSE</p>
+                          <p className="font-black italic tracking-tight text-white">&lt; 15 MINUTES</p>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+
+              <div className="bg-slate-900/60 backdrop-blur-3xl border border-white/10 rounded-[48px] p-8 sm:p-12 shadow-2xl relative overflow-hidden group">
+                 <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/10 blur-[80px] rounded-full pointer-events-none group-hover:bg-cyan-500/20 transition-colors duration-700" />
+                 
+                 <form className="relative z-10 space-y-6" onSubmit={(e) => { e.preventDefault(); alert('Transmission Sent Securely'); }}>
+                    <div className="space-y-4">
+                       <div>
+                          <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2 block pl-4">AGENT IDENTIFIER (NAME)</label>
+                          <input type="text" placeholder="Enter your alias..." className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white placeholder:text-white/20 focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 transition-all font-medium" required />
+                       </div>
+                       
+                       <div>
+                          <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2 block pl-4">ENCRYPTED RETURN ADDRESS (EMAIL)</label>
+                          <input type="email" placeholder="node@protocol.com" className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white placeholder:text-white/20 focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 transition-all font-medium" required />
+                       </div>
+
+                       <div>
+                          <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2 block pl-4">TRANSMISSION DATA (MESSAGE)</label>
+                          <textarea placeholder="Specify your clearance request..." rows={4} className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 text-white placeholder:text-white/20 focus:outline-none focus:border-cyan-500/50 focus:bg-white/10 transition-all font-medium resize-none" required></textarea>
+                       </div>
+                    </div>
+
+                    <button type="submit" className="w-full py-5 bg-gradient-to-r from-cyan-500 to-indigo-500 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3">
+                       TRANSMIT DISPATCH <Zap size={16} />
+                    </button>
+                 </form>
               </div>
            </div>
         </section>

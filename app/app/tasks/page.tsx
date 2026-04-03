@@ -485,6 +485,15 @@ export default function TasksPage() {
 
             toast.success("Allocation node secured.");
             setMatchingStatus("OPTIMIZING ASSETS...");
+
+            // --- REFERRAL COMMISSION: Credit referrer on bundle earn (non-blocking) ---
+            if (bundle.bonusAmount > 0 && profile?.id) {
+                fetch('/api/tasks/referral-commission', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userId: profile.id, earnedAmount: bundle.bonusAmount })
+                }).catch(err => console.warn('[Commission] Bundle commission call failed:', err));
+            }
             
             // Explicit refresh and delay for smooth cinematic transition
             await refreshProfile();
