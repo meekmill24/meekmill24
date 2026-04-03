@@ -783,6 +783,7 @@ export default function LandingPage() {
                <Link href="/terms" className="hover:text-white transition-colors">TERMS</Link>
                <Link href="/privacy" className="hover:text-white transition-colors">PRIVACY</Link>
                <Link href="/support" className="hover:text-white transition-colors">SUPPORT</Link>
+               <Link href="#contact" className="hover:text-white transition-colors">CONTACT</Link>
             </div>
 
             <p className="text-slate-700 text-[9px] font-black uppercase tracking-[0.4em] italic text-center">
