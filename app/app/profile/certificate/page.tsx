@@ -12,20 +12,27 @@ export default function CertificatePage() {
     const { profile, loading } = useAuth();
     const router = useRouter();
     const [settings, setSettings] = React.useState<any>({});
+    const [settingsLoading, setSettingsLoading] = React.useState(true);
 
     React.useEffect(() => {
         const fetchSettings = async () => {
-            const { data } = await supabase.from('site_settings').select('*');
-            if (data) {
-                const s: any = {};
-                data.forEach(item => s[item.key] = item.value);
-                setSettings(s);
+            try {
+                const { data } = await supabase.from('site_settings').select('*');
+                if (data) {
+                    const s: any = {};
+                    data.forEach(item => s[item.key] = item.value);
+                    setSettings(s);
+                }
+            } catch (error) {
+                console.error('Failed to fetch settings:', error);
+            } finally {
+                setSettingsLoading(false);
             }
         };
         fetchSettings();
     }, []);
 
-    if (loading) {
+    if (loading || settingsLoading) {
         return (
             <div className="min-h-screen bg-black flex items-center justify-center">
                 <Spinner className="w-8 h-8 text-cyan-500" />

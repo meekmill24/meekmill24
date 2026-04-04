@@ -22,7 +22,7 @@ export default function InstitutionalCertificate({ date, nodeId, platformName, p
         
         try {
             const html2canvas = (await import('html2canvas')).default;
-            const { jsPDF } = await import('jspdf'); // Changed to named import for better compatibility
+            const jsPDF = (await import('jspdf')).default;
             
             const canvas = await html2canvas(certificateRef.current, {
                 scale: 2.5, // Increased resolution
@@ -278,7 +278,7 @@ export default function InstitutionalCertificate({ date, nodeId, platformName, p
                                 <span>REG-ID: {nodeId}</span>
                                 <span className="flex items-center gap-1"><ShieldCheck size={10} /> SECURED DOCUMENT</span>
                             </div>
-                            <span className="text-slate-950 font-black">Page 1 OF 1 // 2021</span>
+                            <span className="text-slate-950 font-black">Page 1 OF 1 // {new Date().getFullYear()}</span>
                         </div>
                     </div>
                 </div>
