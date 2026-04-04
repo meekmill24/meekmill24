@@ -3,6 +3,7 @@
 import React from 'react';
 import { ShieldCheck, Download, Printer } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 interface CertificateProps {
     date: string;
@@ -17,47 +18,14 @@ export default function InstitutionalCertificate({ date, nodeId, platformName, p
     const handleDownload = async () => {
         if (!certificateRef.current) return;
         
+        const internalToastId = toast.loading('Synchronizing registry data and generating high-fidelity PDF...');
+        
         try {
             const html2canvas = (await import('html2canvas')).default;
-            const jsPDF = (await import('jspdf')).default;
+            const { jsPDF } = await import('jspdf'); // Changed to named import for better compatibility
             
-            // Force the width for the capture to ensure desktop-style layout in PDF
             const canvas = await html2canvas(certificateRef.current, {
-                scale: 2,
-                useCORS: true,
-                backgroundColor: '#fcfaf7',
-                logging: false,
-                width: 1000, // Fixed width for standard layout
-                onclone: (clonedDoc) => {
-                    const clonedEl = clonedDoc.querySelector('[data-cert-container]');
-                    if (clonedEl) {
-                        (clonedEl as HTMLElement).style.width = '1000px';
-                        (clonedEl as HTMLElement).style.minHeight = '1300px';
-                        (clonedEl as HTMLElement).style.padding = '80px';
-                    }
-                }
-            });
-            
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jsPDF({
-                orientation: 'portrait',
-                unit: 'px',
-                format: [canvas.width / 2, canvas.height / 2]
-            });
-            
-            pdf.addImage(imgData, 'PNG', 0, 0, canvas.width / 2, canvas.height / 2);
-            pdf.save(`Certificate_${platformName || 'CAPTIV8'}_Business_License.pdf`);
-        } catch (error) {
-            console.error('PDF export failed:', error);
-        }
-    };
-
-    const handlePrint = async () => {
-        if (!certificateRef.current) return;
-        try {
-            const html2canvas = (await import('html2canvas')).default;
-            const canvas = await html2canvas(certificateRef.current, {
-                scale: 2,
+                scale: 2.5, // Increased resolution
                 useCORS: true,
                 backgroundColor: '#fcfaf7',
                 logging: false,
@@ -65,22 +33,77 @@ export default function InstitutionalCertificate({ date, nodeId, platformName, p
                 onclone: (clonedDoc) => {
                     const clonedEl = clonedDoc.querySelector('[data-cert-container]');
                     if (clonedEl) {
-                        (clonedEl as HTMLElement).style.width = '1000px';
-                        (clonedEl as HTMLElement).style.minHeight = '1300px';
-                        (clonedEl as HTMLElement).style.padding = '80px';
+                        const style = (clonedEl as HTMLElement).style;
+                        style.width = '1000px';
+                        style.minHeight = '1300px';
+                        style.padding = '80px';
+                        style.display = 'flex';
+                        style.flexDirection = 'column';
+                        style.boxShadow = 'none';
                     }
                 }
             });
-            const imgData = canvas.toDataURL('image/png');
-            const printWindow = window.open('', '_blank', 'width=900,height=1200');
-            if (!printWindow) return;
+            
+            const imgData = canvas.toDataURL('image/png', 1.0);
+            const pdfWidth = canvas.width / 2.5;
+            const pdfHeight = canvas.height / 2.5;
+
+            // Updated constructor for universal compatibility
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'px',
+                format: [pdfWidth, pdfHeight]
+            });
+            
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save(`Certificate_${(platformName || 'CAPTIV8').replace(/[^a-z0-9]/gi, '_')}_Business_License.pdf`);
+            toast.success('Certificate synchronization complete - Document downloaded.', { id: internalToastId });
+        } catch (error) {
+            console.error('PDF export failed:', error);
+            toast.error('Registry link interrupted. Please verify connection and retry.', { id: internalToastId });
+        }
+    };
+
+    const handlePrint = async () => {
+        if (!certificateRef.current) return;
+        const internalToastId = toast.loading('Preparing document for institutional printing...');
+        
+        try {
+            const html2canvas = (await import('html2canvas')).default;
+            const canvas = await html2canvas(certificateRef.current, {
+                scale: 2.5,
+                useCORS: true,
+                backgroundColor: '#fcfaf7',
+                logging: false,
+                width: 1000,
+                onclone: (clonedDoc) => {
+                    const clonedEl = clonedDoc.querySelector('[data-cert-container]');
+                    if (clonedEl) {
+                        const style = (clonedEl as HTMLElement).style;
+                        style.width = '1000px';
+                        style.minHeight = '1300px';
+                        style.padding = '80px';
+                        style.display = 'flex';
+                        style.flexDirection = 'column';
+                        style.boxShadow = 'none';
+                    }
+                }
+            });
+            const imgData = canvas.toDataURL('image/png', 1.0);
+            const printWindow = window.open('', '_blank');
+            
+            if (!printWindow) {
+                toast.error('Print protocol blocked by browser. Please allow popups for this site.', { id: internalToastId });
+                return;
+            }
+
             printWindow.document.write(`
                 <!DOCTYPE html><html><head>
-                <title>Certificate - ${platformName || 'CAPTIV8'}</title>
+                <title>Registry Certificate - ${platformName || 'CAPTIV8'}</title>
                 <style>
                     * { margin: 0; padding: 0; box-sizing: border-box; }
-                    body { background: white; }
-                    img { width: 100%; height: auto; display: block; }
+                    body { background: white; display: flex; justify-content: center; }
+                    img { width: 100%; height: auto; max-width: 800px; }
                     @media print {
                         @page { size: letter portrait; margin: 0; }
                         body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -88,15 +111,21 @@ export default function InstitutionalCertificate({ date, nodeId, platformName, p
                 </style>
                 </head><body>
                 <img src="${imgData}" />
+                <script>
+                    window.onload = () => {
+                        window.focus();
+                        setTimeout(() => {
+                            window.print();
+                        }, 500);
+                    };
+                </script>
                 </body></html>
             `);
             printWindow.document.close();
-            printWindow.onload = () => {
-                printWindow.focus();
-                printWindow.print();
-            };
+            toast.success('Print sequence initiated.', { id: internalToastId });
         } catch (error) {
             console.error('Print failed:', error);
+            toast.error('Print sequence failed. Please retry.', { id: internalToastId });
         }
     };
 
