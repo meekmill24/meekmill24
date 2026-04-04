@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ShieldCheck, Download } from 'lucide-react';
+import { ShieldCheck, Download, Printer } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface CertificateProps {
@@ -21,11 +21,21 @@ export default function InstitutionalCertificate({ date, nodeId, platformName, p
             const html2canvas = (await import('html2canvas')).default;
             const jsPDF = (await import('jspdf')).default;
             
+            // Force the width for the capture to ensure desktop-style layout in PDF
             const canvas = await html2canvas(certificateRef.current, {
                 scale: 2,
                 useCORS: true,
                 backgroundColor: '#fcfaf7',
                 logging: false,
+                width: 1000, // Fixed width for standard layout
+                onclone: (clonedDoc) => {
+                    const clonedEl = clonedDoc.querySelector('[data-cert-container]');
+                    if (clonedEl) {
+                        (clonedEl as HTMLElement).style.width = '1000px';
+                        (clonedEl as HTMLElement).style.minHeight = '1300px';
+                        (clonedEl as HTMLElement).style.padding = '80px';
+                    }
+                }
             });
             
             const imgData = canvas.toDataURL('image/png');
@@ -38,38 +48,80 @@ export default function InstitutionalCertificate({ date, nodeId, platformName, p
             pdf.addImage(imgData, 'PNG', 0, 0, canvas.width / 2, canvas.height / 2);
             pdf.save(`Certificate_${platformName || 'CAPTIV8'}_Business_License.pdf`);
         } catch (error) {
-            console.error('Export failed:', error);
-            window.print(); // Fallback
+            console.error('PDF export failed:', error);
+        }
+    };
+
+    const handlePrint = async () => {
+        if (!certificateRef.current) return;
+        try {
+            const html2canvas = (await import('html2canvas')).default;
+            const canvas = await html2canvas(certificateRef.current, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#fcfaf7',
+                logging: false,
+                width: 1000,
+                onclone: (clonedDoc) => {
+                    const clonedEl = clonedDoc.querySelector('[data-cert-container]');
+                    if (clonedEl) {
+                        (clonedEl as HTMLElement).style.width = '1000px';
+                        (clonedEl as HTMLElement).style.minHeight = '1300px';
+                        (clonedEl as HTMLElement).style.padding = '80px';
+                    }
+                }
+            });
+            const imgData = canvas.toDataURL('image/png');
+            const printWindow = window.open('', '_blank', 'width=900,height=1200');
+            if (!printWindow) return;
+            printWindow.document.write(`
+                <!DOCTYPE html><html><head>
+                <title>Certificate - ${platformName || 'CAPTIV8'}</title>
+                <style>
+                    * { margin: 0; padding: 0; box-sizing: border-box; }
+                    body { background: white; }
+                    img { width: 100%; height: auto; display: block; }
+                    @media print {
+                        @page { size: letter portrait; margin: 0; }
+                        body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+                    }
+                </style>
+                </head><body>
+                <img src="${imgData}" />
+                </body></html>
+            `);
+            printWindow.document.close();
+            printWindow.onload = () => {
+                printWindow.focus();
+                printWindow.print();
+            };
+        } catch (error) {
+            console.error('Print failed:', error);
         }
     };
 
     return (
-        <div className="w-full max-w-4xl mx-auto p-2 md:p-8 print:p-0 print:m-0">
-            <style jsx global>{`
-                @media print {
-                    @page { size: letter portrait; margin: 0; }
-                    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; margin: 0; padding: 0; }
-                }
-            `}</style>
+        <div className="w-full max-w-4xl mx-auto p-2 md:p-8">
             <div 
                 ref={certificateRef}
-                className="relative bg-[#fcfaf7] text-slate-900 shadow-[0_0_50px_rgba(0,0,0,0.1)] p-6 md:p-20 font-serif border-[1px] border-slate-200 print:border-0 print:shadow-none overflow-hidden min-h-[800px] md:min-h-[1050px] print:min-h-0 print:h-[10in] print:w-[8in] flex flex-col rounded-sm"
+                data-cert-container="true"
+                className="relative bg-[#fcfaf7] text-slate-900 shadow-[20px_20px_60px_rgba(0,0,0,0.05)] p-8 md:p-20 font-serif border-[1px] border-slate-200 print:border-0 print:shadow-none overflow-hidden min-h-[900px] md:min-h-[1050px] print:min-h-0 print:h-[10in] print:w-[8in] flex flex-col rounded-sm transition-all"
             >
                 {/* Decorative Frame */}
                 <div className="absolute inset-2 md:inset-4 border border-slate-300 pointer-events-none" />
                 <div className="absolute inset-4 md:inset-6 border-4 border-double border-slate-200 pointer-events-none" />
 
                 {/* Header Section */}
-                <div className="flex flex-col md:flex-row justify-between items-start border-b-2 border-slate-900 pb-6 md:pb-10 mb-8 md:mb-12 gap-6 md:gap-8 relative z-10">
+                <div className="flex flex-col md:flex-row justify-between items-start border-b-2 border-slate-900 pb-8 md:pb-10 mb-8 md:mb-12 gap-8 relative z-10">
                     <div className="flex-1 w-full">
-                        <div className="flex items-center gap-3 mb-4 md:mb-6">
+                        <div className="flex items-center gap-3 mb-6">
                             <div className="w-10 h-10 md:w-12 md:h-12 bg-slate-900 rounded-full flex items-center justify-center text-white">
                                 <ShieldCheck size={24} className="md:w-[28px] md:h-[28px]" />
                             </div>
-                            <h2 className="text-[8px] md:text-[10px] font-black tracking-[0.4em] uppercase text-slate-500">Official Certification</h2>
+                            <h2 className="text-[9px] md:text-[10px] font-black tracking-[0.4em] uppercase text-slate-500">Official Certification</h2>
                         </div>
                         <h1 className="text-3xl md:text-5xl font-black tracking-tighter text-slate-950 uppercase mb-4 leading-tight md:leading-none text-balance">{platformName || 'CAPTIV8 OPERATIONS INC'}</h1>
-                        <div className="flex gap-4 md:gap-8 text-[9px] md:text-[11px] font-bold text-slate-500 uppercase tracking-widest">
+                        <div className="flex gap-6 md:gap-8 text-[10px] md:text-[11px] font-bold text-slate-500 uppercase tracking-widest">
                             <div>
                                 <p className="mb-1 text-slate-400">Date Issued</p>
                                 <p className="text-slate-900">{date}</p>
@@ -81,7 +133,7 @@ export default function InstitutionalCertificate({ date, nodeId, platformName, p
                         </div>
                     </div>
                     <div className="text-left md:text-right flex flex-col items-start md:items-end w-full md:w-auto">
-                        <div className="bg-slate-950 text-white px-6 md:px-8 py-3 md:py-4 mb-4 md:mb-6 inline-block font-sans font-black uppercase tracking-[0.25em] text-[10px] md:text-xs shadow-lg">
+                        <div className="bg-slate-950 text-white px-6 md:px-8 py-3 md:py-4 mb-4 md:mb-6 inline-block font-sans font-black uppercase tracking-[0.25em] text-[10px] md:text-xs">
                             Master Business License
                         </div>
                         <p className="text-base md:text-lg font-black text-slate-950 tracking-tighter">BN: 753-318-302-US</p>
@@ -90,12 +142,12 @@ export default function InstitutionalCertificate({ date, nodeId, platformName, p
                 </div>
 
                 {/* Body Content */}
-                <div className="space-y-6 md:space-y-10 text-[12px] md:text-[14px] font-sans leading-relaxed relative flex-1 text-slate-700">
+                <div className="space-y-8 md:space-y-10 text-[13px] md:text-[14px] font-sans leading-relaxed relative flex-1 text-slate-700">
                     {/* Authentic Watermark Overlay */}
                     <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-[0.04] mix-blend-multiply flex flex-col justify-center items-center select-none">
-                        <div className="rotate-[-35deg] scale-[1.5] w-[200%] h-[200%] flex flex-col gap-8 md:gap-12 whitespace-nowrap items-center justify-center">
+                        <div className="rotate-[-35deg] scale-[1.5] w-[200%] h-[200%] flex flex-col gap-10 md:gap-12 whitespace-nowrap items-center justify-center">
                             {Array.from({ length: 20 }).map((_, i) => (
-                                <div key={i} className={`flex gap-8 md:gap-12 text-3xl md:text-5xl font-black uppercase tracking-[0.8em] ${i % 2 === 0 ? '-ml-24' : 'ml-24'}`}>
+                                <div key={i} className={`flex gap-10 md:gap-12 text-3xl md:text-5xl font-black uppercase tracking-[0.8em] ${i % 2 === 0 ? '-ml-24' : 'ml-24'}`}>
                                     {Array.from({ length: 8 }).map((_, j) => (
                                         <span key={j} className="flex items-center gap-4">
                                             <ShieldCheck size={30} className="md:w-[40px] md:h-[40px]" />
@@ -107,16 +159,16 @@ export default function InstitutionalCertificate({ date, nodeId, platformName, p
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 relative z-10">
-                        <div className="space-y-6 md:space-y-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 relative z-10">
+                        <div className="space-y-8 md:space-y-8">
                              <div>
-                                <h3 className="font-bold underline uppercase mb-2 md:mb-3 text-[9px] md:text-[11px] tracking-widest text-slate-950">Business Name and Mailing Address:</h3>
+                                <h3 className="font-bold underline uppercase mb-3 text-[10px] md:text-[11px] tracking-widest text-slate-950">Business Name and Mailing Address:</h3>
                                 <p className="font-black text-slate-900 text-lg md:text-xl uppercase leading-tight mb-1">{platformName || 'CAPTIV8 OPERATIONS INC'}</p>
                                 <p className="text-slate-600 font-bold leading-relaxed pr-6 md:pr-10 text-[11px] md:text-sm">{platformAddress || '250 Schoolhouse Street, Coquitlam, BC, Canada'}</p>
                             </div>
 
-                            <div className="bg-slate-50/50 p-4 md:p-6 border-l-4 border-slate-200">
-                                <h3 className="font-bold underline uppercase mb-2 md:mb-3 text-[9px] md:text-[11px] tracking-widest text-slate-950">Incorporation Status:</h3>
+                            <div className="bg-slate-50/80 p-5 md:p-6 border-l-4 border-slate-900">
+                                <h3 className="font-bold underline uppercase mb-3 text-[10px] md:text-[11px] tracking-widest text-slate-950">Incorporation Status:</h3>
                                 <p className="font-black uppercase tracking-wide text-slate-950 text-lg md:text-xl underline decoration-slate-300 underline-offset-4">ACTIVE IN GOOD STANDING</p>
                                 <p className="text-slate-400 font-mono text-[9px] md:text-[10px] mt-2 tracking-widest font-bold">REGISTRY PROTOCOL-ID: {nodeId}</p>
                             </div>
@@ -135,22 +187,22 @@ export default function InstitutionalCertificate({ date, nodeId, platformName, p
                             </div>
 
                             <div className="text-left md:text-right w-full mt-4 md:mt-24">
-                                <h3 className="font-bold underline uppercase mb-2 md:mb-3 text-[9px] md:text-[11px] tracking-widest text-slate-950">Type of Legal Entity:</h3>
+                                <h3 className="font-bold underline uppercase mb-3 text-[10px] md:text-[11px] tracking-widest text-slate-950">Type of Legal Entity:</h3>
                                 <p className="font-black text-slate-900 uppercase text-xl md:text-2xl tracking-tighter underline decoration-slate-300 underline-offset-4">GENERAL PARTNERSHIP</p>
                                 <p className="text-[9px] md:text-[10px] text-slate-500 mt-3 italic font-bold tracking-tight max-w-[200px] md:ml-auto">(Authorized federal partnership registered under US commerce guidelines)</p>
                             </div>
                         </div>
                     </div>
 
-                    <div className="pt-6 md:pt-10 border-t-2 border-slate-100">
-                        <h3 className="font-bold underline uppercase mb-4 md:mb-6 text-[9px] md:text-[11px] tracking-widest text-slate-950">Business Information:</h3>
+                    <div className="pt-8 md:pt-10 border-t-2 border-slate-100">
+                        <h3 className="font-bold underline uppercase mb-4 md:mb-6 text-[10px] md:text-[11px] tracking-widest text-slate-950">Business Information:</h3>
                         <div className="overflow-x-auto rounded-xl border border-slate-200">
                             <table className="w-full text-left">
                                 <thead className="bg-slate-50">
                                     <tr className="text-[8px] md:text-[10px] items-center font-black uppercase tracking-widest text-slate-500 border-b border-slate-200">
-                                        <th className="px-4 md:px-6 py-3 md:py-4">Classification</th>
-                                        <th className="px-4 md:px-6 py-3 md:py-4">Registry</th>
-                                        <th className="px-4 md:px-6 py-3 md:py-4">Activity</th>
+                                        <th className="px-4 md:px-6 py-4">Classification</th>
+                                        <th className="px-4 md:px-6 py-4">Registry</th>
+                                        <th className="px-4 md:px-6 py-4">Activity</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-100 italic">
@@ -164,15 +216,15 @@ export default function InstitutionalCertificate({ date, nodeId, platformName, p
                         </div>
                     </div>
 
-                    <div className="flex flex-col md:grid md:grid-cols-2 gap-8 md:gap-12 mt-8 md:mt-16 items-start md:items-end pt-8 md:pt-12 border-t-2 border-slate-100">
+                    <div className="flex flex-col md:grid md:grid-cols-2 gap-10 md:gap-12 mt-10 md:mt-16 items-start md:items-end pt-8 md:pt-12 border-t-2 border-slate-100">
                         <div className="w-full">
-                            <h3 className="font-bold underline uppercase mb-10 md:mb-8 text-[9px] md:text-[11px] tracking-widest text-slate-950">Authorized Signature:</h3>
+                            <h3 className="font-bold underline uppercase mb-12 md:mb-8 text-[11px] tracking-widest text-slate-950">Authorized Signature:</h3>
                             <div className="relative group">
                                 <div className="absolute -top-12 md:-top-14 left-0 font-signature text-3xl md:text-5xl text-slate-800/80 select-none pointer-events-none transform -rotate-2 italic drop-shadow-sm">
                                     {platformName || 'Captiv8 Operations'}
                                 </div>
                                 <div className="border-b-2 border-slate-900 pb-2 w-full md:w-72" />
-                                <p className="text-[8px] md:text-[10px] font-black text-slate-400 mt-2 uppercase tracking-[0.3em]">Institutional Registrar</p>
+                                <p className="text-[9px] md:text-[10px] font-black text-slate-400 mt-2 uppercase tracking-[0.3em]">Institutional Registrar</p>
                             </div>
                         </div>
                         <div className="flex flex-row md:flex-col items-center md:items-end justify-between md:justify-end w-full">
@@ -187,13 +239,13 @@ export default function InstitutionalCertificate({ date, nodeId, platformName, p
                         </div>
                     </div>
 
-                    <div className="pt-8 md:pt-12 text-[10px] md:text-[11px] text-slate-500 leading-relaxed font-sans mb-0">
+                    <div className="pt-10 md:pt-12 text-[10px] md:text-[11px] text-slate-500 leading-relaxed font-sans mb-0">
                         <p className="mb-4 text-slate-600 font-medium">
-                           <strong className="text-slate-950 uppercase tracking-widest mr-2 text-[9px] md:text-[10px]">NOTICE:</strong> This document serves as legal proof of business registration. 
+                           <strong className="text-slate-950 uppercase tracking-widest mr-2 text-[10px]">NOTICE:</strong> This document serves as legal proof of business registration. 
                            Any unauthorized duplication or alteration is strictly prohibited.
                         </p>
-                        <div className="flex justify-between items-center text-[8px] md:text-[10px] font-black uppercase tracking-widest text-slate-400 mt-4 md:mt-8">
-                            <div className="flex flex-col md:flex-row gap-2 md:gap-10">
+                        <div className="flex justify-between items-center text-[9px] md:text-[10px] font-black uppercase tracking-widest text-slate-400 mt-6 md:mt-8">
+                            <div className="flex flex-col md:flex-row gap-4 md:gap-10">
                                 <span>REG-ID: {nodeId}</span>
                                 <span className="flex items-center gap-1"><ShieldCheck size={10} /> SECURED DOCUMENT</span>
                             </div>
@@ -204,13 +256,20 @@ export default function InstitutionalCertificate({ date, nodeId, platformName, p
             </div>
 
             {/* Terminal Controls */}
-            <div className="mt-8 md:mt-12 flex justify-center print:hidden">
+            <div className="mt-10 md:mt-12 flex flex-col sm:flex-row justify-center gap-4">
                 <Button 
                     onClick={handleDownload}
                     variant="outline"
-                    className="bg-zinc-900 hover:bg-zinc-800 text-white rounded-[24px] px-6 md:px-12 py-6 md:py-8 flex items-center gap-3 md:gap-4 border border-white/10 transition-all font-black uppercase tracking-[0.2em] md:tracking-[0.3em] text-[10px] md:text-[11px] hover:scale-105 active:scale-95 shadow-2xl w-full md:w-auto"
+                    className="bg-zinc-900 hover:bg-zinc-800 text-white rounded-[24px] px-8 md:px-12 py-7 md:py-8 flex items-center gap-4 border border-white/10 transition-all font-black uppercase tracking-[0.2em] md:tracking-[0.3em] text-[11px] hover:scale-105 active:scale-95 shadow-2xl w-full sm:w-auto"
                 >
-                    <Download size={18} className="md:w-5 md:h-5" /> Save High-Fidelity Proof
+                    <Download size={20} /> Save as PDF
+                </Button>
+                <Button 
+                    onClick={handlePrint}
+                    variant="outline"
+                    className="bg-zinc-800 hover:bg-zinc-700 text-white rounded-[24px] px-8 md:px-12 py-7 md:py-8 flex items-center gap-4 border border-white/10 transition-all font-black uppercase tracking-[0.2em] md:tracking-[0.3em] text-[11px] hover:scale-105 active:scale-95 shadow-2xl w-full sm:w-auto"
+                >
+                    <Printer size={20} /> Print Certificate
                 </Button>
             </div>
         </div>

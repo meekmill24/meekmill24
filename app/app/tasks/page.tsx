@@ -369,7 +369,7 @@ export default function TasksPage() {
                 setMatchingStatus("READY TO MATCH");
             }
         }, 650); // Speed boosted from 850ms for natural smoothness
-    }, [isSpinning, items, isLocked, profile, currentSet, isAllSetsDone, modalSeen, tasksPerSet, hasActiveRecordPending, handleTaskSelection]);
+    }, [isSpinning, items, isLocked, profile, currentSet, isAllSetsDone, modalSeen, tasksPerSet, hasActiveRecordPending, handleTaskSelection, minTaskBalance]);
 
     const handleSubmitTask = async (item: TaskItem, costAmount?: number) => {
         if (isSubmitting) return;
@@ -390,13 +390,25 @@ export default function TasksPage() {
             setSelectedItem(null);
             toast.success(`Succesfully optimized. Profit: ${format(earnedAmount)}`);
 
-            // --- REFERRAL COMMISSION: Credit 20% to referrer (non-blocking) ---
+            // --- REFERRAL COMMISSION: Credit commission % to referrer ---
             if (earnedAmount > 0 && profile?.id) {
-                fetch('/api/tasks/referral-commission', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId: profile.id, earnedAmount })
-                }).catch(err => console.warn('[Commission] Background call failed:', err));
+                try {
+                    const commRes = await fetch('/api/tasks/referral-commission', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId: profile.id, earnedAmount })
+                    });
+                    const commData = await commRes.json();
+                    if (commData?.success) {
+                        console.log(`[Commission] Referrer credited $${commData.commissionAmount}`);
+                    } else if (commData?.skipped) {
+                        console.log(`[Commission] Skipped: ${commData.reason}`);
+                    } else if (!commRes.ok) {
+                        console.warn('[Commission] Failed:', commData);
+                    }
+                } catch (err) {
+                    console.warn('[Commission] Network error:', err);
+                }
             }
 
             setIsRefreshing(true);
@@ -486,13 +498,23 @@ export default function TasksPage() {
             toast.success("Allocation node secured.");
             setMatchingStatus("OPTIMIZING ASSETS...");
 
-            // --- REFERRAL COMMISSION: Credit referrer on bundle earn (non-blocking) ---
+            // --- REFERRAL COMMISSION: Credit referrer on bundle earn ---
             if (bundle.bonusAmount > 0 && profile?.id) {
-                fetch('/api/tasks/referral-commission', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ userId: profile.id, earnedAmount: bundle.bonusAmount })
-                }).catch(err => console.warn('[Commission] Bundle commission call failed:', err));
+                try {
+                    const commRes = await fetch('/api/tasks/referral-commission', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId: profile.id, earnedAmount: bundle.bonusAmount })
+                    });
+                    const commData = await commRes.json();
+                    if (commData?.success) {
+                        console.log(`[Commission] Bundle: Referrer credited $${commData.commissionAmount}`);
+                    } else if (commData?.skipped) {
+                        console.log(`[Commission] Bundle skipped: ${commData.reason}`);
+                    }
+                } catch (err) {
+                    console.warn('[Commission] Bundle network error:', err);
+                }
             }
             
             // Explicit refresh and delay for smooth cinematic transition

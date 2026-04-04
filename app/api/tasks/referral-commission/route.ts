@@ -71,6 +71,14 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: updateError.message }, { status: 500 });
         }
 
+        // 5. Create transaction for referrer
+        await supabaseAdmin.from('transactions').insert({
+            user_id: referrerId,
+            type: 'commission',
+            amount: commissionAmount,
+            description: `Task commission from ${userProfile.username} (${(commissionRate * 100).toFixed(0)}%)`
+        });
+
         console.log(
             `[Commission] Credited $${commissionAmount} (${commissionRate * 100}%) to ${referrerProfile.username} ` +
             `from task by ${userProfile.username} (earned: $${earnedAmount})`

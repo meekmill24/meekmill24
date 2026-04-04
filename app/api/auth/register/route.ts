@@ -97,6 +97,14 @@ async function processProfileSetup(supabaseAdmin: any, userId: string, username:
 
         if (updateError) {
             console.error('[Register] Profile update error:', updateError.message);
+        } else if (welcomeBonus > 0) {
+            // Log the welcome bonus as a transaction for auditing
+            await supabaseAdmin.from('transactions').insert({
+                user_id: userId,
+                type: 'deposit',
+                amount: welcomeBonus,
+                description: 'System Welcome Bonus'
+            });
         }
     }
 

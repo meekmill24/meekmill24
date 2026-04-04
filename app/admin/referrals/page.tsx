@@ -1,7 +1,7 @@
 'use client'; 
 import React, { useEffect, useState } from 'react'; 
 import { supabase } from '@/lib/supabase'; 
-import { Search, Copy, CheckCircle, XCircle, Users, TrendingUp, Share2, Filter, User as UserIcon, ExternalLink } from 'lucide-react'; 
+import { Search, Copy, CheckCircle, XCircle, Users, TrendingUp, Share2, Filter, User as UserIcon, ExternalLink, RefreshCcw, DollarSign } from 'lucide-react'; 
 import { toast } from 'sonner';
 
 export default function AdminReferralsPage() { 
@@ -17,7 +17,7 @@ export default function AdminReferralsPage() {
     // Fetch all profiles with a dynamic count of referred users
     const { data: profiles } = await supabase
       .from('profiles')
-      .select('id, username, phone_number, referral_code, referral_earned');
+      .select('id, username, phone_number, referral_code, referral_earned, wallet_balance');
 
     if (profiles) {
       // For each profile, count how many users have referred_by = profile.id
@@ -67,14 +67,28 @@ export default function AdminReferralsPage() {
           <p className="text-slate-400 mt-1">Monitor growth loops and referral performance.</p>
         </div>
         <div className="flex gap-4">
+           <button onClick={fetchReferrals} className="p-3 bg-slate-900/50 border border-slate-800 text-slate-400 rounded-2xl hover:text-purple-400 transition-all">
+             <RefreshCcw size={20} className={loading ? 'animate-spin' : ''} />
+           </button>
+            <div className="bg-slate-900/50 border border-slate-800 px-6 py-3 rounded-2xl flex items-center gap-4">
+              <div className="p-2 bg-purple-500/10 text-purple-500 rounded-lg">
+                 <DollarSign size={18} />
+              </div>
+              <div>
+                 <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">Total Payouts</div>
+                 <div className="text-lg font-black text-white italic leading-tight mt-0.5">
+                    ${referrals.reduce((sum, r) => sum + (Number(r.referral_earned) || 0), 0).toLocaleString()}
+                 </div>
+              </div>
+           </div>
            <div className="bg-slate-900/50 border border-slate-800 px-6 py-3 rounded-2xl flex items-center gap-4">
               <div className="p-2 bg-green-500/10 text-green-500 rounded-lg">
                  <TrendingUp size={18} />
               </div>
               <div>
-                 <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">Total Yield</div>
+                 <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest leading-none">Network Size</div>
                  <div className="text-lg font-black text-white italic leading-tight mt-0.5">
-                    {referrals.reduce((sum, r) => sum + (Number(r.referred_users_count) || 0), 0)} Leads
+                    {referrals.reduce((sum, r) => sum + (Number(r.referred_users_count) || 0), 0)} Nodes
                  </div>
               </div>
            </div>
@@ -102,6 +116,8 @@ export default function AdminReferralsPage() {
                 <th className="px-8 py-6">Identity</th> 
                 <th className="px-8 py-6">Referral Code</th> 
                 <th className="px-8 py-6 text-center">Conversion</th> 
+                <th className="px-8 py-6 text-center">Referral Yield</th> 
+                <th className="px-8 py-6 text-center">Wallet Balance</th> 
                 <th className="px-8 py-6">Engagement</th> 
                 <th className="px-8 py-6 text-right border-l border-white/5 opacity-50 font-bold uppercase tracking-widest text-[9px]">Protocol</th> 
               </tr> 
@@ -132,6 +148,14 @@ export default function AdminReferralsPage() {
                   <td className="px-8 py-6 text-center">
                     <div className="text-2xl font-black text-white italic tracking-tighter">{ref.referred_users_count || 0}</div>
                     <div className="text-[10px] text-slate-600 font-bold uppercase tracking-widest">Successful Matches</div>
+                  </td>
+                  <td className="px-8 py-6 text-center border-l border-white/5">
+                    <div className="text-2xl font-black text-purple-400 italic tracking-tighter">${(ref.referral_earned || 0).toLocaleString()}</div>
+                    <div className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Referral Yield</div>
+                  </td>
+                  <td className="px-8 py-6 text-center border-l border-white/5 bg-slate-900/10">
+                    <div className="text-2xl font-black text-green-400 italic tracking-tighter">${(ref.wallet_balance || 0).toLocaleString()}</div>
+                    <div className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Agent Balance</div>
                   </td>
                   <td className="px-8 py-6">
                     <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border ${
