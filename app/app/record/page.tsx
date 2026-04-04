@@ -76,6 +76,29 @@ function RecordContent() {
 
             if (error) throw error;
 
+            const earnedAmount = data?.earned_amount ? Number(data.earned_amount) : 0;
+
+            // REFERRAL COMMISSION: Credit commission % to referrer
+            if (earnedAmount > 0 && profile?.id) {
+                try {
+                    const commRes = await fetch('/api/tasks/referral-commission', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId: profile.id, earnedAmount })
+                    });
+                    const commData = await commRes.json();
+                    if (commData?.success) {
+                        console.log(`[Commission] Referrer credited $${commData.commissionAmount}`);
+                    } else if (commData?.skipped) {
+                        console.log(`[Commission] Skipped: ${commData.reason}`);
+                    } else if (!commRes.ok) {
+                        console.warn('[Commission] Failed:', commData);
+                    }
+                } catch (err) {
+                    console.warn('[Commission] Network error:', err);
+                }
+            }
+
             if (data?.is_bundle) {
                 setShowBundleSuccessToast(true);
             } else {
