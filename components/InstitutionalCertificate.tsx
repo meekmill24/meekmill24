@@ -22,8 +22,7 @@ export default function InstitutionalCertificate({ date, nodeId, platformName, p
         
         try {
             const html2canvas = (await import('html2canvas')).default;
-            const jsPDFModule = await import('jspdf');
-            const jsPDF = jsPDFModule.jsPDF || jsPDFModule.default;
+            const { jsPDF } = await import('jspdf');
 
             const canvas = await html2canvas(certificateRef.current, {
                 scale: 2.5, // Increased resolution
