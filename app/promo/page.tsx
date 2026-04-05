@@ -1,119 +1,206 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldCheck, Zap, Globe, TrendingUp, ChevronRight, Cpu, Layout, Lock } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { ShieldCheck, Zap, Globe, TrendingUp, ChevronRight, Cpu, Lock, Activity, Loader2, Volume2, Fingerprint, Database, Radio, Smartphone, Users, CheckCircle, BarChart3, Network } from 'lucide-react';
 
+// MASTER CAPTIV8 SCRIPT & SCENE MAPPING
+// Total Duration: ~75.0s
 const slides = [
     {
         bg: '/ready_to_start_bg_1774267671240.png',
-        text: 'WELCOME TO CAPTIV8',
-        subtext: 'YOUR INSTITUTIONAL NODE FOR STRATEGIC YIELD OPTIMIZATION',
+        text: 'INTRODUCING CAPTIV8',
+        subtext: 'THE INSTITUTIONAL HUB FOR HIGH-FIDELITY LIQUIDITY NODES',
         color: 'white',
-        icon: ShieldCheck
+        icon: Fingerprint,
+        duration: 5.0
     },
     {
-        bg: '/promo_bg_wealth.png',
-        text: 'NO UPFRONT INVESTMENT REQUIRED',
-        subtext: 'ACTIVATE YOUR GLOBAL NODE AND START HARVESTING WEALTH TODAY',
+        bg: '/promo_3d_core.png',
+        text: 'GLOBAL MESH NETWORK',
+        subtext: 'JOIN OVER 20,000 ACTIVE OPERATORS MINING ASSETS IN REAL-TIME',
+        color: 'cyan',
+        icon: Network,
+        duration: 6.0
+    },
+    {
+        bg: '/promo_wealth_elite.png',
+        text: 'MAXIMIZE YOUR YIELD',
+        subtext: 'ELITE ALGORITHMS OPTIMIZED FOR THE MODERN SMARTPHONE USER',
         color: 'yellow',
-        icon: TrendingUp
+        icon: BarChart3,
+        duration: 6.0
     },
     {
         bg: '/promo_bg_us_protocol.png',
-        text: 'STRATEGIC LIQUIDITY SYNCHRONIZATION',
-        subtext: 'VERIFIED BY THE UNITED STATES INSTITUTIONAL PROTOCOL',
-        color: 'cyan',
-        icon: Cpu
-    },
-    {
-        bg: '/promo_bg_influencer.png',
-        text: 'THE ELITE HUB FOR THE CREATOR ECONOMY',
-        subtext: 'INFLUENCER MARKETING AND HIGH-FIDELITY TECHNOLOGY',
+        text: 'ZERO-BARRIER ENTRY',
+        subtext: 'NO UPFRONT INVESTMENT REQUIRED. START EARNING INSTANTLY.',
         color: 'white',
-        icon: Globe
+        icon: Zap,
+        duration: 6.0
     },
     {
         bg: '/promo_bg_vault.png',
-        text: 'SECURE AND TRANSPARENT PROTOCOLS',
-        subtext: 'PROTECTED BY MULTI-SIGNATURE QUANTUM ENCRYPTION',
+        text: 'USDC SETTLEMENTS',
+        subtext: 'ENJOY GUARANTEED STABILITY. EARN IN 1:1 PEGGED ASSETS.',
         color: 'emerald',
-        icon: Lock
+        icon: Lock,
+        duration: 6.0
+    },
+    {
+        bg: '/promo_bg_network.png',
+        text: 'AUTONOMOUS NODES',
+        subtext: 'POWERED BY THE NEURAL ENGINE v4.2 FOR CONTINUOUS SETTLEMENT.',
+        color: 'cyan',
+        icon: Zap,
+        duration: 7.0
+    },
+    {
+        bg: '/ready_to_start_bg_1774267671240.png',
+        text: 'INSTITUTIONAL TRUST',
+        subtext: 'VERIFIED SECURITY PROTOCOLS AND ON-CHAIN TRANSPARENCY.',
+        color: 'white',
+        icon: ShieldCheck,
+        duration: 7.0
     },
     {
         bg: '/promo_bg_global_mesh.png',
-        text: 'GLOBAL NODE NETWORK 24/7',
-        subtext: 'REAL-TIME SYNCHRONIZATION ACROSS EVERY CONTINENT',
+        text: 'WITHDRAW ANYTIME',
+        subtext: 'SEAMLESS LIQUIDITY TRANSFERS WITH ZERO-WAIT SETTLEMENT.',
         color: 'cyan',
-        icon: Globe
-    },
-    {
-        bg: '/promo_bg_mobile_terminal.png',
-        text: 'ACCESSIBLE FROM ANY TERMINAL',
-        subtext: 'MANAGE YOUR INSTITUTIONAL PORTFOLIO FROM YOUR HAND',
-        color: 'white',
-        icon: Layout
+        icon: Activity,
+        duration: 8.0
     },
     {
         bg: '/promo_bg_conclusion.png',
-        text: 'SECURE YOUR JOURNEY TODAY',
-        subtext: 'CAPTIV8. SHAPING THE FUTURE OF THE NEW ECONOMY',
-        color: 'cyan',
-        icon: ShieldCheck
+        text: 'SHAPE YOUR FUTURE',
+        subtext: 'ACTIVATE YOUR CAPTIV8 NODE TODAY. START YOUR WEALTH HARVEST.',
+        color: 'yellow',
+        icon: CheckCircle,
+        duration: 12.0
     }
 ];
 
 export default function PromoPage() {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);
+    const [assetLoading, setAssetLoading] = useState(true);
+    const [loadProgress, setLoadProgress] = useState(0);
+    const [mounted, setMounted] = useState(false);
+    const [audioTime, setAudioTime] = useState(0);
+    const audioRef = useRef<HTMLAudioElement>(null);
+
+    const TOTAL_DURATION = slides.reduce((acc, s) => acc + s.duration, 0);
 
     useEffect(() => {
-        if (!isPlaying) return;
+        setMounted(true);
+    }, []);
+
+    // HYPER-SYNC ENGINE: 50Hz refresh
+    useEffect(() => {
+        if (!isPlaying || !audioRef.current) return;
+
+        const syncInterval = setInterval(() => {
+            if (audioRef.current) {
+                const currentTime = audioRef.current.currentTime;
+                setAudioTime(currentTime);
+                
+                let cumulative = 0;
+                for (let i = 0; i < slides.length; i++) {
+                    cumulative += slides[i].duration;
+                    if (currentTime < cumulative) {
+                        if (currentSlide !== i) setCurrentSlide(i);
+                        break;
+                    }
+                }
+            }
+        }, 20); 
         
-        // 60 seconds / 8 slides = 7.5 seconds per slide
-        const timer = setInterval(() => {
-            setCurrentSlide((prev) => (prev + 1) % slides.length);
-        }, 7500); 
-        return () => clearInterval(timer);
-    }, [isPlaying]);
+        return () => clearInterval(syncInterval);
+    }, [isPlaying, currentSlide]);
+
+    // PRE-LOADER PRO MAX
+    useEffect(() => {
+        let loadedCount = 0;
+        const totalItems = slides.length + 2; 
+
+        const updateProgress = () => {
+            loadedCount++;
+            setLoadProgress(Math.floor((loadedCount / totalItems) * 100));
+            if (loadedCount >= totalItems) {
+                setTimeout(() => setAssetLoading(false), 2000); 
+            }
+        };
+
+        const emergencyUnlock = setTimeout(() => {
+            if (assetLoading) {
+                setLoadProgress(100);
+                setTimeout(() => setAssetLoading(false), 800);
+            }
+        }, 5000); // Super fast 5s emergency unlock
+
+        slides.forEach(s => {
+            const img = new Image();
+            img.src = s.bg;
+            img.onload = updateProgress;
+            img.onerror = updateProgress;
+        });
+
+        if (audioRef.current) {
+            audioRef.current.addEventListener('canplaythrough', updateProgress, { once: true });
+        } else {
+            updateProgress();
+        }
+
+        return () => clearTimeout(emergencyUnlock);
+    }, []);
 
     const startPresentation = () => {
         setIsPlaying(true);
-        const audio = document.getElementById('promo-audio') as HTMLAudioElement;
-        if (audio) {
-            audio.currentTime = 0;
-            audio.play();
+        if (audioRef.current) {
+            audioRef.current.currentTime = 0;
+            audioRef.current.play();
         }
     };
 
     const slide = slides[currentSlide];
-    const Icon = slide.icon;
+
+    if (assetLoading) {
+        return (
+            <div className="fixed inset-0 bg-black flex flex-col items-center justify-center z-[1000] overflow-hidden text-center">
+                <img src="/promo_3d_loading.png" alt="Loading" className="absolute inset-0 w-full h-full object-cover opacity-20 blur-[5px]" />
+                <div className="relative z-10 w-full max-w-md px-10">
+                    <Loader2 className="w-16 h-16 text-cyan-400 animate-spin mx-auto mb-8" strokeWidth={1} />
+                    <h3 className="text-2xl font-black italic tracking-tighter text-white uppercase mb-2">Initiating Captiv8 Node</h3>
+                    <div className="h-1 w-full bg-white/5 rounded-full">
+                        <motion.div initial={{ width: 0 }} animate={{ width: `${loadProgress}%` }} className="h-full bg-cyan-500 shadow-[0_0_20px_rgba(6,182,212,0.6)]" />
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     return (
-        <div className="fixed inset-0 bg-black overflow-hidden flex items-center justify-center font-sans select-none">
-            <audio id="promo-audio" src="/promo_audio_1min.m4a" />
+        <div className="fixed inset-0 bg-[#020617] overflow-hidden flex items-center justify-center font-sans select-none">
+            {/* NEW AUTHENTIC AUDIO SOURCE (Deep Bass + Professional Human Narration) */}
+            <audio ref={audioRef} id="promo-audio" preload="auto">
+                <source src="/promo_audio_brand.m4a" type="audio/mp4" />
+            </audio>
             
             {!isPlaying && (
-                <div className="fixed inset-0 z-[100] bg-slate-950 flex flex-col items-center justify-center gap-10 px-8">
-                    <div className="relative">
-                        <div className="w-32 h-32 bg-cyan-500/10 border border-cyan-500/20 rounded-full flex items-center justify-center animate-pulse shadow-[0_0_50px_rgba(6,182,212,0.2)]">
-                            <ShieldCheck className="text-cyan-400" size={56} />
+                <div className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center">
+                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.05] pointer-events-none" />
+                    <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center gap-12 text-center px-10 relative z-10">
+                        <img src="/logo.png" className="w-40 h-40 object-contain rounded-3xl" alt="Logo" />
+                        <div className="space-y-4">
+                            <h2 className="text-7xl md:text-9xl font-black italic tracking-tighter uppercase text-white leading-none">THE <span className="text-cyan-400">FUTURE</span></h2>
+                            <p className="text-white/20 text-[11px] font-black uppercase tracking-[1.5em] leading-none">CAPTIV8 // HIGH-FIDELITY YIELD</p>
                         </div>
-                        <div className="absolute -inset-4 border border-cyan-500/10 rounded-full animate-[spin_10s_linear_infinite]" />
-                    </div>
-                    <div className="text-center max-w-lg">
-                        <h2 className="text-4xl font-black italic tracking-tighter uppercase text-white mb-4 leading-none">Full Production <br/><span className="text-cyan-400">Institutional Promo</span></h2>
-                        <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.5em] leading-relaxed">60 SECONDS // SYNCHRONIZED AUDIO NODE // 8 CINEMATIC SCENES</p>
-                    </div>
-                    <button 
-                        onClick={startPresentation}
-                        className="group flex items-center gap-4 px-16 py-7 bg-white text-slate-950 rounded-[32px] font-black text-xs uppercase tracking-[0.4em] shadow-[0_25px_80px_rgba(255,255,255,0.15)] hover:bg-cyan-400 hover:text-slate-950 transition-all active:scale-95"
-                    >
-                        Initiate Full Experience <ChevronRight className="group-hover:translate-x-1 transition-transform" />
-                    </button>
-                    <div className="text-[9px] font-black uppercase tracking-widest text-slate-700 mt-10">
-                        Protocol Version 3.1.0-CINEMATIC
-                    </div>
+                        <button onClick={startPresentation} className="group overflow-hidden flex items-center gap-8 px-28 py-10 bg-white text-black rounded-full font-black text-xl uppercase tracking-[0.5em] hover:bg-cyan-400 transition-all active:scale-95">
+                            ACTIVATE <ChevronRight />
+                        </button>
+                    </motion.div>
                 </div>
             )}
 
@@ -122,97 +209,68 @@ export default function PromoPage() {
                     key={currentSlide}
                     initial={{ opacity: 0, scale: 1.2, filter: "blur(20px)" }}
                     animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
-                    exit={{ opacity: 0, scale: 0.9, filter: "blur(40px)" }}
-                    transition={{ duration: 2.5, ease: "easeInOut" }}
+                    exit={{ opacity: 0, scale: 0.8, filter: "blur(20px)" }}
+                    transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }} 
                     className="absolute inset-0"
                 >
-                    <img 
+                    <motion.img 
                         src={slide.bg} 
-                        alt="Background" 
-                        className="w-full h-full object-cover opacity-60"
+                        animate={{ scale: [1, 1.15], x: [-10, 10] }}
+                        transition={{ duration: slide.duration, ease: "linear" }}
+                        className="w-full h-full object-cover opacity-40 contrast-150 saturate-0 brightness-75" // High Contrast B&W Aesthetic for text pop
                     />
-                    <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-transparent to-black" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent to-[#020617]/50" />
                 </motion.div>
             </AnimatePresence>
 
-            {/* Cinematic Frame */}
-            <div className="absolute inset-8 border border-white/5 pointer-events-none z-20" />
-            
-            {/* HUD Elements */}
-            <div className="absolute top-16 left-16 flex items-center gap-8 z-40">
-                <AnimatePresence mode="wait">
-                    <motion.div 
-                        key={currentSlide}
-                        initial={{ rotate: -90, opacity: 0 }}
-                        animate={{ rotate: 0, opacity: 1 }}
-                        exit={{ rotate: 90, opacity: 0 }}
-                        className="w-20 h-20 bg-white/5 backdrop-blur-3xl rounded-[24px] border border-white/10 flex items-center justify-center shadow-2xl overflow-hidden"
-                    >
-                         <Icon className="text-white" size={40} />
-                         <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/10 overflow-hidden">
-                            <motion.div 
-                                key={`icon-progress-${currentSlide}`}
-                                initial={{ width: 0 }}
-                                animate={{ width: "100%" }}
-                                transition={{ duration: 7.5, ease: "linear" }}
-                                className={`h-full ${
-                                    slide.color === 'yellow' ? 'bg-yellow-400' : 
-                                    slide.color === 'cyan' ? 'bg-cyan-400' : 
-                                    slide.color === 'emerald' ? 'bg-emerald-400' : 'bg-white'
-                                }`}
-                            />
-                         </div>
-                    </motion.div>
-                </AnimatePresence>
-                <div className="text-left">
-                    <span className="text-4xl font-black italic tracking-tighter uppercase text-white block leading-none mb-1">CAPTIV8</span>
-                    <div className="flex items-center gap-3">
-                        <span className="text-[10px] font-black uppercase tracking-[0.6em] text-cyan-400">INSTITUTIONAL NODE</span>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-white/20">SCENE 0{currentSlide + 1} // 08</span>
-                    </div>
+            {/* MASTER CAPTIV8 HUD */}
+            <div className="absolute inset-x-20 top-20 flex justify-between z-50">
+                <div className="text-left space-y-1">
+                    <h4 className="text-5xl font-black italic tracking-tighter uppercase text-cyan-400 leading-none">CAPTIV8 // CORE</h4>
+                    <span className="text-[14px] font-black text-white font-mono tracking-widest">{audioTime.toFixed(2)}s / 75.00s</span>
                 </div>
+                {React.createElement(slide.icon, { className: "text-white w-20 h-20 opacity-20", strokeWidth: 0.5 })}
             </div>
 
-            {/* Overlays */}
-            <div className="relative z-30 text-center px-10 max-w-6xl">
+            <div className="relative z-30 text-center px-10 w-full max-w-[1400px]">
                 <AnimatePresence mode="wait">
                     <motion.div
-                        key={`text-${currentSlide}`}
-                        initial={{ y: 100, opacity: 0, letterSpacing: "1.5em" }}
-                        animate={{ y: 0, opacity: 1, letterSpacing: "0em" }}
-                        exit={{ y: -100, opacity: 0, letterSpacing: "-1em" }}
-                        transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+                        key={`content-${currentSlide}`}
+                        initial={{ y: 100, opacity: 0, scale: 0.8, filter: "blur(10px)" }}
+                        animate={{ y: 0, opacity: 1, scale: 1, filter: "blur(0px)" }}
+                        exit={{ y: -100, opacity: 0, scale: 1.2, filter: "blur(10px)" }}
+                        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                        className="flex flex-col items-center"
                     >
-                        <h1 className={`text-6xl md:text-9xl font-black italic tracking-tighter uppercase mb-10 drop-shadow-[0_40px_100px_rgba(0,0,0,1)] leading-[0.85] ${
+                        <h1 className={cn(
+                            "text-7xl md:text-[14rem] font-black italic tracking-tighter uppercase mb-2 md:mb-4 leading-[0.75] drop-shadow-3xl",
                             slide.color === 'yellow' ? 'text-yellow-400' : 
                             slide.color === 'cyan' ? 'text-cyan-400' : 
                             slide.color === 'emerald' ? 'text-emerald-400' : 'text-white'
-                        }`}>
+                        )}>
                             {slide.text}
                         </h1>
-                        <div className="flex flex-col items-center gap-10">
-                            <p className="text-xs md:text-3xl font-black uppercase tracking-[0.8em] text-white/90 italic drop-shadow-2xl max-w-5xl leading-relaxed whitespace-pre-wrap">
-                                {slide.subtext}
-                            </p>
-                        </div>
+                        <p className="text-xl md:text-5xl font-black uppercase tracking-[0.2em] md:tracking-[0.4em] text-white/90 italic max-w-5xl leading-[1.1] font-mono shadow-black drop-shadow-[0_10px_20px_rgba(0,0,0,1)]">
+                            {slide.subtext}
+                        </p>
                     </motion.div>
                 </AnimatePresence>
             </div>
 
-            {/* Full Width Progress Bar */}
-            <div className="absolute bottom-16 left-16 right-16 h-[3px] bg-white/5 overflow-hidden rounded-full z-40">
-                <motion.div 
-                    key={`progress-full`}
-                    initial={{ width: 0 }}
-                    animate={{ width: isPlaying ? "100%" : 0 }}
-                    transition={{ duration: 60, ease: "linear" }}
-                    className="h-full bg-gradient-to-r from-cyan-500 via-emerald-500 to-yellow-500"
-                 />
+            <div className="absolute bottom-20 left-20 right-20 z-50">
+                 <div className="h-[2px] w-full bg-white/5 rounded-full relative overflow-hidden">
+                    <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: isPlaying ? "100%" : 0 }}
+                        transition={{ duration: TOTAL_DURATION, ease: "linear" }}
+                        className="absolute inset-0 bg-cyan-500 shadow-[0_0_20px_rgba(6,182,212,1)] z-10"
+                    />
+                </div>
             </div>
-            
-            {/* Visual Scanline & Vignette */}
-            <div className="absolute inset-0 pointer-events-none z-50 opacity-[0.05] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,118,0.06))] bg-[length:100%_4px,3px_100%] transition-opacity" />
-            <div className="absolute inset-0 pointer-events-none z-[45] bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.6)_100%)] shadow-[inset_0_0_200px_rgba(0,0,0,0.9)]" />
+
+            {/* OVERLAY EFFECTS PRO MAX */}
+            <div className="absolute inset-0 z-10 pointer-events-none border-[40px] border-black/20" />
+            <div className="absolute inset-0 z-40 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.95)_100%)]" />
         </div>
     );
 }

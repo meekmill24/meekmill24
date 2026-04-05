@@ -61,9 +61,6 @@ export async function POST(req: NextRequest) {
     }
 }
 
-        console.log(`[Register/Link] Agent: ${username} | Welcome bonus: $${welcomeBonus} | Referred by: ${referrerId || 'none'}`);
-}
-
 async function generateUniqueReferralCode(supabaseAdmin: any): Promise<string> {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let code: string = '';
