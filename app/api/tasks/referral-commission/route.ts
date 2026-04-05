@@ -14,7 +14,20 @@ export async function POST(req: NextRequest) {
             process.env.SUPABASE_SERVICE_ROLE_KEY!
         );
 
-        // 1. Find the referrer of this user
+        // 1. Security Verification: Ensure the user actually completed a task recently
+        // This prevents manual spoofing of the commission API
+        const { data: recentTransactions } = await supabaseAdmin
+            .from('transactions')
+            .select('id, amount')
+            .eq('user_id', userId)
+            .gte('created_at', new Date(Date.now() - 5 * 60 * 1000).toISOString()) // Last 5 mins
+            .limit(1);
+
+        if (!recentTransactions || recentTransactions.length === 0) {
+            return NextResponse.json({ skipped: true, reason: 'Transaction verification failed: No recent activity node found.' });
+        }
+
+        // 2. Find the referrer of this user
         const { data: userProfile, error: profileError } = await supabaseAdmin
             .from('profiles')
             .select('referred_by, username')
@@ -27,14 +40,14 @@ export async function POST(req: NextRequest) {
 
         const referrerId = userProfile.referred_by;
 
-        // 2. Fetch referral commission rate from site_settings (default 20%)
+        // 3. Fetch referral commission rate from site_settings (default 20%)
         const { data: settings } = await supabaseAdmin
             .from('site_settings')
             .select('key, value')
             .eq('key', 'referral_commission_rate');
 
         const commissionRate = Number(
-            settings?.find(s => s.key === 'referral_commission_rate')?.value ?? 0.20
+            settings?.find((s: any) => s.key === 'referral_commission_rate')?.value ?? 0.20
         );
 
         const commissionAmount = Number((Number(earnedAmount) * commissionRate).toFixed(2));
@@ -43,7 +56,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ skipped: true, reason: 'Commission too small' });
         }
 
-        // 3. Fetch referrer's current balances
+        // 4. Update referrer's balances (Note: Using RPC for atomic increment is recommended for high-traffic systems)
         const { data: referrerProfile, error: referrerError } = await supabaseAdmin
             .from('profiles')
             .select('wallet_balance, referral_earned, username')
@@ -57,7 +70,6 @@ export async function POST(req: NextRequest) {
         const newWalletBalance = Number(referrerProfile.wallet_balance || 0) + commissionAmount;
         const newReferralEarned = Number(referrerProfile.referral_earned || 0) + commissionAmount;
 
-        // 4. Credit the commission to the referrer
         const { error: updateError } = await supabaseAdmin
             .from('profiles')
             .update({
@@ -98,3 +110,4 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: err.message }, { status: 500 });
     }
 }
+

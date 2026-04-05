@@ -61,7 +61,49 @@ export async function POST(req: NextRequest) {
     }
 }
 
+        console.log(`[Register/Link] Agent: ${username} | Welcome bonus: $${welcomeBonus} | Referred by: ${referrerId || 'none'}`);
+}
+
+async function generateUniqueReferralCode(supabaseAdmin: any): Promise<string> {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code: string = '';
+    let isUnique = false;
+    let attempts = 0;
+    const MAX_ATTEMPTS = 10;
+
+    while (!isUnique && attempts < MAX_ATTEMPTS) {
+        attempts++;
+
+        // Generate a random 4-character code
+        code = '';
+        for (let i = 0; i < 4; i++) {
+            code += characters.charAt(Math.floor(Math.random() * characters.length));
+        }
+
+        // Check if this code already exists
+        const { data: existing, error } = await supabaseAdmin
+            .from('profiles')
+            .select('id')
+            .eq('referral_code', code)
+            .single();
+
+        // PGRST116 = no rows found = code is unique
+        if (error?.code === 'PGRST116' || !existing) {
+            isUnique = true;
+        }
+    }
+
+    if (!isUnique) {
+        throw new Error('Unable to generate unique referral code after maximum attempts');
+    }
+
+    return code;
+}
+
 async function processProfileSetup(supabaseAdmin: any, userId: string, username: string, referralCode?: string) {
+    // Generate a unique referral code for the new user
+    const uniqueReferralCode = await generateUniqueReferralCode(supabaseAdmin);
+
     // Fetch welcome_bonus from site_settings (admin-editable)
     const { data: settings } = await supabaseAdmin
         .from('site_settings')
@@ -83,11 +125,12 @@ async function processProfileSetup(supabaseAdmin: any, userId: string, username:
         referrerId = referrerProfile?.id || null;
     }
 
-    // Update new user's profile: set welcome bonus + link referrer
+    // Update new user's profile: set welcome bonus + link referrer + assign referral code
     const profileUpdate: Record<string, any> = {};
     if (welcomeBonus > 0) profileUpdate.wallet_balance = welcomeBonus;
     if (referrerId) profileUpdate.referred_by = referrerId;
     if (username) profileUpdate.username = username; // Update username directly for strict email flow
+    profileUpdate.referral_code = uniqueReferralCode; // Always assign a unique referral code
 
     if (Object.keys(profileUpdate).length > 0) {
         const { error: updateError } = await supabaseAdmin
@@ -108,5 +151,5 @@ async function processProfileSetup(supabaseAdmin: any, userId: string, username:
         }
     }
 
-    console.log(`[Register/Link] Agent: ${username} | Welcome bonus: $${welcomeBonus} | Referred by: ${referrerId || 'none'}`);
+    console.log(`[Register/Link] Agent: ${username} | Referral code: ${uniqueReferralCode} | Welcome bonus: $${welcomeBonus} | Referred by: ${referrerId || 'none'}`);
 }

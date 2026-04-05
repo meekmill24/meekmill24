@@ -12,20 +12,27 @@ export default function CertificatePage() {
     const { profile, loading } = useAuth();
     const router = useRouter();
     const [settings, setSettings] = React.useState<any>({});
+    const [settingsLoading, setSettingsLoading] = React.useState(true);
 
     React.useEffect(() => {
         const fetchSettings = async () => {
-            const { data } = await supabase.from('site_settings').select('*');
-            if (data) {
-                const s: any = {};
-                data.forEach(item => s[item.key] = item.value);
-                setSettings(s);
+            try {
+                const { data } = await supabase.from('site_settings').select('*');
+                if (data) {
+                    const s: any = {};
+                    data.forEach(item => s[item.key] = item.value);
+                    setSettings(s);
+                }
+            } catch (error) {
+                console.error('Failed to fetch settings:', error);
+            } finally {
+                setSettingsLoading(false);
             }
         };
         fetchSettings();
     }, []);
 
-    if (loading) {
+    if (loading || settingsLoading) {
         return (
             <div className="min-h-screen bg-black flex items-center justify-center">
                 <Spinner className="w-8 h-8 text-cyan-500" />
@@ -55,7 +62,7 @@ export default function CertificatePage() {
     return (
         <div className="min-h-screen bg-black text-white pb-32">
             {/* Header Node */}
-            <div className="sticky top-0 z-50 bg-black/80 backdrop-blur-xl border-b border-white/5 px-6 py-4 flex items-center gap-4 print:hidden">
+            <div className="sticky top-0 z-50 bg-black/80 backdrop-blur-xl border-b border-white/5 px-6 py-4 flex items-center gap-4">
                 <button 
                     onClick={() => router.back()}
                     className="p-2 hover:bg-white/5 rounded-full transition-colors"
@@ -66,7 +73,7 @@ export default function CertificatePage() {
             </div>
 
             <div className="p-6 md:p-10">
-                <div className="mb-12 text-center print:hidden">
+                <div className="mb-12 text-center">
                     <h2 className="text-3xl font-black italic tracking-tighter uppercase mb-2">Company Certification</h2>
                     <p className="text-zinc-500 text-[10px] font-black uppercase tracking-[0.4em]">Official Institutional Business License</p>
                 </div>
@@ -78,7 +85,7 @@ export default function CertificatePage() {
                     platformAddress={settings.platform_address}
                 />
                 
-                <div className="mt-12 max-w-2xl mx-auto p-8 bg-zinc-900/40 border border-white/5 rounded-[32px] text-center print:hidden">
+                <div className="mt-12 max-w-2xl mx-auto p-8 bg-zinc-900/40 border border-white/5 rounded-[32px] text-center">
                     <p className="text-xs text-zinc-500 italic leading-relaxed">
                         "This institutional certificate is a high-fidelity proof of the company's operational legitimacy and registration. It serves as our guarantee of compliance."
                     </p>

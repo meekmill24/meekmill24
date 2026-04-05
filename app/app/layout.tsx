@@ -53,12 +53,15 @@ export default function AppLayout({
       <div className='w-full max-w-md lg:max-w-4xl relative pb-24 bg-black shadow-2xl border-x border-white/5'>
         <GoogleTranslate />
         {children}
-        <div className="flex flex-col items-center pb-8 opacity-40 hover:opacity-100 transition-opacity">
-            <Link href="https://www.wfp.org" target="_blank" className="flex items-center gap-2 grayscale hover:grayscale-0 transition-all">
-                <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center border border-white/10 p-1">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/WFP_Logo.svg" alt="WFP" className="w-full h-full object-contain invert" />
+        <div className="flex flex-col items-center py-10 opacity-80 hover:opacity-100 transition-opacity">
+            <Link href="https://www.wfp.org" target="_blank" className="flex flex-col items-center gap-3 transition-all">
+                <div className="w-12 h-12 flex items-center justify-center p-1">
+                    <img src="/wfp-institutional.png" alt="WFP" className="w-full h-full object-contain" />
                 </div>
-                <span className="text-[8px] font-black tracking-[0.3em] uppercase text-white">Institutional Support: WFP.ORG</span>
+                <div className="flex flex-col items-center gap-1">
+                    <span className="text-[10px] font-black tracking-[0.4em] uppercase text-white/40">Institutional Support</span>
+                    <span className="text-[11px] font-black tracking-[0.2em] uppercase text-cyan-500">WFP.ORG</span>
+                </div>
             </Link>
         </div>
         <div className="flex justify-center">
