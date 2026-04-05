@@ -22,8 +22,8 @@ export default function InstitutionalCertificate({ date, nodeId, platformName, p
         
         try {
             const html2canvas = (await import('html2canvas')).default;
-            const { jsPDF } = await import('jspdf'); // Changed to named import for better compatibility
-            
+            const { jsPDF } = await import('jspdf');
+
             const canvas = await html2canvas(certificateRef.current, {
                 scale: 2.5, // Increased resolution
                 useCORS: true,
@@ -58,9 +58,14 @@ export default function InstitutionalCertificate({ date, nodeId, platformName, p
             pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
             pdf.save(`Certificate_${(platformName || 'CAPTIV8').replace(/[^a-z0-9]/gi, '_')}_Business_License.pdf`);
             toast.success('Certificate synchronization complete - Document downloaded.', { id: internalToastId });
-        } catch (error) {
+        } catch (error: any) {
             console.error('PDF export failed:', error);
-            toast.error('Registry link interrupted. Please verify connection and retry.', { id: internalToastId });
+            console.error('Error details:', {
+                message: error?.message,
+                stack: error?.stack,
+                name: error?.name
+            });
+            toast.error(`PDF generation failed: ${error?.message || 'Unknown error'}`, { id: internalToastId });
         }
     };
 
@@ -278,7 +283,7 @@ export default function InstitutionalCertificate({ date, nodeId, platformName, p
                                 <span>REG-ID: {nodeId}</span>
                                 <span className="flex items-center gap-1"><ShieldCheck size={10} /> SECURED DOCUMENT</span>
                             </div>
-                            <span className="text-slate-950 font-black">Page 1 OF 1 // 2021</span>
+                            <span className="text-slate-950 font-black">Page 1 OF 1 // {new Date().getFullYear()}</span>
                         </div>
                     </div>
                 </div>
