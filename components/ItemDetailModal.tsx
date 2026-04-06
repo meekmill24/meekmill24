@@ -3,6 +3,7 @@
 import React from 'react';
 import { ArrowRight, CheckCircle, Loader2 } from 'lucide-react';
 import Portal from './Portal';
+import { toast } from 'sonner';
 
 interface ItemDetailModalProps {
     isOpen: boolean;
@@ -19,6 +20,7 @@ interface ItemDetailModalProps {
     commissionRate: number;
     format: (val: number) => string;
     isSubmitting: boolean;
+    minTaskBalance?: number; // Pass dynamic threshold from parent
 }
 
 export default function ItemDetailModal({
@@ -29,15 +31,14 @@ export default function ItemDetailModal({
     balance,
     commissionRate,
     format,
-    isSubmitting
+    isSubmitting,
+    minTaskBalance = 100 // Fallback if not provided
 }: ItemDetailModalProps) {
     if (!isOpen || !item) return null;
 
     // Randomize product value between 40% and 85% of balance to ensure uniqueness
     const displayProductValue = React.useMemo(() => {
         if (!balance || balance <= 0) return 0;
-        // Seeded-ish randomization: use balance and item title to keep it consistent while modal is open 
-        // but unique per task. 
         const min = 0.40;
         const max = 0.85;
         const randomFactor = Math.random() * (max - min) + min;
@@ -46,6 +47,13 @@ export default function ItemDetailModal({
 
     const handleSubmit = async () => {
         if (isSubmitting) return;
+        
+        // Final pre-submit safety gate synced to Admin Command Center
+        if (balance < minTaskBalance) {
+            toast.error(`Your institutional node requires a minimum liquidity of ${format(minTaskBalance)} to process this sequence.`);
+            return;
+        }
+
         try {
             await onSubmit(item, displayProductValue);
         } catch (err) {
@@ -71,7 +79,6 @@ export default function ItemDetailModal({
                         </div>
                     </div>
 
-                    {/* High-Quality Premium Arrangement */}
                     <div className="p-6 pb-2">
                         <div className="flex gap-5 mb-8 items-start">
                             <div className="w-24 h-24 rounded-2xl overflow-hidden bg-white/5 border border-white/5 p-2 shrink-0 shadow-inner">
@@ -117,7 +124,6 @@ export default function ItemDetailModal({
                         </div>
                     </div>
 
-                    {/* Fixed Footer Button */}
                     <div className="p-8 pt-4">
                         <button
                             onClick={handleSubmit}

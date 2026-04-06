@@ -790,6 +790,7 @@ export default function TasksPage() {
                 format={format}
                 isSubmitting={isSubmitting}
                 onSubmit={handleSubmitTask}
+                minTaskBalance={minTaskBalance}
             />
 
             <BundledPackageModal isOpen={bundleModal} bundle={activeBundle} onAccept={handleBundleAccept} />
