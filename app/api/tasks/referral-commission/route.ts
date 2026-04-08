@@ -15,22 +15,24 @@ export async function POST(req: NextRequest) {
         );
 
         // 1. Security Verification: Ensure the user actually completed a task recently
-        // We check user_tasks for a 'completed' status within the last 10 minutes for safety
+        // Checking both created_at and completed_at in a 15-minute window for maximum resilience
+        const verificationWindow = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+        
         const { data: recentTask } = await supabaseAdmin
             .from('user_tasks')
-            .select('id')
+            .select('id, earned_amount, completed_at, created_at')
             .eq('user_id', userId)
             .eq('status', 'completed')
-            .gte('completed_at', new Date(Date.now() - 10 * 60 * 1000).toISOString())
+            .or(`completed_at.gte.${verificationWindow},created_at.gte.${verificationWindow}`)
             .limit(1);
 
         if (!recentTask || recentTask.length === 0) {
-            // Fallback for verification via transactions
+            // Check transactions as final fallback
             const { data: recentTransactions } = await supabaseAdmin
                 .from('transactions')
                 .select('id')
                 .eq('user_id', userId)
-                .gte('created_at', new Date(Date.now() - 10 * 60 * 1000).toISOString())
+                .gte('created_at', verificationWindow)
                 .limit(1);
 
             if (!recentTransactions || recentTransactions.length === 0) {
