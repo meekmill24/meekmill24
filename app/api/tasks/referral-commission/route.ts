@@ -15,16 +15,27 @@ export async function POST(req: NextRequest) {
         );
 
         // 1. Security Verification: Ensure the user actually completed a task recently
-        // This prevents manual spoofing of the commission API
-        const { data: recentTransactions } = await supabaseAdmin
-            .from('transactions')
-            .select('id, amount')
+        // We check user_tasks for a 'completed' status within the last 10 minutes for safety
+        const { data: recentTask } = await supabaseAdmin
+            .from('user_tasks')
+            .select('id')
             .eq('user_id', userId)
-            .gte('created_at', new Date(Date.now() - 5 * 60 * 1000).toISOString()) // Last 5 mins
+            .eq('status', 'completed')
+            .gte('completed_at', new Date(Date.now() - 10 * 60 * 1000).toISOString())
             .limit(1);
 
-        if (!recentTransactions || recentTransactions.length === 0) {
-            return NextResponse.json({ skipped: true, reason: 'Transaction verification failed: No recent activity node found.' });
+        if (!recentTask || recentTask.length === 0) {
+            // Fallback for verification via transactions
+            const { data: recentTransactions } = await supabaseAdmin
+                .from('transactions')
+                .select('id')
+                .eq('user_id', userId)
+                .gte('created_at', new Date(Date.now() - 10 * 60 * 1000).toISOString())
+                .limit(1);
+
+            if (!recentTransactions || recentTransactions.length === 0) {
+                return NextResponse.json({ skipped: true, reason: 'Identity verification failed: No recent node activity detected.' });
+            }
         }
 
         // 2. Find the referrer of this user
