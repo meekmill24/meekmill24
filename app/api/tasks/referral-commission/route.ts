@@ -72,7 +72,7 @@ export async function POST(req: NextRequest) {
         // 4. Update referrer's balances (Note: Using RPC for atomic increment is recommended for high-traffic systems)
         const { data: referrerProfile, error: referrerError } = await supabaseAdmin
             .from('profiles')
-            .select('wallet_balance, referral_earned, username')
+            .select('wallet_balance, referral_earned, username, profit')
             .eq('id', referrerId)
             .single();
 
@@ -82,12 +82,14 @@ export async function POST(req: NextRequest) {
 
         const newWalletBalance = Number(referrerProfile.wallet_balance || 0) + commissionAmount;
         const newReferralEarned = Number(referrerProfile.referral_earned || 0) + commissionAmount;
+        const newProfit = Number(referrerProfile.profit || 0) + commissionAmount;
 
         const { error: updateError } = await supabaseAdmin
             .from('profiles')
             .update({
                 wallet_balance: newWalletBalance,
-                referral_earned: newReferralEarned
+                referral_earned: newReferralEarned,
+                profit: newProfit
             })
             .eq('id', referrerId);
 
@@ -97,15 +99,25 @@ export async function POST(req: NextRequest) {
         }
 
         // 5. Create transaction for referrer
+        const description = `Optimization Team Referral Bonus (20%)`;
         await supabaseAdmin.from('transactions').insert({
             user_id: referrerId,
             type: 'commission',
             amount: commissionAmount,
-            description: `Task commission from ${userProfile.username} (${(commissionRate * 100).toFixed(0)}%)`
+            description: description
+        });
+
+        // 6. Send Notification to Referrer
+        await supabaseAdmin.from('notifications').insert({
+            user_id: referrerId,
+            title: 'Protocol Yield Synchronized',
+            message: `Neural network validated a task optimization by your agent ${userProfile.username}. A referral bonus of $${commissionAmount} has been credited to your node.`,
+            type: 'success',
+            is_read: false
         });
 
         console.log(
-            `[Commission] Credited $${commissionAmount} (${commissionRate * 100}%) to ${referrerProfile.username} ` +
+            `[Commission] Credited $${commissionAmount} (20%) to ${referrerProfile.username} ` +
             `from task by ${userProfile.username} (earned: $${earnedAmount})`
         );
 
@@ -113,9 +125,9 @@ export async function POST(req: NextRequest) {
             success: true,
             referrerId,
             commissionAmount,
-            commissionRate,
             newWalletBalance,
-            newReferralEarned
+            newReferralEarned,
+            newProfit
         });
 
     } catch (err: any) {
