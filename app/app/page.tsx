@@ -39,12 +39,14 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/context/AuthContext'
 import { useCurrency } from '@/context/CurrencyContext'
+import { useLanguage } from '@/context/LanguageContext'
 import { getLevels } from '@/lib/actions/admin'
 import { supabase } from '@/lib/supabase'
 
 export default function HomePage() {
   const { profile, loading: profileLoading } = useAuth()
   const { format, currency, convert } = useCurrency()
+  const { t } = useLanguage()
   const [isSpinning, setIsSpinning] = useState(false)
   const [levels, setLevels] = useState<any[]>([])
   const [showAllLevels, setShowAllLevels] = useState(false)
@@ -149,19 +151,19 @@ export default function HomePage() {
                     <div className="flex flex-col gap-5">
                         <Link href="#profile" onClick={() => setIsSpinning(false)} className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
                             <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/5"><User size={16} /></div>
-                            Operational Hub
+                            {t('operational_hub')}
                         </Link>
                         <Link href="#stats-grid" onClick={() => setIsSpinning(false)} className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
                             <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/5"><TrendingUp size={16} /></div>
-                            Terminal Stats
+                            {t('terminal_stats')}
                         </Link>
                         <Link href="#financial-hub" onClick={() => setIsSpinning(false)} className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
                             <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/5"><Zap size={16} /></div>
-                            Asset Flow
+                            {t('asset_flow')}
                         </Link>
                         <Link href="#tiers" onClick={() => setIsSpinning(false)} className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
                             <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/5"><Trophy size={16} /></div>
-                            Node Tiers
+                            {t('node_tiers')}
                         </Link>
                     </div>
                 </div>
@@ -206,7 +208,7 @@ export default function HomePage() {
                     </div>
                     <div className='flex-1 text-center md:text-left'>
                         <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6">
-                            <h2 className='text-3xl md:text-6xl font-black tracking-tighter italic uppercase text-white drop-shadow-2xl'>HELLO, {profile?.username || profile?.email?.split('@')[0]}</h2>
+                            <h2 className='text-3xl md:text-6xl font-black tracking-tighter italic uppercase text-white drop-shadow-2xl'>{t('hello')}, {profile?.username || profile?.email?.split('@')[0]}</h2>
                             <div className='flex items-center justify-center md:justify-start gap-2 px-4 py-1.5 bg-black/40 text-cyan-400 rounded-full border border-cyan-500/20 backdrop-blur-md'>
                                 <div className='w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_rgba(6,182,212,0.6)]' />
                                 <span className='text-[9px] font-black uppercase tracking-widest'>Node Verified</span>
@@ -227,7 +229,7 @@ export default function HomePage() {
                         <Link href="/app/tasks" className="p-1 rounded-[32px] bg-gradient-to-tr from-cyan-600 via-blue-600 to-indigo-500 flex flex-col items-center justify-center group/startBtn shadow-xl active:scale-95 transition-all">
                             <div className="px-12 py-6 md:py-10 rounded-[30px] bg-black/40 backdrop-blur-xl flex flex-col items-center gap-2">
                                 <Play size={32} className="text-white fill-white drop-shadow-2xl" />
-                                <span className="text-[10px] font-black tracking-[0.4em] text-white">START NODE</span>
+                                <span className="text-[10px] font-black tracking-[0.4em] text-white">{t('start')}</span>
                             </div>
                         </Link>
                     </div>
@@ -355,7 +357,7 @@ export default function HomePage() {
                     <item.icon className={cn("w-6 h-6 group-hover:brightness-125 transition-all", item.color)} strokeWidth={2.5} />
                   ) : null}
                 </div>
-                <span className='text-[10px] font-black tracking-widest text-zinc-500 group-hover:text-white transition-colors uppercase'>{item.label}</span>
+                <span className='text-[10px] font-black tracking-widest text-zinc-500 group-hover:text-white transition-colors uppercase'>{t(item.label.toLowerCase())}</span>
                 </Link>
             ))}
             </div>

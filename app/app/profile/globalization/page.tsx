@@ -24,6 +24,13 @@ export default function GlobalizationPage() {
         { code: 'ar', name: 'العربية', flag: '🇸🇦' },
         { code: 'tr', name: 'Türkçe', flag: '🇹🇷' },
         { code: 'gh', name: 'Ghanaian', flag: '🇬🇭' },
+        { code: 'hi', name: 'Hindi', flag: '🇮🇳' },
+        { code: 'vi', name: 'Vietnamese', flag: '🇻🇳' },
+        { code: 'th', name: 'Thai', flag: '🇹🇭' },
+        { code: 'id', name: 'Indonesian', flag: '🇮🇩' },
+        { code: 'bn', name: 'Bengali', flag: '🇧🇩' },
+        { code: 'ms', name: 'Malay', flag: '🇲🇾' },
+        { code: 'tl', name: 'Filipino', flag: '🇵🇭' },
     ];
 
     const currencies: { code: CurrencyCode; name: string; symbol: string }[] = [
@@ -33,6 +40,17 @@ export default function GlobalizationPage() {
         { code: 'GHC', name: 'Ghana Cedi', symbol: 'GH₵' },
         { code: 'AED', name: 'UAE Dirham', symbol: 'Dh' },
         { code: 'JPY', name: 'Japanese Yen', symbol: '¥' },
+        { code: 'SAR', name: 'Saudi Riyal', symbol: 'SR' },
+        { code: 'INR', name: 'Indian Rupee', symbol: '₹' },
+        { code: 'NGN', name: 'Nigerian Naira', symbol: '₦' },
+        { code: 'VND', name: 'Vietnamese Dong', symbol: '₫' },
+        { code: 'IDR', name: 'Indonesian Rupiah', symbol: 'Rp' },
+        { code: 'THB', name: 'Thai Baht', symbol: '฿' },
+        { code: 'MXN', name: 'Mexican Peso', symbol: '$' },
+        { code: 'CAD', name: 'Canadian Dollar', symbol: '$' },
+        { code: 'AUD', name: 'Australian Dollar', symbol: 'A$' },
+        { code: 'ZAR', name: 'SA Rand', symbol: 'R' },
+        { code: 'BRL', name: 'Brazilian Real', symbol: 'R$' },
         { code: 'BTC', name: 'Bitcoin', symbol: '₿' },
     ];
 

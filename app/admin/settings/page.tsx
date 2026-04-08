@@ -144,6 +144,13 @@ export default function AdminSettingsPage() {
                   <option value="ar">العربية (Arabic)</option>
                   <option value="tr">Türkçe</option>
                   <option value="gh">Ghanaian (Ewe/Twi/Ga)</option>
+                  <option value="hi">Hindi (India)</option>
+                  <option value="vi">Tiếng Việt (Vietnam)</option>
+                  <option value="th">ไทย (Thailand)</option>
+                  <option value="id">Bahasa Indonesia</option>
+                  <option value="bn">বাংলা (Bangladesh)</option>
+                  <option value="ms">Bahasa Melayu</option>
+                  <option value="tl">Filipino (Tagalog)</option>
                 </select>
               </div>
               <div className="space-y-2">
@@ -157,9 +164,20 @@ export default function AdminSettingsPage() {
                   <option value="EUR">EUR (€)</option>
                   <option value="GBP">GBP (£)</option>
                   <option value="JPY">JPY (¥)</option>
-                  <option value="CAD">CAD ($)</option>
+                  <option value="SAR">SAR (SR)</option>
+                  <option value="INR">INR (₹)</option>
                   <option value="GHC">GHC (GH₵)</option>
                   <option value="AED">AED (Dh)</option>
+                  <option value="NGN">NGN (₦)</option>
+                  <option value="VND">VND (₫)</option>
+                  <option value="IDR">IDR (Rp)</option>
+                  <option value="THB">THB (฿)</option>
+                  <option value="MXN">MXN ($)</option>
+                  <option value="CAD">CAD ($)</option>
+                  <option value="AUD">AUD (A$)</option>
+                  <option value="ZAR">ZAR (R)</option>
+                  <option value="BRL">BRL (R$)</option>
+                  <option value="BTC">BTC (₿)</option>
                 </select>
               </div>
             </div>

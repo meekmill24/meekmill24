@@ -5,7 +5,7 @@ import { useAuth } from './AuthContext';
 import { useSiteSettings } from './SettingsContext';
 import { supabase } from '@/lib/supabase';
 
-export type CurrencyCode = 'USD' | 'EUR' | 'GBP' | 'JPY' | 'CAD' | 'CHF' | 'AUD' | 'SGD' | 'AED' | 'ZAR' | 'BRL' | 'GHC' | 'BTC';
+export type CurrencyCode = 'USD' | 'EUR' | 'GBP' | 'JPY' | 'CAD' | 'CHF' | 'AUD' | 'SGD' | 'AED' | 'ZAR' | 'BRL' | 'GHC' | 'BTC' | 'INR' | 'VND' | 'IDR' | 'THB' | 'NGN' | 'MXN' | 'SAR';
 
 interface Currency {
     code: CurrencyCode;
@@ -27,6 +27,13 @@ const currencies: Record<CurrencyCode, Currency> = {
     BRL: { code: 'BRL', symbol: 'R$', rate: 4.97 },
     GHC: { code: 'GHC', symbol: 'GH₵', rate: 12.85 },
     BTC: { code: 'BTC', symbol: '₿', rate: 0.000015 },
+    INR: { code: 'INR', symbol: '₹', rate: 83.3 },
+    VND: { code: 'VND', symbol: '₫', rate: 24700 },
+    IDR: { code: 'IDR', symbol: 'Rp', rate: 15700 },
+    THB: { code: 'THB', symbol: '฿', rate: 35.8 },
+    NGN: { code: 'NGN', symbol: '₦', rate: 1450 },
+    MXN: { code: 'MXN', symbol: '$', rate: 16.8 },
+    SAR: { code: 'SAR', symbol: 'SR', rate: 3.75 },
 };
 
 interface CurrencyContextType {
