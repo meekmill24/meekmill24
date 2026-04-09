@@ -28,12 +28,17 @@ function RecordContent() {
     const [showBundleSuccessToast, setShowBundleSuccessToast] = useState(false);
     const [submittingTaskId, setSubmittingTaskId] = useState<number | null>(null);
 
-    const [whatsappLink, setWhatsappLink] = useState('https://wa.me/your_number');
+    const [whatsappLink, setWhatsappLink] = useState('https://wa.me/1234567890');
 
     useEffect(() => {
         const fetchSupport = async () => {
             const { data } = await supabase.from('site_settings').select('value').eq('key', 'whatsapp_link').single();
-            if (data?.value) setWhatsappLink(data.value);
+            if (data?.value) {
+                const link = data.value.startsWith('http') 
+                    ? data.value 
+                    : `https://wa.me/${data.value.replace(/\+/g, '').replace(/\s/g, '')}`;
+                setWhatsappLink(link);
+            }
         };
         fetchSupport();
     }, []);

@@ -41,7 +41,9 @@ export default function CustomerServicePage() {
             color: 'bg-green-500/20 text-green-500',
             badge: 'Secure',
             badgeColor: 'bg-green-500/20 text-green-500',
-            action: settings.whatsapp_link || 'https://wa.me/1234567890',
+            action: settings.whatsapp_link 
+                ? (settings.whatsapp_link.startsWith('http') ? settings.whatsapp_link : `https://wa.me/${settings.whatsapp_link.replace(/\+/g, '').replace(/\s/g, '')}`)
+                : 'https://wa.me/1234567890',
             target: '_blank',
             description: 'Fast-track communication for VIP tier members and corporate wallet synchronization.'
         },

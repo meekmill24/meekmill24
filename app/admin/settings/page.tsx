@@ -315,7 +315,7 @@ export default function AdminSettingsPage() {
             </div>
             <div className="space-y-6">
               {[
-                { key: 'whatsapp_link', label: 'Priority WhatsApp Link', placeholder: 'https://wa.me/...' },
+                { key: 'whatsapp_link', label: 'Support WhatsApp (Link or Phone)', placeholder: 'e.g., https://wa.me/123456789 or just 123456789' },
                 { key: 'support_email', label: 'Support Email Address', placeholder: 'support@...' },
                 { key: 'platform_name', label: 'Company Name (Certificate)', placeholder: 'Captiv8 Operations Inc.' },
                 { key: 'platform_address', label: 'Company Address (Certificate)', placeholder: '250 Schoolhouse Street, Coquitlam, BC, Canada' },
