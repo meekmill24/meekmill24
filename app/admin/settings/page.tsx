@@ -195,7 +195,6 @@ export default function AdminSettingsPage() {
               {[
                 { key: 'site_name', label: 'Platform Headline', placeholder: 'Captiv8' },
                 { key: 'primary_color', label: 'Primary Brand Color', type: 'color' },
-                { key: 'support_link', label: 'Support Telegram/URL', placeholder: 'https://t.me/...' },
               ].map((cfg) => {
                 const item = settings.find(s => s.key === cfg.key);
                 if (!item) return null;
