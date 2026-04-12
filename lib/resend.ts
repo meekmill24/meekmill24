@@ -1,10 +1,6 @@
 import { Resend } from 'resend';
 
-if (!process.env.RESEND_API_KEY) {
-  throw new Error('Missing RESEND_API_KEY environment variable');
-}
-
-export const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 export const sendEmail = async ({
   to,
@@ -18,6 +14,11 @@ export const sendEmail = async ({
   from?: string;
 }) => {
   try {
+    if (!resend) {
+      console.error('Resend not initialized: Missing RESEND_API_KEY');
+      return { error: 'Email service not configured' };
+    }
+
     const { data, error } = await resend.emails.send({
       from: from || 'Captiv8 <noreply@captiv8s.com>',
       to,
