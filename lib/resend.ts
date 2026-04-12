@@ -6,7 +6,7 @@ export const sendEmail = async ({
   to,
   subject,
   html,
-  from = 'Captiv8 <noreply@resend.dev>'
+  from = 'Captiv8 <noreply@captiv8s.com>'
 }: {
   to: string | string[];
   subject: string;
