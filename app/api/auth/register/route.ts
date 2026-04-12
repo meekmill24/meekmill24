@@ -25,6 +25,17 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Username and password required' }, { status: 400 });
         }
 
+        // 1. Check if username is already taken
+        const { data: existingUser } = await supabaseAdmin
+            .from('profiles')
+            .select('id')
+            .eq('username', username)
+            .single();
+
+        if (existingUser) {
+            return NextResponse.json({ error: 'Username is already taken' }, { status: 400 });
+        }
+
         const email = isRealEmail ? providedEmail : `${username}@captiv8s.com`;
         const emailConfirm = !isRealEmail; // Only auto-confirm if it's a fake email
 
