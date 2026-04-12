@@ -55,6 +55,7 @@ export async function POST(req: NextRequest) {
                 const { data: linkData } = await supabaseAdmin.auth.admin.generateLink({
                     type: 'signup',
                     email: email,
+                    password: password,
                     options: { redirectTo: `${new URL(req.url).origin}/auth/verified` }
                 });
 
