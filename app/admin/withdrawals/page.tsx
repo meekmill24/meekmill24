@@ -44,6 +44,30 @@ export default function AdminWithdrawalsPage() {
       } else {
         toast.success(`Withdrawal for $${amount} marked as processed.`);
       }
+
+      // Send Resend notification
+      const { data: profile } = await supabase.from('profiles').select('email, username').eq('id', userId).single();
+      if (profile?.email && !profile.email.endsWith('@captiv8s.com')) {
+          fetch('/api/send-email', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                  to: profile.email,
+                  subject: `Withdrawal ${status.charAt(0).toUpperCase() + status.slice(1)}`,
+                  html: `
+                      <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 40px; background: #0a0a0b; color: white; border-radius: 20px;">
+                          <h2 style="color: ${status === 'approved' ? '#10b981' : '#f43f5e'}; text-transform: uppercase; font-style: italic;">Withdrawal ${status}</h2>
+                          <p>Hello <strong>${profile.username}</strong>,</p>
+                          <p>Your withdrawal request of <strong>$${amount.toLocaleString()}</strong> has been <strong>${status}</strong>.</p>
+                          ${status === 'approved' ? '<p>The funds have been disbursed to your external vault node.</p>' : '<p>Your funds have been refunded to your internal wallet. Please contact governance for details.</p>'}
+                          <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;" />
+                          <p style="font-size: 10px; color: #555;">Captiv8 Protocol Internal Notification</p>
+                      </div>
+                  `
+              })
+          }).catch(e => console.error('Failed to send withdrawal notification:', e));
+      }
+
       fetchWithdrawals(); 
     } catch (err: any) {
       toast.error(err.message || 'Action failed');

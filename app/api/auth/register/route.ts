@@ -1,41 +1,38 @@
 import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { sendEmail } from '@/lib/resend';
 
 export async function POST(req: NextRequest) {
     try {
-        const { username, password, phone, withdrawalPassword, referral, isLinkOnly, existingUserId } = await req.json();
+        const { username, password, phone, withdrawalPassword, referral, isLinkOnly, existingUserId, isRealEmail, email: providedEmail } = await req.json();
 
         const supabaseAdmin = createClient(
             process.env.NEXT_PUBLIC_SUPABASE_URL!,
             process.env.SUPABASE_SERVICE_ROLE_KEY!
         );
 
-        // If this is a real-email signup flow, the user was already created via standard signUp.
-        // We just need to perform the privileged profile linking.
+        // Standard link-only flow (can be kept for edge cases, but unified flow is used now)
         if (isLinkOnly && existingUserId) {
-            // Give trigger a moment to run
             await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            const { data: userObj, error: userErr } = await supabaseAdmin.auth.admin.getUserById(existingUserId);
-            if (userErr || !userObj.user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
-            
-            const refCode = referral || userObj.user.user_metadata?.referral_code_used;
-            await processProfileSetup(supabaseAdmin, existingUserId, username, refCode);
-            
-            return NextResponse.json({ success: true, linked: true });
+            const { data: userObj } = await supabaseAdmin.auth.admin.getUserById(existingUserId);
+            if (userObj.user) {
+                await processProfileSetup(supabaseAdmin, existingUserId, username, referral);
+            }
+            return NextResponse.json({ success: true });
         }
 
         if (!username || !password) {
             return NextResponse.json({ error: 'Username and password required' }, { status: 400 });
         }
 
-        const fakeEmail = `${username}@captiv8.io`;
+        const email = isRealEmail ? providedEmail : `${username}@captiv8s.com`;
+        const emailConfirm = !isRealEmail; // Only auto-confirm if it's a fake email
 
         // Perform the registration
         const { data, error } = await supabaseAdmin.auth.admin.createUser({
-            email: fakeEmail,
+            email: email,
             password: password,
-            email_confirm: true,
+            email_confirm: emailConfirm,
             user_metadata: {
                 username: username,
                 display_name: username,
@@ -52,11 +49,43 @@ export async function POST(req: NextRequest) {
 
         if (data.user) {
             await processProfileSetup(supabaseAdmin, data.user.id, username, referral);
+            
+            // Generate and send verification link via Resend for real emails
+            if (isRealEmail) {
+                const { data: linkData } = await supabaseAdmin.auth.admin.generateLink({
+                    type: 'signup',
+                    email: email,
+                    options: { redirectTo: `${new URL(req.url).origin}/auth/verified` }
+                });
+
+                if (linkData?.properties?.action_link) {
+                    await sendEmail({
+                        to: email,
+                        subject: 'Verify Your Captiv8 Account',
+                        html: `
+                            <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 40px; background: #0a0a0b; color: white; border-radius: 24px; border: 1px solid #333;">
+                                <div style="text-align: center; margin-bottom: 30px;">
+                                    <h1 style="color: #007CBA; font-size: 24px; text-transform: uppercase; letter-spacing: 4px; font-style: italic; margin: 0;">Captiv8</h1>
+                                    <p style="color: #666; font-size: 10px; text-transform: uppercase; letter-spacing: 2px;">Identity Node Verification</p>
+                                </div>
+                                <p style="font-size: 14px; line-height: 1.6; color: #ccc;">Welcome <strong>${username}</strong>,</p>
+                                <p style="font-size: 14px; line-height: 1.6; color: #ccc;">Your institutional node setup is nearly complete. To activate your access to the optimization protocol, please click the authorization link below:</p>
+                                <div style="text-align: center; margin: 40px 0;">
+                                    <a href="${linkData.properties.action_link}" style="background: #007CBA; color: white; padding: 18px 36px; text-decoration: none; border-radius: 16px; font-weight: 900; text-transform: uppercase; font-size: 12px; letter-spacing: 2px; box-shadow: 0 10px 20px rgba(0, 124, 186, 0.3);">Authorize Matrix Node</a>
+                                </div>
+                                <p style="font-size: 12px; color: #555; text-align: center;">This link will expire in 24 hours. If you did not request this, please disregard.</p>
+                                <hr style="border: 0; border-top: 1px solid #222; margin: 30px 0;" />
+                                <p style="font-size: 9px; color: #444; text-align: center; text-transform: uppercase; letter-spacing: 1px;">© 2024 Captiv8 • Distributed Governance Protocol</p>
+                            </div>
+                        `
+                    });
+                }
+            }
         }
 
-        return NextResponse.json({ success: true, fakeEmail });
+        return NextResponse.json({ success: true, fakeEmail: !isRealEmail ? email : undefined });
     } catch (err: any) {
-        console.error('Fast-Track Registration Error:', err);
+        console.error('Registration/Verification Flow Error:', err);
         return NextResponse.json({ error: err.message }, { status: 500 });
     }
 }

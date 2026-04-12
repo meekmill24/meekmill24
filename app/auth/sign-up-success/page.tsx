@@ -25,11 +25,11 @@ export default function SignUpSuccess() {
         </div>
         
         <h1 className='mb-4 text-4xl font-extrabold tracking-tight text-[#003d5c]'>
-          Ready to Start?
+          Verify Email
         </h1>
         
         <p className='mb-10 text-lg text-slate-500 font-medium leading-relaxed'>
-          Your account is verified. Welcome to the elite community of asset growth and protocol optimization.
+          An authorization link has been dispatched to your identity node. Please verify your email to activate your institutional access.
         </p>
         
         <Link href='/auth/login' className='w-full'>

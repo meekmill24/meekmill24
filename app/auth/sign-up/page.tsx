@@ -62,59 +62,35 @@ function SignUpForm() {
     setError(null)
 
     try {
-      if (!email) {
-          // Create the account via admin API to bypass email verification
-          const res = await fetch('/api/auth/register', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ username, password, phone, withdrawalPassword, referral })
-          });
-          const apiData = await res.json();
-          if (!res.ok) throw new Error(apiData.error || 'Registration failed');
+      // Always use the custom registration API to ensure Resend is used for emails
+      const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+              username, 
+              password, 
+              phone, 
+              withdrawalPassword, 
+              referral,
+              isRealEmail: !!email,
+              email: email || undefined
+          })
+      });
+      
+      const apiData = await res.json();
+      if (!res.ok) throw new Error(apiData.error || 'Registration failed');
 
-          // Log them in immediately
+      if (!email) {
+          // Log them in immediately for fake emails
           const { error: signInError } = await supabase.auth.signInWithPassword({
               email: apiData.fakeEmail,
               password
           });
-          
           if (signInError) throw signInError;
-          
-          router.push('/app')
+          router.push('/app');
       } else {
-          // They provided a real email. Use standard strict-verification method
-          const { data, error: signUpError } = await supabase.auth.signUp({
-            email: email,
-            password,
-            options: {
-              data: {
-                username: username,
-                display_name: username,
-                phone_number: phone,
-                withdrawal_password: withdrawalPassword,
-                referral_code_used: referral
-              },
-              emailRedirectTo: `${window.location.origin}/auth/callback`,
-            },
-          })
-          
-          if (signUpError) throw signUpError
-          
-          // Update profile and link referral via admin fallback
-          if (data.user) {
-            await fetch('/api/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    isLinkOnly: true,
-                    existingUserId: data.user.id,
-                    username,
-                    referral
-                }),
-            })
-          }
-          
-          router.push('/auth/sign-up-success')
+          // Real email: wait for verification
+          router.push('/auth/sign-up-success');
       }
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : 'An error occurred')

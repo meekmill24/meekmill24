@@ -79,6 +79,28 @@ export default function WithdrawPage() {
             if (error) throw error;
             if (data && !data.success) throw new Error(data.message);
 
+            // Notify user via Resend (async, don't block UI)
+            if (profile?.email && !profile.email.endsWith('@captiv8s.com')) {
+                fetch('/api/send-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        to: profile.email,
+                        subject: 'Withdrawal Request Initiated',
+                        html: `
+                            <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                                <h2 style="color: #rose-500;">Withdrawal Request Received</h2>
+                                <p>Your request for a settlement of <strong>$${withdrawAmount.toLocaleString()}</strong> to your <strong>${network}</strong> vault has been initiated.</p>
+                                <p><strong>Address:</strong> ${walletAddress}</p>
+                                <p>Status: <em>Pending Protocol Audit</em></p>
+                                <hr />
+                                <p style="font-size: 12px; color: #666;">If you did not initiate this request, please contact governance support immediately.</p>
+                            </div>
+                        `
+                    })
+                }).catch(e => console.error('Failed to send withdrawal notification:', e));
+            }
+
             toast.success("Withdrawal request initiated!");
             mutate();
             router.push('/app/record');

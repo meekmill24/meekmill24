@@ -43,7 +43,7 @@ export default function Page() {
           .single() as { data: { email: string } | null, error: any };
 
         if (profileError || !profile || !profile.email) {
-          loginEmail = `${email}@captiv8.io`;
+          loginEmail = `${email}@captiv8s.com`;
         } else {
           loginEmail = profile.email;
         }
