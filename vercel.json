@@ -1,0 +1,14 @@
+{
+  "rewrites": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "admin.captiv8s.com"
+        }
+      ],
+      "destination": "/admin/:path*"
+    }
+  ]
+}
