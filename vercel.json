@@ -1,4 +1,17 @@
 {
+  "redirects": [
+    {
+      "source": "/admin/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "captiv8s.com"
+        }
+      ],
+      "destination": "https://admin.captiv8s.com/:path*",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/:path*",
