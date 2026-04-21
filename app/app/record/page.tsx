@@ -417,9 +417,9 @@ function RecordContent() {
                                                     {isTask ? 'OPTIMIZATION_NODE' : isDeposit ? 'FUNDING_RECHARGE' : isCommission ? 'REFERRAL_YIELD' : isUnfreeze ? 'CAPITAL_RELEASE' : isFreeze ? 'PROTOCOL_LOCK' : 'PAYOUT_DISBURSEMENT'}
                                                 </p>
                                                 <h4 className="text-[13px] font-black text-white italic uppercase tracking-tight truncate leading-none">
-                                                    {isTask ? (item.task_item?.title || `NODE_TRK_${item.task_item_id}`) : isDeposit ? 'RECHARGE_PROTOCOL' : isCommission ? 'TEAM_COMMISSION' : isUnfreeze ? 'CAPITAL_SETTLEMENT' : isFreeze ? 'CAPITAL_FREEZE' : 'ASSET_PAYOUT'}
+                                                    {isTask ? ((item as any).task_item?.title || `NODE_TRK_${(item as any).task_item_id}`) : isDeposit ? 'RECHARGE_PROTOCOL' : isCommission ? 'TEAM_COMMISSION' : isUnfreeze ? 'CAPITAL_SETTLEMENT' : isFreeze ? 'CAPITAL_FREEZE' : 'ASSET_PAYOUT'}
                                                 </h4>
-                                                {isTask && item.is_bundle && (
+                                                {isTask && (item as any).is_bundle && (
                                                     <div className="flex items-center gap-2 animate-pulse mt-2">
                                                         <div className="w-1.5 h-1.5 rounded-full bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,1)]" />
                                                         <span className="text-[8px] font-black text-amber-500 uppercase tracking-[0.3em]">LUCKY_BUNDLE</span>
