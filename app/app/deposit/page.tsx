@@ -140,6 +140,7 @@ export default function DepositPage() {
     };
 
     const [successOpen, setSuccessOpen] = useState(false);
+    const finalAmount = amount || customAmount;
 
     if (successOpen) {
         return (
@@ -175,8 +176,6 @@ export default function DepositPage() {
             </main>
         );
     }
-
-    const finalAmount = amount || customAmount;
 
     return (
         <main className="min-h-screen bg-[#0a0a0a] text-white pb-24 relative overflow-hidden">
