@@ -103,7 +103,7 @@ function RecordContent() {
         fetchActivity();
     }, [profile, searchParams]);
 
-    const handleSubmitPending = async (task: UserTask) => {
+    const handleSubmitPending = async (task: any) => {
         if (isSubmitting) return;
         setIsSubmitting(true);
         setSubmittingTaskId(task.id);
@@ -492,7 +492,7 @@ function RecordContent() {
                                                     </div>
                                                 ) : (
                                                     <button
-                                                        onClick={() => handleSubmitPending(item)}
+                                                        onClick={() => handleSubmitPending(item as any)}
                                                         disabled={isSubmitting}
                                                         className={cn(
                                                             "px-8 py-4 rounded-[20px] bg-indigo-600 text-white text-[11px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-indigo-500/30 transition-all flex items-center justify-center gap-3 border-b-4 border-indigo-900 group/btn overflow-hidden relative",
