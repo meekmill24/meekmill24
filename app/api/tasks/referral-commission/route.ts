@@ -104,7 +104,8 @@ export async function POST(req: NextRequest) {
             user_id: referrerId,
             type: 'commission',
             amount: commissionAmount,
-            description: description
+            description: description,
+            status: 'approved'
         });
 
         // 6. Send Notification to Referrer

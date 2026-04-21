@@ -184,7 +184,8 @@ async function processProfileSetup(supabaseAdmin: any, userId: string, username:
                 user_id: userId,
                 type: 'deposit',
                 amount: welcomeBonus,
-                description: 'System Welcome Bonus'
+                description: 'System Welcome Bonus',
+                status: 'approved'
             });
         }
     }

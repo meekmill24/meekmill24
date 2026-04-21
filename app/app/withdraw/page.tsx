@@ -103,13 +103,50 @@ export default function WithdrawPage() {
 
             toast.success("Withdrawal request initiated!");
             mutate();
-            router.push('/app/record');
+            setSuccessOpen(true);
         } catch (err: any) {
             toast.error(err.message || "Failed to initiate withdrawal");
         } finally {
             setLoading(false);
         }
     };
+
+    const [successOpen, setSuccessOpen] = useState(false);
+
+    if (successOpen) {
+        return (
+            <main className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center p-6 relative overflow-hidden">
+                <div className='fixed inset-0 z-0 opacity-10 pointer-events-none'>
+                    <Image src="/hero-bg.png" alt="Background" fill className="object-cover blur-3xl scale-110" />
+                </div>
+                <div className="relative z-10 glass-card-strong bg-zinc-900/60 backdrop-blur-2xl border border-white/10 p-12 rounded-[56px] text-center space-y-8 max-w-sm animate-in zoom-in duration-500 shadow-3xl">
+                    <div className="w-24 h-24 rounded-[32px] bg-emerald-500/10 flex items-center justify-center mx-auto border border-emerald-500/20 shadow-inner">
+                        <CheckCircle size={48} className="text-emerald-500 animate-pulse" />
+                    </div>
+                    <div className="space-y-4">
+                        <h2 className="text-3xl font-black italic uppercase tracking-tighter leading-none">Protocol Logged</h2>
+                        <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest leading-relaxed">
+                            Your payout request of <span className="text-white">${parseFloat(amount).toLocaleString()}</span> has been recorded in the central ledger and is awaiting administrative clearance.
+                        </p>
+                    </div>
+                    <div className="pt-4 space-y-4">
+                        <button 
+                            onClick={() => router.push('/app/record')}
+                            className="w-full py-6 rounded-[28px] bg-white text-black font-black uppercase tracking-[0.3em] text-[11px] shadow-2xl hover:scale-[1.05] active:scale-95 transition-all"
+                        >
+                            View Ledger Log
+                        </button>
+                        <button 
+                            onClick={() => router.push('/app')}
+                            className="w-full py-6 rounded-[28px] bg-zinc-800 text-zinc-400 font-black uppercase tracking-[0.3em] text-[11px] hover:text-white transition-all"
+                        >
+                            Operational Hub
+                        </button>
+                    </div>
+                </div>
+            </main>
+        );
+    }
 
     return (
         <main className="min-h-screen bg-[#0a0a0a] text-white pb-24 relative overflow-hidden">

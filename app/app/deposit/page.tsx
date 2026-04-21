@@ -130,7 +130,7 @@ export default function DepositPage() {
             if (txError) throw txError;
 
             toast.success("Deposit request submitted successfully!");
-            router.push('/app/record');
+            setSuccessOpen(true);
         } catch (err: any) {
             toast.error(err.message || "Failed to submit deposit");
         } finally {
@@ -138,6 +138,43 @@ export default function DepositPage() {
             setUploading(false);
         }
     };
+
+    const [successOpen, setSuccessOpen] = useState(false);
+
+    if (successOpen) {
+        return (
+            <main className="min-h-screen bg-[#0a0a0a] text-white flex items-center justify-center p-6 relative overflow-hidden">
+                <div className='fixed inset-0 z-0 opacity-10 pointer-events-none'>
+                    <Image src="/hero-bg.png" alt="Background" fill className="object-cover blur-3xl scale-110" />
+                </div>
+                <div className="relative z-10 glass-card-strong bg-zinc-900/60 backdrop-blur-2xl border border-white/10 p-12 rounded-[56px] text-center space-y-8 max-w-sm animate-in zoom-in duration-500 shadow-3xl">
+                    <div className="w-24 h-24 rounded-[32px] bg-cyan-500/10 flex items-center justify-center mx-auto border border-cyan-500/20 shadow-inner">
+                        <CheckCircle size={48} className="text-cyan-500 animate-pulse" />
+                    </div>
+                    <div className="space-y-4">
+                        <h2 className="text-3xl font-black italic uppercase tracking-tighter leading-none">funding Logged</h2>
+                        <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest leading-relaxed">
+                            Your recharge of <span className="text-white">${finalAmount}</span> has been broadcasted to the network. Once cleared by the verification node, it will reflect in your node capital.
+                        </p>
+                    </div>
+                    <div className="pt-4 space-y-4">
+                        <button 
+                            onClick={() => router.push('/app/record')}
+                            className="w-full py-6 rounded-[28px] bg-white text-black font-black uppercase tracking-[0.3em] text-[11px] shadow-2xl hover:scale-[1.05] active:scale-95 transition-all"
+                        >
+                            History & Logs
+                        </button>
+                        <button 
+                            onClick={() => router.push('/app')}
+                            className="w-full py-6 rounded-[28px] bg-zinc-800 text-zinc-400 font-black uppercase tracking-[0.3em] text-[11px] hover:text-white transition-all"
+                        >
+                            Return to Terminal
+                        </button>
+                    </div>
+                </div>
+            </main>
+        );
+    }
 
     const finalAmount = amount || customAmount;
 
