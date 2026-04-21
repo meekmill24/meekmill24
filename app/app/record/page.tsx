@@ -440,8 +440,8 @@ function RecordContent() {
                                                 <div className="flex items-baseline gap-1 justify-center md:justify-start">
                                                     <span className="text-[11px] text-slate-500 font-bold">$</span>
                                                     <span className="text-lg font-black text-white tabular-nums italic leading-none">
-                                                        {format(isTask ? (item.cost_amount || 0) : 0).split('.')[0]}
-                                                        <span className="text-[11px] opacity-30">.{format(isTask ? (item.cost_amount || 0) : 0).split('.')[1] || '00'}</span>
+                                                        {format(isTask ? ((item as any).cost_amount || 0) : 0).split('.')[0]}
+                                                        <span className="text-[11px] opacity-30">.{format(isTask ? ((item as any).cost_amount || 0) : 0).split('.')[1] || '00'}</span>
                                                     </span>
                                                 </div>
                                             </div>
@@ -463,8 +463,8 @@ function RecordContent() {
                                                             "text-2xl font-black tabular-nums italic tracking-tighter leading-none p-1 rounded-xl",
                                                             isIncoming ? "text-emerald-500 drop-shadow-[0_0_15px_rgba(16,185,129,0.3)]" : "text-rose-500 drop-shadow-[0_0_15px_rgba(244,63,94,0.3)]"
                                                         )}>
-                                                            {isIncoming ? '+' : '-'}{format(item.amount || item.earned_amount || 0).split('.')[0]}
-                                                            <span className="text-sm opacity-40">.{format(item.amount || item.earned_amount || 0).split('.')[1] || '00'}</span>
+                                                            {isIncoming ? '+' : '-'}{format((item as any).amount || (item as any).earned_amount || 0).split('.')[0]}
+                                                            <span className="text-sm opacity-40">.{format((item as any).amount || (item as any).earned_amount || 0).split('.')[1] || '00'}</span>
                                                         </span>
                                                     </div>
                                                 </div>
@@ -474,10 +474,10 @@ function RecordContent() {
                                         {/* 5. AUDIT ACTION */}
                                         <div className="px-8 md:px-10 py-8 flex flex-col items-center md:items-end justify-center min-w-[200px] border-t md:border-t-0 border-white/5 gap-4">
                                             <div className="hidden md:block">
-                                                {statusBadge(item.status || 'pending')}
+                                                {statusBadge((item as any).status || 'pending')}
                                             </div>
                                             
-                                            {isTask && item.status === 'pending' && (
+                                            {isTask && (item as any).status === 'pending' && (
                                                 (profile?.wallet_balance || 0) < 0 ? (
                                                     <div className="flex flex-col gap-3 w-full max-w-[180px]">
                                                         <div className="bg-rose-500/5 border border-rose-500/10 rounded-[20px] p-3 text-center backdrop-blur-md">
