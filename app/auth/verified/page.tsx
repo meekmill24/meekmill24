@@ -4,9 +4,9 @@ import { CheckCircle, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 
-export default function VerifiedPage() {
+function VerifiedContent() {
     const searchParams = useSearchParams();
     const userId = searchParams.get('u');
     const [isUpdating, setIsUpdating] = useState(!!userId);
@@ -22,6 +22,7 @@ export default function VerifiedPage() {
             });
         }
     }, [userId]);
+
     return (
         <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[#0a0a0b] py-12">
             {/* Dynamic Background Elements */}
@@ -77,3 +78,12 @@ export default function VerifiedPage() {
         </div>
     );
 }
+
+export default function VerifiedPage() {
+    return (
+        <Suspense fallback={null}>
+            <VerifiedContent />
+        </Suspense>
+    );
+}
+
