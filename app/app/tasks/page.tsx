@@ -373,7 +373,7 @@ export default function TasksPage() {
 
     const handleSubmitTask = async (item: TaskItem, costAmount?: number) => {
         if (isSubmitting) return;
-        if (!profile) { router.push('/login'); return; }
+        if (!profile) { router.push('/auth/login'); return; }
 
         setIsSubmitting(true);
         try {

@@ -77,6 +77,7 @@ export async function GET(request: NextRequest) {
           pending_bundle: null,
           last_reset_at: new Date().toISOString()
         }),
+        is_verified: profile?.is_verified || false,
         referred_users_count: referredUsersCount || 0
       }
     })

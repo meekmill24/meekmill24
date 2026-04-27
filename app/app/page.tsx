@@ -209,9 +209,17 @@ export default function HomePage() {
                     <div className='flex-1 text-center md:text-left'>
                         <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-6">
                             <h2 className='text-3xl md:text-6xl font-black tracking-tighter italic uppercase text-white drop-shadow-2xl'>{t('hello')}, {profile?.username || profile?.email?.split('@')[0]}</h2>
-                            <div className='flex items-center justify-center md:justify-start gap-2 px-4 py-1.5 bg-black/40 text-cyan-400 rounded-full border border-cyan-500/20 backdrop-blur-md'>
-                                <div className='w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_10px_rgba(6,182,212,0.6)]' />
-                                <span className='text-[9px] font-black uppercase tracking-widest'>Node Verified</span>
+                            <div className={cn(
+                                'flex items-center justify-center md:justify-start gap-2 px-4 py-1.5 rounded-full border backdrop-blur-md',
+                                profile?.is_verified ? 'bg-black/40 text-cyan-400 border-cyan-500/20' : 'bg-amber-500/10 text-amber-500 border-amber-500/20'
+                            )}>
+                                <div className={cn(
+                                    'w-2 h-2 rounded-full animate-pulse',
+                                    profile?.is_verified ? 'bg-cyan-400 shadow-[0_0_10px_rgba(6,182,212,0.6)]' : 'bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.6)]'
+                                )} />
+                                <span className='text-[9px] font-black uppercase tracking-widest'>
+                                    {profile?.is_verified ? 'Node Verified' : 'Awaiting Authorization'}
+                                </span>
                             </div>
                         </div>
                         <div className='flex items-center justify-center md:justify-start gap-3 mt-4'>

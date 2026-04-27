@@ -3,8 +3,25 @@
 import { CheckCircle, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function VerifiedPage() {
+    const searchParams = useSearchParams();
+    const userId = searchParams.get('u');
+    const [isUpdating, setIsUpdating] = useState(!!userId);
+
+    useEffect(() => {
+        if (userId) {
+            fetch('/api/auth/complete-verification', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId })
+            }).finally(() => {
+                setIsUpdating(false);
+            });
+        }
+    }, [userId]);
     return (
         <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[#0a0a0b] py-12">
             {/* Dynamic Background Elements */}
@@ -27,10 +44,10 @@ export default function VerifiedPage() {
 
                 <div className="space-y-4">
                     <h1 className="text-5xl font-black text-white italic uppercase tracking-tighter leading-none">
-                        Email Verified
+                        {isUpdating ? 'Synchronizing Node' : 'Email Verified'}
                     </h1>
                     <p className="text-slate-400 text-sm font-bold uppercase tracking-[0.3em] opacity-80">
-                        Institutional node synchronization complete
+                        {isUpdating ? 'Finalizing registry update...' : 'Institutional node synchronization complete'}
                     </p>
                 </div>
 

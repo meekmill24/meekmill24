@@ -226,7 +226,7 @@ export default function LandingPage() {
           </div>
 
           <div className="flex items-center gap-4">
-            <Link href="/auth/login">
+            <Link href="/auth/sign-up">
               <button className="px-6 py-2.5 rounded-xl bg-cyan-500 text-slate-950 text-[10px] font-black uppercase tracking-[0.1em] hover:bg-cyan-400 transition-all active:scale-95 shadow-lg shadow-cyan-500/20">
                 START EARNING
               </button>
@@ -267,7 +267,7 @@ export default function LandingPage() {
              </div>
 
              <div className="pt-16 border-t border-white/5 w-full">
-                <Link href="/auth/login" onClick={() => setIsMenuOpen(false)}>
+                <Link href="/auth/sign-up" onClick={() => setIsMenuOpen(false)}>
                     <button className="w-full py-7 bg-cyan-500 text-slate-950 font-black text-xs uppercase tracking-[0.3em] rounded-[40px] shadow-2xl shadow-cyan-500/20 active:scale-95 transition-all">
                         INITIALIZE DASHBOARD
                     </button>
@@ -300,7 +300,7 @@ export default function LandingPage() {
               </p>
 
               <div className="hero-content pt-4 flex flex-col sm:flex-row gap-6 justify-center lg:justify-start">
-                <Link href="/auth/login">
+                <Link href="/auth/sign-up">
                   <button className="group relative w-full sm:w-auto px-12 py-6 bg-cyan-500 text-slate-950 rounded-[28px] font-black text-xs uppercase tracking-[0.3em] shadow-[0_20px_50px_rgba(6,182,212,0.3)] hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 overflow-hidden">
                     <span className="relative z-10 flex items-center gap-3">START EARNING NOW <ArrowUpRight size={18} /></span>
                     <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -753,7 +753,7 @@ export default function LandingPage() {
                </p>
 
                <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
-                  <Link href="/auth/login" className="w-full sm:w-auto">
+                  <Link href="/auth/sign-up" className="w-full sm:w-auto">
                     <button className="w-full sm:w-auto px-16 py-8 bg-white text-slate-950 rounded-[32px] font-black text-sm uppercase tracking-[0.3em] shadow-3xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3">
                        GO TO DASHBOARD <ChevronRight size={24} />
                     </button>

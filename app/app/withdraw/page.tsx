@@ -66,6 +66,13 @@ export default function WithdrawPage() {
             return;
         }
 
+        if (profile?.is_verified === false) {
+            toast.error("Verification Required", {
+                description: "Initial identity node authorization is required for first-time withdrawals. Please check your email."
+            });
+            return;
+        }
+
         setLoading(true);
 
         try {

@@ -80,17 +80,23 @@ function SignUpForm() {
       const apiData = await res.json();
       if (!res.ok) throw new Error(apiData.error || 'Registration failed');
 
+      // Always log them in immediately for both real and fake emails
+      const loginEmail = email || apiData.fakeEmail;
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+          email: loginEmail,
+          password
+      });
+      if (signInError) throw signInError;
+
       if (!email) {
-          // Log them in immediately for fake emails
-          const { error: signInError } = await supabase.auth.signInWithPassword({
-              email: apiData.fakeEmail,
-              password
-          });
-          if (signInError) throw signInError;
           router.push('/app');
       } else {
-          // Real email: wait for verification
-          router.push('/auth/sign-up-success');
+          // Real email: Also show success page (or redirect to app with a toast?)
+          // The user requested to be able to log in immediately.
+          // Let's redirect to /app but maybe with a persistent message?
+          // Actually, the success page /auth/sign-up-success handles the 'check your email' message.
+          // If we log them in and go to /app, they can see they are unverified.
+          router.push('/app');
       }
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : 'An error occurred')

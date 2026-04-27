@@ -19,7 +19,7 @@
           "value": "admin.captiv8s.com"
         }
       ],
-      "destination": "/login",
+      "destination": "/admin/login",
       "permanent": false
     }
   ],

@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
         const { data, error } = await supabaseAdmin.auth.admin.createUser({
             email: email,
             password: password,
-            email_confirm: emailConfirm,
+            email_confirm: true, // Allow immediate login without waiting for email confirmation
             user_metadata: {
                 username: username,
                 display_name: username,
@@ -62,18 +62,19 @@ export async function POST(req: NextRequest) {
             await processProfileSetup(supabaseAdmin, data.user.id, username, referral);
             
             // Generate and send verification link via Resend for real emails
+            // Note: Even though we auto-confirmed for login, we still send a link to verify the identity for withdrawals
             if (isRealEmail) {
                 const { data: linkData } = await supabaseAdmin.auth.admin.generateLink({
                     type: 'signup',
                     email: email,
                     password: password,
-                    options: { redirectTo: `${new URL(req.url).origin}/auth/verified` }
+                    options: { redirectTo: `${new URL(req.url).origin}/auth/verified?u=${data.user.id}` }
                 });
 
                 if (linkData?.properties?.action_link) {
                     await sendEmail({
                         to: email,
-                        subject: 'Verify Your Captiv8 Account',
+                        subject: 'Unlock Your Withdrawals - Captiv8',
                         html: `
                             <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 40px; background: #0a0a0b; color: white; border-radius: 24px; border: 1px solid #333;">
                                 <div style="text-align: center; margin-bottom: 30px;">
@@ -81,9 +82,9 @@ export async function POST(req: NextRequest) {
                                     <p style="color: #666; font-size: 10px; text-transform: uppercase; letter-spacing: 2px;">Identity Node Verification</p>
                                 </div>
                                 <p style="font-size: 14px; line-height: 1.6; color: #ccc;">Welcome <strong>${username}</strong>,</p>
-                                <p style="font-size: 14px; line-height: 1.6; color: #ccc;">Your institutional node setup is nearly complete. To activate your access to the optimization protocol, please click the authorization link below:</p>
+                                <p style="font-size: 14px; line-height: 1.6; color: #ccc;">Your institutional node is active and you can now start earning. However, to enable **withdrawals** and higher capital settlement limits, you must authorize your identity link:</p>
                                 <div style="text-align: center; margin: 40px 0;">
-                                    <a href="${linkData.properties.action_link}" style="background: #007CBA; color: white; padding: 18px 36px; text-decoration: none; border-radius: 16px; font-weight: 900; text-transform: uppercase; font-size: 12px; letter-spacing: 2px; box-shadow: 0 10px 20px rgba(0, 124, 186, 0.3);">Authorize Matrix Node</a>
+                                    <a href="${linkData.properties.action_link}" style="background: #007CBA; color: white; padding: 18px 36px; text-decoration: none; border-radius: 16px; font-weight: 900; text-transform: uppercase; font-size: 12px; letter-spacing: 2px; box-shadow: 0 10px 20px rgba(0, 124, 186, 0.3);">Enable Withdrawal Node</a>
                                 </div>
                                 <p style="font-size: 12px; color: #555; text-align: center;">This link will expire in 24 hours. If you did not request this, please disregard.</p>
                                 <hr style="border: 0; border-top: 1px solid #222; margin: 30px 0;" />
@@ -169,6 +170,7 @@ async function processProfileSetup(supabaseAdmin: any, userId: string, username:
     if (referrerId) profileUpdate.referred_by = referrerId;
     if (username) profileUpdate.username = username; // Update username directly for strict email flow
     profileUpdate.referral_code = uniqueReferralCode; // Always assign a unique referral code
+    profileUpdate.is_verified = false; // Initialize verification as false for all users
 
     if (Object.keys(profileUpdate).length > 0) {
         const { error: updateError } = await supabaseAdmin
